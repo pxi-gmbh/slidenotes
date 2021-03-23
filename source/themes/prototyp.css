@@ -1,0 +1,622 @@
+/* CONTENT LAYOUT.CSS
+ * 	- typography & vertical rhythm
+ *  - landmark section styles
+ * 	- horizontal grid layout & box model
+ *
+ * COLOR SCHEME:
+ *  rgba(133,4,8,1)      dark red #850408
+ *  rgba(204,204,204,1)  muted grey #ccc
+ *  rgba(128,128,128,1)  medium grey #808080
+ * 	rgba(15,15,15,1)     muted black #050505
+ * 	rgba(250,250,250,1)  off white #fafafa
+ * 	rgba(240,240,240,.1) transparent off white
+ *
+ * COPY FONT
+ * 	Merriweather
+ * INTERFACE FONT
+ *  Source Code Pro
+ *
+ * RESPONSIVE GRID
+ * BREAK POINTS
+ * 	40em(640px) 45em(720px) 50em 55em 61em 73em 87em 105em 117em 130em
+ *
+ * (c) agnostic HTML5 design: pixelcraftbooks
+ * free to use under the MIT license
+ */
+
+/* ========================== TYPOGRAPHY & VERTICAL RHYTHM ==========================
+ * this section is to establish the vertical rhythm, and the look of elements
+ * all elements are vanilla HTML5 tags or aria-roles for the CSS to be fully agnostic
+ * (you can drop the css on top of semantic (!) HTML5 to generate a consistent look)
+ */
+.presentation {
+	 background: white;
+ }
+.prototyp .ppage{
+	background:white;
+}
+.prototyp .presentation {
+	color: #050505; /* old IE */
+	color: rgba(15,15,15,1);
+	background:white;
+	background-color: #fafafa; /* old IE */
+	background-color: rgb(250,250,250);
+	max-width: 160em;
+	-webkit-font-smoothing: antialiased;
+	 -moz-osx-font-smoothing: grayscale;
+	-webkit-text-size-adjust: 100%;
+	    -ms-text-size-adjust: 100%;
+	-webkit-font-feature-settings: "calt", "liga", "clig", "kern";
+	    -ms-font-feature-settings: "calt", "liga", "clig", "kern";
+	     -o-font-feature-settings: "calt", "liga", "clig", "kern";
+	        font-feature-settings: "calt", "liga", "clig", "kern";
+}
+	@media screen and (max-width:  40em) {	html {	font-size:  90%;} }
+	@media screen and (min-width:  45em) {	html {	font-size:  93%;} }
+	@media screen and (min-width:  55em) {	html {	font-size:  97%;} }
+	@media screen and (min-width:  61em) {	html {	font-size: 100%;} }
+	@media screen and (min-width:  73em) {	html {	font-size: 105%;} }
+	@media screen and (min-width:  87em) {	html {	font-size: 110%;} }
+	@media screen and (min-width: 105em) {	html {	font-size: 125%;} }
+	@media screen and (min-width: 117em) {	html {	font-size: 140%;} }
+	@media screen and (min-width: 130em) {	html {	font-size: 150%;} }
+.prototyp{
+	font-family: Merriweather, Serif;
+	font-style: normal;
+	font-size: 1.25em;
+	line-height: 1.6;
+	padding-bottom: 3em;
+	}
+.prototyp main { 	display: block; }
+	main:after{
+		content: "";
+		display: block;
+		margin-top: 3em;
+		margin-bottom: 4.5em;
+		border-top: 1px #ccc solid; /* old IE */
+		border-top: 1px rgba(204,204,204,1) solid;
+		width: 100%;
+	}
+.prototyp h1 {
+	font-size: 1.6em;
+	line-height: 1.875em;
+	margin-top: 0.9375em;
+	margin-bottom: 0.9375em;
+	color: rgba(60,60,60,1);
+	text-transform: uppercase;
+	font-weight: normal;
+	letter-spacing: 0.3em;
+	clear: both;
+}
+	@media screen and (min-width: 55em) {
+		.prototyp h1 {
+			font-size: 2.6em;
+			line-height: 1.153846154;
+			margin-top: 1.15384615em;
+			margin-bottom: 0.57692308em;
+		}
+	}
+	@media screen and (min-width: 61em) {
+		.prototyp h1 {
+			font-size: 4.25em;
+			line-height: 1.058823528em;
+			margin-top: 0.70588235em;
+			margin-bottom: 0.35294118em;
+			letter-spacing: normal;
+		}
+	}
+.prototyp h2 {
+	font-size: 1.6em;
+	line-height: 1.875em;
+	margin-top: 0.9375em;
+	margin-bottom: 0.9375em;
+	color: rgba(60,60,60,1);
+	font-style: italic;
+	letter-spacing: 0.02em;
+	clear: both;
+}
+	@media screen and (min-width: 61em) {
+		.prototyp h2 {
+			font-size: 2.6em;
+			line-height: 1.153846154em;
+			margin-top: 1.15384615em;
+			margin-bottom: 0.57692308em;
+			letter-spacing: normal;
+		}
+	}
+.prototyp h3 {
+	font-size: 1.6em;
+	line-height: 1.875;
+	margin-top: 0.9375em;
+	margin-bottom: 0.9375em;
+	color: rgba(60,60,60,1);
+	clear: both;
+}
+.prototyp h4 {
+	font-size: 1em;
+	line-height: 1.5;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+.prototyp p {
+	text-indent: 1.5em;
+	-webkit-hyphens: auto;
+		 -moz-hyphens: auto;
+					-ms-hyphens: auto;
+	    hyphens: auto;
+}
+/*
+	article > p:first-child,
+	section > p:first-child,
+	h1 + p,
+	h2 + p,
+	h3 + p,
+	h4 + p,
+	header + p,
+	hr + p,
+	br + p,
+	blockquote + p,
+	table + p,
+	figure + p,
+	form + p,
+	button + p,
+	div + p,
+	article q + p {
+		text-indent: 0;
+	}
+	*/
+.prototyp p,
+.prototyp ul,
+.prototyp ol,
+.prototyp ul ul,
+.prototyp ol ol,
+.prototyp ul ol,
+.prototyp ol ul {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+.prototyp ul {
+	list-style-type: none;
+	list-style-position: outside;
+	padding: 0;
+	margin-bottom: 1.5em;
+}
+	.prototyp ul > li:before {
+		content: "— ";
+		color: #808080; /*old IE */
+		color: rgba(128,128,128,1);
+	}
+.prototyp ol {
+	list-style-type: none;
+	list-style-position: outside;
+	padding: 0;
+	margin-bottom: 1.5em;
+	counter-reset: ol-counter;
+}
+	.prototyp ol > li:before {
+		content: counter(ol-counter, upper-roman);
+		counter-increment: ol-counter;
+		float: left;
+		width: 1em;
+		margin-right: 0.5em;
+		color: #808080; /*old IE */
+		color: rgba(128,128,128,1);
+	}
+	.prototyp code li:before{
+		content: none;
+	}
+	.prototyp code ol{
+		list-style-type: decimal-leading-zero;
+	}
+.prototyp pre {
+	font-family: inherit;
+	font-style: inherit;
+	line-height: inherit;
+	padding: inherit;
+	margin: inherit;
+}
+.prototyp figure,
+.prototyp table {
+	padding-top: 1.5em;
+	padding-bottom: 1.5em;
+	border-top: 1px #ccc dotted; /* old IE */
+	border-top: 1px rgba(204,204,204,1) dotted;
+	border-bottom: 1px #ccc dotted; /* old IE */
+	border-bottom: 1px rgba(204,204,204,1) dotted;
+	margin-top: 1.5em;
+	margin-bottom: calc(1.5em - 2px);
+}
+/*
+	@media screen and (min-width: 55em) {
+		figure,
+		table {
+			margin-top: 3em;
+			margin-bottom: calc(3em - 2px);
+		}
+	}
+.prototyp table {
+	font-size: inherit;
+	text-align: center;
+	border-spacing: 0;
+}
+.prototyp	table > thead,
+.prototyp table > tbody,
+.prototyp	table > tfoot,
+.prototyp	table th,
+.prototyp	table tr,
+.prototyp	table td,
+.prototyp	table p {
+		text-indent: 0;
+		padding: 0;
+		border: 0;
+		border-spacing: 0;
+	}
+	*/
+.prototyp blockquote {
+	font-style: italic;
+	border-left: 1px #ccc dotted; /* old IE */
+	border-left: 1px rgba(204,204,204,1) dotted;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+	.prototyp blockquote > p {
+		margin: 0;
+		padding: 0;
+	}
+	.prototyp blockquote > p:first-child {
+		text-indent: 0;
+	}
+	.prototyp blockquote + blockquote,
+	.prototyp p + blockquote {
+		margin-top: 1.5em;
+	}
+		.prototyp blockquote > cite,
+		.prototyp blockquote > footer > cite {
+			display: block;
+			text-align: right;
+		}
+			.prototyp blockquote > cite:before,
+			.prototyp blockquote > footer > cite:before {
+				content: "— ";
+			}
+.prototyp figcaption {
+	font-family: "Source Code Pro", monospace;
+	font-style: normal;
+	text-align: center;
+	margin-bottom: 0;
+}
+.prototyp sup,
+.prototyp sub {
+	vertical-align: baseline;
+	position: relative;
+	top: -0.4em;
+	font-size: 0.8em;
+}
+.prototyp sub {	top: 0.4em; }
+.prototyp hr {
+	display: block;
+	height: 1px;
+	border: 0;
+	border-top: 1px #ccc solid; /* old IE */
+	border-top: 1px rgba(60,60,60,1) solid;
+	margin: 0 auto;
+	margin-top: calc(4.5em - 2px);
+	margin-bottom: 4.5em;
+	width: calc(100% / 16 * 4);
+	clear: both;
+}
+.prototyp img {
+	display: block;
+	width: auto;
+	max-width: 100%;
+	height: auto;
+	max-height: 90vh;
+	margin: 0 auto;
+}
+	.prototyp	article > img {
+		margin-top: 1.5em;
+		margin-bottom: 1.5em;
+	}
+		@media screen and (min-width: 55em) {
+			.prototyp	article > img {
+				margin-top: 3em;
+				margin-bottom: 3em;
+			}
+		}
+.prototyp	embed,
+.prototyp	object,
+.prototyp	iframe,
+.prototyp	video {
+	width: 100%;
+	height: auto;
+	max-height: 90vh;
+}
+	.prototyp	article > embed,
+	.prototyp	article > object,
+	.prototyp	article > iframe,
+	.prototyp	article > video {
+		margin-top: 1.5em;
+		margin-bottom: 1.5em;
+	}
+		@media screen and (min-width: 55em) {
+			.prototyp	article > embed,
+			.prototyp	article > iframe,
+			.prototyp	article > object,
+			.prototyp	article > video {
+				margin-top: 3em;
+				margin-bottom: 3em;
+			}
+		}
+
+
+.prototyp i,
+.prototyp b,
+.prototyp q,
+.prototyp em,
+.prototyp strong,
+.prototyp small,
+.prototyp code,
+.prototyp cite {
+ 	font-size: inherit;
+ 	font-weight: inherit;
+	line-height: inherit;
+}
+.prototyp b,
+.prototyp strong {
+	font-style: bold;
+	font-weight: 700;
+}
+.prototyp i,
+.prototyp q,
+.prototyp em {
+	font-style: italic;
+}
+.prototyp 	article q,
+.prototyp 	section q {
+		display: block;
+		color: #808080; /*old IE */
+		color: rgba(128,128,128,1);
+		font-style: oblique;
+		font-weight: 700;
+		margin-top: 1.5em;
+		margin-bottom: 1.5em;
+		clear: both;
+	}
+		@media screen and (min-width: 61em) {
+			.prototyp	article q,
+			.prototyp	section q {
+				font-size: 1.6em;
+				font-style: normal;
+				font-weight: 300;
+				line-height: 1.875em;
+				margin-top: 0.9375em;
+				margin-bottom: 0.9375em;
+			}
+		}
+.prototyp code {
+	font-family: "Source Code Pro", Monospace;
+}
+.prototyp del {
+	text-decoration: line-through;
+}
+.prototyp small {
+	color: #808080; /*old IE */
+	color: rgba(128,128,128,1);
+}
+.prototyp cite {
+	font-style: normal;
+}
+.prototyp abbr {
+	text-transform: uppercase;
+	font-variant: small-caps;
+}
+.prototyp a {
+	color: inherit;
+	text-decoration: underline;
+	cursor: pointer;
+	-webkit-text-decoration-color: rgba(128,128,128,1);
+	        text-decoration-color: rgba(128,128,128,1);
+	transition: 0.3s;
+}
+	.prototyp a:hover, .prototyp a:active,.prototyp a:focus {
+		color: #808080; /* old IE */
+		color: rgba(128,128,128,1);
+		text-decoration: underline;
+	}
+	.prototyp sup a {
+		color: #850408; /* old IE */
+		color: rgba(133,4,8,1);
+		text-decoration: none;
+	}
+	.prototyp sup a:hover {
+		text-decoration: none;
+	}
+	.prototyp sup a:before {
+		content: "[";
+		vertical-align: baseline;
+		position: relative;
+		top: -0.4em;
+		font-size: 0.8em;
+	}
+	.prototyp sup a:after {
+		content: "]";
+		vertical-align: baseline;
+		position: relative;
+		top: -0.4em;
+		font-size: 0.8em;
+	}
+/* nicer text selection colors */
+.prototyp ::-moz-selection {
+background:#aaa;
+color: black;
+}
+.prototyp ::-webkit-selection {
+background: #aaa;
+color: black;
+}
+.prototyp ::selection {
+background: #aaa;
+color: black;
+}
+
+/*
+ * ===== LANDMARK SECTION STYLES =====
+ * defined by roles
+ * "banner" defaults to topmost header
+ * "contentinfo" defaults to topmost footer
+ */
+/* style banner-information for a document */
+.prototyp [role="banner"]{
+	text-align: center;
+	padding-top: 1.5em;
+	margin-bottom: 6em;
+}
+.prototyp [role="banner"] h2 {
+	font-variant: small-caps;
+	font-weight: normal;
+	font-style: normal;
+}
+.prototyp [role="banner"] h3 {
+	font-weight: normal;
+	font-style: italic;
+}
+.prototyp [role="banner"] p{
+	text-indent: 0;
+}
+/* style the meta-information for a document */
+.prototyp [role="contentinfo"] {
+}
+
+/*
+ *  ========================== HORIZONTAL GRID LAYOUT ==========================
+ * separated from typography and visuals for easier editing of position
+ * 16 segments, position determined by padding & margins of calc(100% / X)
+ */
+.prototyp h1,
+.prototyp h2,
+.prototyp h3,
+.prototyp h4,
+.prototyp p,
+.prototyp ul,
+.prototyp ol,
+.prototyp q,
+.prototyp blockquote,
+.prototyp figure,
+.prototyp form,
+.prototyp pre,
+.prototyp table,
+.prototyp aside {
+	box-sizing: border-box;
+	position: relative;
+	margin-left: 3.125%;
+	margin-right: 3.125%;
+}
+	.prototyp blockquote > p,
+	.prototyp figure > pre,
+	.prototyp figure > table,
+	.prototyp figure > blockquote {
+		/* reset nested elements to fill parent */
+		width: 100%;
+		padding: 0;
+		margin: 0;
+		border: 0;
+	}
+	.prototyp blockquote,
+	.prototyp figure > blockquote,
+	.prototyp form {
+		/* reset blockquote & form to maintain text inset */
+		padding-left: 1.5em;
+		padding-right: 1.5em;
+	}
+	@media screen and (min-width: 45em) {
+		/* single column with spacious margins (100/32 margin for headlines)
+		 * 100/16 | 100/16*14 | 100/16
+		 */
+		.prototyp h4,
+		.prototyp p,
+		.prototyp ul,
+		.prototyp ol,
+		.prototyp blockquote,
+		.prototyp figure,
+		.prototyp form,
+		.prototyp pre,
+		.prototyp table,
+		.prototyp main > article aside {
+			margin-left: 0;
+			margin-right: 0;
+			width: calc(100% / 16 * 14);
+			margin-left: calc(100% / 16);
+		}
+	}
+	@media screen and (min-width: 50em) {
+		/* single column with spacious margins, headlines shifted to 100/16
+		 * 100/16 > 100/16 | 100/16*12 | 100/16 < 100/16
+		 */
+		.prototyp h1,
+		.prototyp h2,
+		.prototyp h3,
+		.prototyp article q {
+			width: 100%;
+			margin-left: 0;
+			margin-right: 0;
+			padding-left: calc(100% / 16);
+			padding-right: calc(100% / 16);
+		}
+		.prototyp h4,
+		.prototyp p,
+		.prototyp ul,
+		.prototyp ol,
+		.prototyp blockquote,
+		.prototyp figure,
+		.prototyp form,
+		.prototyp pre,
+		.prototyp table,
+		.prototyp main > article aside {
+			width: calc(100% / 16 * 12);
+			margin-left: calc(100% / 16 * 2);
+		}
+	}
+	@media screen and (min-width: 61em) {
+		/* main column shrunk for optimal line length
+		 * 100/16 > 100/16 |  100/16 | 100/16*10 |  100/16 | 100/16 < 100/16
+		 */
+		.prototyp h4,
+		.prototyp p,
+		.prototyp ul,
+		.prototyp ol,
+		.prototyp blockquote,
+		.prototyp figure,
+		.prototyp form,
+		.prototyp pre,
+		.prototyp table,
+		.prototyp main > article aside {
+			width: calc(100% / 16 * 10);
+			margin-left: calc(100% / 16 * 3);
+		}
+	}
+/* break into two content columns > main text | side notes <
+* 100/16 > 100/16 |  100/16*10 | 100/16 |  100/16* | 100/16 < 100/16
+*/
+	@media screen and (min-width: 73em) {
+		 /*
+		 h4,
+		 p,
+		 ul,
+		 ol,
+		 blockquote,
+		 figure,
+		 form,
+		 pre,
+		 table {
+		 	width: calc(100% / 16 * 10);
+			margin-left: calc(100% / 16);
+		 }
+		main > article > aside {
+			width: calc(100% / 16 * 3);
+			margin-right: calc(100% / 16);
+			margin-left: 0;
+			float: right;
+		}
+		*/
+	}
+/*# sourceMappingURL=layout.css.map */

@@ -1,0 +1,11 @@
+section.left img, section.right img{
+  max-width:100%;
+}
+section.inline {
+/*  does not work as intended:
+  display: inline-flex;
+  justify-content: space-evenly;
+    */
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(10ch,1fr));
+}

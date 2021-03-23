@@ -1,0 +1,140 @@
+
+/*vertical is float, horizontal is none */
+
+.imageblock {
+  display:inline-block;
+  font-size: 1em;
+}
+.imageblock.vertical {
+  float:left;
+  /* margin: 1em; */
+}
+.imageblock.horizontal {
+  display:block;
+}
+
+.testdiv{
+  display:inline-block;
+}
+
+.blocks .ppage.active{
+  visibility: visible;
+  display:grid;
+}
+.blocks .ppage{
+  display:grid;
+  width:100vw;
+  height:100vh;
+  position: absolute;
+  top: 0;
+  left:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  grid-gap: 0 1em;
+}
+
+/*background-images:*/
+.blocks img.bgimg.griditem{
+    grid-row: 1 / last-line;
+    grid-column: 1 / last-line;
+    width: 100%;
+    height:100%;
+    position: fixed;
+    z-index: 0;
+    object-fit: cover;
+}
+
+.blocks section img.bgimg.griditem{
+  position: relative;
+}
+
+div > img.bgimg {
+  min-width:100vw;
+  min-height:100vh;
+}
+
+ .blocks section.left img.bgimg.griditem,
+ .blocks section.right img.bgimg.griditem{
+   height:100%;
+ }
+
+/*images inside p-blocks:*/
+.blocks p img.floatingleftimage {
+    max-height: 6em;
+    float: left;
+    margin: 1ch;
+}
+
+.blocks p img.floatingrightimage {
+    max-height: 6em;
+    margin: 1ch;
+    float: right;
+}
+
+.blocks p img,
+.blocks ul img,
+.blocks ol img {
+    max-height: 1em;
+}
+.blocks span.imageline img{
+  max-height: 3em;
+  background-color: transparent;
+}
+
+.blocks .gridx3, .blocks .gridx2, .blocks .gridx1 {
+  display: grid;
+  /*position:absolute;*/
+  grid-gap: 0.5em 1em;
+  top:0;
+  left:0;
+  width: 100%;
+/*  visibility: hidden;*/
+
+}
+
+.blocks .gridx3{
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.blocks .gridx2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.blocks .gridx1 {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+/*codeblock*/
+.blocks code.codeblock{
+  margin-bottom: 0.5em;
+  max-width: var(--widthGriditem);
+  overflow: visible;
+  width: 100%;
+  white-space: pre-wrap;
+}
+
+/*sections: */
+.blocks section.section.left,
+.blocks section.section.right{
+  display:grid;
+}
+
+/*placeholder for navigation
+  use this to make space for navigation which is
+  positioned absolute
+*/
+.blocks .navigationPlaceholder{
+  grid-area: nav;
+  height:6vh;
+  width:100%;
+}
+
+/*some things to forbid underthemes use margin etc:
+
+.blocks h1,
+.blocks h2,
+.blocks h3{
+    margin:0!important;
+}
+*/

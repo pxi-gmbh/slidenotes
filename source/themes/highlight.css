@@ -1,0 +1,53 @@
+p code.hljs{
+	display:inline-flex;
+}
+
+code {
+
+}
+span code{
+	white-space:pre-line;
+}
+
+#texteditorerrorlayer .specialline,
+#texteditorerrorlayer .specialinline{
+	text-decoration:underline;
+	font-weight:bold;
+}
+/*
+.specialline li{
+	opacity:0.5;
+}
+
+.specialline li.specialline{
+	opacity:1;
+}
+
+.specialline ul{
+	list-style:none;
+}*/
+
+.specialline span.codeline{
+	opacity:0.5;
+	white-space: pre;
+	white-space: pre-wrap;
+}
+.specialline span.specialline, span.specialinline{
+	opacity:1;
+}
+
+.ppage code.codeblock ol {
+    list-style-type: decimal;
+    list-style-position: inside;
+    list-style: none;
+    counter-reset: code-line-counter;
+}
+
+.ppage code.codeblock ol li{
+	counter-increment: code-line-counter;
+}
+
+.ppage code.codeblock ol li::before{
+	content: counter(code-line-counter) " ";
+	opacity: 0.3;
+}

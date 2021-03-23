@@ -1,0 +1,429 @@
+/*special declarations for presentations online, mainly comments*/
+
+/* general */
+/* ======= */
+
+  body{
+    margin: 0;
+  }
+  /*
+  #slidenotepresentation > div {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+  }*/
+
+  .hidden {
+    display: none;
+  }
+
+/* controls */
+/* ======== */
+
+  span#controlcommenttotal {
+    display: none;
+  }
+
+  span#controlcommentcountseparator {
+    display: none;
+  }
+
+  .hasComments span#controlcommentcount{
+    display:block;
+  }
+  span#controlcommentcount {
+    display:none;
+    position: absolute;
+    right: 0.6ch;
+    bottom: 0.5ch;
+    border: 2px solid gray;
+    border-radius: 100%;
+    width: 2ch;
+    height: 2ch;
+    /*background: white;*/
+    background: var(--dialogbox-content-bg-color);
+    color: var(--dialogbox-font-color);
+  }
+
+  .spectator #controlarea {
+    display: none;
+  }
+
+/* comments */
+/* ======== */
+
+  #comments {
+    /*background: #f4f4f4;*/
+    /*border-radius:1vh;*/
+    position: fixed;
+    left: 5vw;
+    bottom: 7vh;
+    display: none;
+    max-width: min(40em, 80vw);
+    max-height: 80vh;
+    overflow:hidden;
+    grid-template-areas:
+    "title"
+    "content"
+    "write";
+    grid-template-columns:100%;
+    z-index:1001;
+  }
+
+  #comments.show.dialogbox{
+    /*box-shadow:0 0 5px 5px rgba(0,0,0,0.25);*/
+    display:grid;
+  }
+
+  #comments > div {
+    /*background: #fff;*/
+  }
+
+  /* dialogtitle */
+
+  #comments .dialogtitle{
+    text-align:center;
+    height:3em;
+    display:grid;
+    grid-template-columns: 5ch 5ch 1fr 5ch 10ch;
+    align-items:end;
+    align-content:center;
+    justify-content: center;
+    grid-template-areas:". navprev title navnext close";
+    margin:0;
+    /*padding:0;*/
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size:large;
+  }
+
+  button#previousCommentSlide {
+    grid-area: navprev;
+  }
+
+  button#nextCommentSlide {
+    grid-area: navnext;
+  }
+  button.commentnav {
+    border: none;
+    background: none;
+    font-size: large;
+    opacity:0.3;
+  }
+
+  button.commentnav.active{
+    opacity:1;
+  }
+
+  #controlarea button.no-comments{
+    opacity:0.3;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+/*comment char counter*/
+textarea#comment-body.char-limit-reached {
+    background: indianred;
+}
+
+#comment-char-wrapper {
+  text-align: end;
+}
+
+  /*.dialogbox .dialogtitle .dialogclosebutton{
+    align-self:start;
+    justify-self:end;
+    border:none;
+    background:none;
+    grid-area:close;
+    color: var(--dialogbox-headline-color);
+    font-size: calc(18/20*1em);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .dialogclosebutton:hover{
+    color: var(--dialogbox-font-color);
+  }
+
+
+
+  /* dialogcontent */
+
+  .dialogcontent{
+    border-radius: 3vh;
+    min-height: 5em;
+    display: grid;
+    align-items: center;
+    max-width:80vw;
+    max-height:82vh;
+    overflow-y:auto;
+    }
+  .dialogcontent > a{
+    display:none;
+  }
+
+  #comments.show.dialogbox .dialogcontent{
+    grid-template-rows: 1fr auto;
+    max-height: calc(82vh - 3em);
+
+  }
+
+  #comments.show.dialogbox .dialogcontent ul{
+  }
+  #commentlist{
+  	padding: 0;
+  }
+
+  .comment{
+    display:none;
+  }
+  .comment.show{
+    display:block;
+  }
+
+  .comment {
+    margin-left: 0;
+  }
+
+  .comment-name{
+    font-style: italic;
+  }
+  .comment-body{
+    margin-bottom: calc(5*var(--pscale));
+    border-bottom: solid var(--dialogbox-border-color) calc(1*var(--pscale));
+    padding-bottom: calc(6*var(--pscale));
+  }
+
+  /* details */
+
+  #comments.show.dialogbox details{
+    padding-bottom: calc(20*var(--pscale));
+    background: var(--dialogbox-content-bg-color);
+    padding-left: calc(70*var(--pscale));
+    padding-right: calc(78*var(--pscale));
+  }
+
+  #comments.show.dialogbox details summary{
+    width: 12ch;
+    cursor: pointer;
+    margin-bottom: calc(30*var(--pscale) + 1.2em);
+  }
+  #comments.show.dialogbox details[open] summary {
+    margin-bottom: 0;
+  }
+
+  #commentseparator{
+    background: var(--dialogbox-content-bg-color);
+  }
+  #commentseparator:before{
+    content: "";
+    display: block;
+    border-top: solid var(--dialogbox-border-color) calc(1*var(--pscale));
+    margin-left: calc(70*var(--pscale));
+    margin-right: calc(78*var(--pscale));
+  }
+
+  .comment-form{
+    /*display:none;*/
+  }
+  form#comment-form {
+    width: 100%;
+  }
+  .comment-form.show{
+    display:block;
+  }
+  form.comment-form.show {
+    justify-self: center;
+  }
+
+  #comments form label {
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    opacity: 0;
+    position: absolute;
+  }
+
+  #comment-name {
+    margin-right: auto;
+    margin-left: 1ch;
+    margin-top: calc(15*var(--pscale));
+  }
+
+  form#comment-form textarea {
+    margin-left: 1ch;
+    margin-right: 1ch;
+    border-radius: 1ch;
+    resize: vertical;
+    max-width: 100%;
+    color: inherit;
+  }
+
+  #comment-submit{
+    width: unset;
+    margin-top: calc(11*var(--pscale));
+  }
+
+  /*trash?*/
+
+  div#edit-author--2 {
+    display: none;
+  }
+
+  fieldset#edit-comment-body-und-0-format {
+    display: none;
+  }
+
+  div#edit-field-pagenr {
+    display: none;
+  }
+
+  input#edit-preview, input#edit-submit {
+    display: none;
+  }
+
+  button#commentAddButton {
+    /*background: white;*/
+    /*border-radius: 1ch;*/
+    /*padding-left: 2ch;
+    padding-right: 1ch;
+    justify-self: center;*/
+  }
+
+  button.comment-form.show {
+    margin-left: 1ch;
+    margin-bottom: 1em;
+    justify-self: start;
+    border-radius: 0.5ch;
+    /*background: #505050;*/
+    /*color: white;*/
+  }
+
+/* slidenoteguardian & loading screen */
+/* ================================== */
+
+  /*loading screen */
+  /*#slidenoteloadingscreenwrapper,
+  #slidenoteGuardianPasswortPrompt {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    z-index: 2000;
+  }
+
+  #slidenoteGuardianPasswordPromptTemplate,
+  #slidenoteeditorloadingscreen {
+    height: 60vh;
+  }
+  #slidenoteloadingscreenwrapper{
+    background:white;
+  }
+
+  #slidenoteeditorloadingscreen img {
+    height: 100%;
+  }
+
+  #slidenoteGuardianPasswordPromptTemplate {
+    height: 50vh;
+    width:50vh;
+    padding-top:25vh;
+    text-align: center;
+  }*/
+
+
+  .endstate{
+    animation-name:hideloadingscreen;
+    animation-duration:1.2s;
+    animation-fill-mode: forwards;
+    animation-timing-function: linear;
+    animation-delay: 2s;
+  }
+
+  @keyframes hideloadingscreen{
+    0%{opacity:1;height:100vh;}
+    80%{opacity:0;height:100vh;}
+    100%{display:none;height:0;}
+  }
+
+  #hidepresentation{
+    height: 100vh;
+    background: var(--dialogbox-overlay);
+    width: 100vw;
+    position: fixed;
+    z-index: 1002;
+  }
+  #slidenoteloadingscreenwrapper.endstate~#hidepresentation{
+    display: none;
+  }
+
+  #invitelink {
+      text-transform: none;
+  }
+
+/*pointer*/
+#laserpointer{
+  background:red;
+  width: 4ch;
+  height:4ch;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 10000;
+  opacity:0;
+  transition: opacity 3s;
+  margin-top:-2ch;
+  margin-left:-2ch;
+}
+#laserpointer.active{
+  opacity:0.7;
+  transition:none;
+}
+#laserpointer::before,
+#laserpointer::after {
+  content: '';
+  width: 3em;
+  height: 3em;
+  border-radius: 50%;
+  position: absolute;
+  transform-origin: 50% 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  opacity:0;
+  display:none;
+}
+#laserpointer.active::before,
+#laserpointer.active::after{
+  opacity:0.7;
+  display: block;
+}
+
+#laserpointer::before {
+  background: transparent;
+  border: 1em solid red;
+  animation: laserpointerCircle 1s ease-out infinite;
+  background: #CD7B67;
+}
+#laserpointer::after {
+  background: red;
+}
+@keyframes laserpointerCircle {
+  0% {
+    transform: translate(-50%,-50%) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%,-50%) scale(2.5);
+    opacity: 0;
+  }
+}

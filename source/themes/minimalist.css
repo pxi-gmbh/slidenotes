@@ -1,0 +1,591 @@
+/*basis-theme "minimalist"*/
+/*jegliche css-deklaration muss mit klasse .minimalist starten */
+
+/* hintergrund wird pro ppage festgelegt, nicht nur einmal fürs theme. sollte in zukunft geändert werden, aber momentan ists noch so.
+ppage ist der jeweilige presentation-slide.
+generelle sachen, wie bspw. schriftfarben, schriften etc. in die hauptdeklaration, abweichungen dann in den weiteren.
+ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt es einfach und semantisch, dann sollte nicht viel schief gehen.*/
+
+
+
+:root{
+  --minimalistBckgColor: #f4f4f4;
+  --minimalistTextColor: #030303;
+
+  --minimalistDataColor0: #96a0a4;
+  --minimalistDataColor1: #5f7782;
+  --minimalistDataColor2: #d8b26e;
+  --minimalistDataColor3: #a8660f;
+  --minimalistDataColor4: #736367;
+  --minimalistDataColor5: #267e82;
+  --minimalistDataColor6: #a1b9aa;
+
+  --minimalistNodeBorderColor: #a6a6a6;
+  --minimalistNodeBckgColor: #eaeef3;
+}
+
+@font-face{
+  font-family: "ComfortaaLight";
+  src: url("/fonts/themes/minimalist/Comfortaa-Light.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face{
+  font-family: "OpenSansReg";
+  src: url("/fonts/themes/minimalist/OpenSans-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face{
+  font-family: "OpenSansBold";
+  src: url("/fonts/themes/minimalist/OpenSans-Bold.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face{
+  font-family: "OpenSansItalic";
+  src: url("/fonts/themes/minimalist/OpenSans-Italic.ttf");
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face{
+  font-family: "OpenSansBoldItalic";
+  src: url("/fonts/themes/minimalist/OpenSans-BoldItalic.ttf");
+  font-weight: bold;
+  font-style: italic;
+}
+@font-face{
+  font-family: "CutiveMono";
+  src: url("/fonts/themes/minimalist/CutiveMono-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+.minimalist,
+.minimalist .ppage {
+	background: var(--minimalistBckgColor);
+	color: var(--minimalistTextColor);
+  font-weight: normal;
+  font-family: "OpenSansReg", Sans-Serif;
+  font-size: 1.1em;
+}
+
+.minimalist .ppage .progressbar{
+  border-radius: 0 0 99px;
+}
+
+
+
+/*code affects both: inlinecode and codeblock*/
+.minimalist code {
+  font-family: "CutiveMono", Monospace;
+  font-size: 0.9em;
+}
+/*inline*/
+.minimalist p code, .minimalist h1 code, .minimalist h2 code, .minimalist h3 code{
+  padding: 0.12em 0.2em 0.12em 0.2em;
+  color: white;
+  background-color: var(--code-backg);
+  text-shadow: none;
+}
+
+/*codeblock affects only codeblocks*/
+.minimalist code.codeblock{
+
+}
+
+
+
+
+.minimalist h1,
+.minimalist h2,
+.minimalist h3{
+  font-family: "ComfortaaLight", Sans-Serif;
+  font-weight: normal;
+
+  text-shadow: 0.05em 0.03em var(--minimalistBckgColor);
+}
+
+.minimalist h1{
+  font-size: 4em;
+  margin-top: 25vh;
+}
+.minimalist h1.griditem,
+.minimalist .griditem h1{
+  max-width: 90vw;
+  margin-bottom: calc((var(--h1scale) - 1)*2em);
+  margin-top: calc((var(--h1scale) - 1)*2em + 25vh);
+  transform: scale(var(--h1scale));
+  font-size: calc(1/var(--h1scale)*4em);
+}
+
+
+.minimalist h2,
+.minimalist h3{
+	margin-bottom: 0.7em;
+  margin-top: 0.5em;
+}
+.minimalist h2{
+  font-size: 2em;
+}
+.minimalist h2 img{
+  height: 1.8em;
+}
+
+.minimalist h3{
+  margin-bottom: 0.2em;
+  font-size: 1.4em;
+}
+.minimalist h3 img{
+  height: 1.2em;
+}
+
+.minimalist .pblock h1+p{
+  font-size: 1.3em;
+}
+
+.minimalist .pblock h1+p,
+.minimalist .pblock h2+p,
+.minimalist .pblock h3+p {
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+.minimalist .inline .pblock h1+p,
+.minimalist .inline .pblock h2+p,
+.minimalist .inline .pblock h3+p,
+.minimalist .section .pblock h1+p,
+.minimalist .section .pblock h2+p,
+.minimalist .section .pblock h3+p{
+  text-align: left;
+  margin-top: 1em;
+}
+
+.minimalist .pblock h2+p,
+.minimalist .pblock h3+p {
+
+}
+
+.minimalist p{
+  line-height: 1.32em;
+}
+.minimalist p>span{
+  background-color: var(--minimalistBckgColor);
+  padding: 0 0.1em;
+}
+.minimalist p br{
+  margin-bottom: 0.5em;
+}
+
+.minimalist .pblock h1+p img,
+.minimalist .pblock h2+p img,
+.minimalist .pblock h3+p img{
+
+}
+/*
+should be declared in blocks.css as general rule,
+only overwrite whats really necesary
+standard declaration is: max-height: 1em;
+*/
+.minimalist p img,
+.minimalist ul img,
+.minimalist ol img{
+}
+/*the floating ones inside a p-blocks
+standard is:
+max-height: 6em;
+float:left/right;
+margin:1ch;
+*/
+.minimalist p img.floatingleftimage{
+}
+.minimalist p img.floatingrightimage{
+}
+
+.minimalist a{
+  text-decoration: underline;
+  font-family: "OpenSansItalic";
+  color: var(--minimalistTextColor);
+}
+
+.minimalist .imageblock{
+  font-size: 0.8em;
+}
+
+.minimalist b{
+  font-family: "OpenSansBold", Sans-Serif;
+}
+
+.minimalist i{
+  font-family: "OpenSansItalic", Sans-Serif;
+}
+
+.minimalist b i{
+  font-family: "OpenSansBoldItalic", Sans-Serif;
+}
+
+.minimalist strike{
+
+}
+
+.minimalist ul,
+.minimalist ol{
+  padding: 0 0.9em;
+  line-height: 1.3em;
+}
+
+.minimalist ul{
+
+}
+
+.minimalist ol{
+
+}
+
+.minimalist li+li{
+  margin: 0.3em 0;
+}
+
+.minimalist li{
+  background-color: var(--minimalistBckgColor);
+  padding: 0 0.1em;
+}
+
+.minimalist code.codeblock li{
+  overflow:hidden;
+  background-color: transparent;
+}
+
+
+
+/*sub-lists (unterpunkte/verschachtelung der listen)*/
+
+.minimalist ul ul,
+.minimalist ol ul{
+
+}
+
+.minimalist ol ul,
+.minimalist ol ol{
+
+}
+
+.minimalist mark{
+  background-color: #e3dada;
+}
+
+
+.minimalist quote{
+  text-align: center;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-thickness: 0.02em;
+  text-underline-offset: 0.3em;
+  line-height: 1.5em;
+  font-family: "OpenSansItalic";
+}
+
+.minimalist p code{
+
+}
+.minimalist code.codeblock{
+
+}
+.minimalist .codeblock.none{
+  background-color: #eaeef3;
+}
+
+/* charts:*/
+
+/* alle charts sind in einer section mit klasse chart*/
+.minimalist section.chart{
+  font-size: 0.7em;
+  /*Portrait to 4:3*/
+  /*max-height: calc(85.2vw/1.618); /*100vw - (padding-left + padding-right) = 85.2vw; golden ratio = 1.618*/
+}
+
+/*pie-charts:*/
+.minimalist section.chart-pie{
+
+}
+
+/*bar-charts*/
+.minimalist section.chart-bar{
+
+}
+
+/*line-charts*/
+.minimalist section.chart-line{
+  padding: 0 0 0 0.7em;
+
+}
+
+/*alle labels einer chart - wenn nur für bestimmte charts gewollt, muster von oben erweitern, also bspw. .minimalist .chart-bar .ct-label. hier die größen der schrift und farben für die labels generell anpassen */
+.minimalist .ct-label{
+  color: rgba(0, 0, 0, 0.7);
+}
+.minimalist .ct-label.ct-vertical.ct-start{
+  border-bottom: 0.15em solid rgba(0, 0, 0, 0.2);
+}
+.minimalist .ct-label.ct-horizontal.ct-end{
+  border-right: 0.1em solid rgba(0, 0, 0, 0.1);
+}
+.minimalist .ct-chart-pie .ct-label,
+.minimalist .ct-chart-donut .ct-label{
+  fill: rgba(0, 0, 0, 1);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 1);
+  font-family: "OpenSansBold", Sans-Serif;
+}
+
+.minimalist .ct-grid{
+	stroke: var(--minimalistBckgColor);
+  stroke-width:0.05em;
+  stroke-dasharray: 0;
+}
+
+/*x-achsen-label*/
+.minimalist .chart-x-axis-label{
+
+}
+
+/*y-achsen-label*/
+.minimalist .chart-y-axis-label{
+
+}
+
+/*dataset-label, was oben drüber steht und bspw. jahreszahl beinhaltet:*/
+.minimalist .chart-datasetlabel{
+  border: none;
+  padding: 0;
+  margin-left: 1em;
+}
+
+/*die box davon:*/
+.minimalist .chart-datasetlabel-box{
+
+}
+
+.minimalist .chart-datasetlabel-box.chart-datasetlabel-box-0{
+	background: var(--minimalistDataColor0);
+}
+.minimalist .chart-datasetlabel-box.chart-datasetlabel-box-1{
+	background: var(--minimalistDataColor1);
+}
+.minimalist .chart-datasetlabel-box.chart-datasetlabel-box-2{
+	background: var(--minimalistDataColor2);
+}
+.minimalist .chart-datasetlabel-box.chart-datasetlabel-box-3{
+	background: var(--minimalistDataColor3);
+}
+.minimalist .chart-datasetlabel-box.chart-datasetlabel-box-4{
+	background: var(--minimalistDataColor4);
+}
+.minimalist .chart-datasetlabel-box.chart-datasetlabel-box-5{
+	background: var(--minimalistDataColor5);
+}
+.minimalist .chart-datasetlabel-box.chart-datasetlabel-box-6{
+	background: var(--minimalistDataColor6);
+}
+/*datasetlabel und ihre boxen können auch einzeln angesprochen werden und sind von 0 an durchnummeriert. erstes datasetlabel heißt .chart-datasetlabel-0 */
+
+
+/*farben: ich fasse die zusammen um einheitlichkeit herzustellen. jeder block umfasst immer äußere und innere farbe. das schema kann weiter erweitert werden, aber ich belasse es erstmal bei 5 farben. nicht deklarierte farben nimmt er die standard-farben die er schon hat. die ersten 5 farben sollten auf die präsentation zugeschnitten sein. jede farbe ist als "ct-series-a" bis "ct-series-z" paar.*/
+
+.minimalist .ct-series-a .ct-point, .minimalist .ct-series-a .ct-line, .minimalist .ct-series-a .ct-bar, .minimalist .ct-series-a .ct-slice-donut {
+  stroke: var(--minimalistDataColor0);
+}
+
+.minimalist .ct-series-a .ct-slice-pie, .minimalist .ct-series-a .ct-slice-donut-solid, .minimalist .ct-series-a .ct-area {
+  fill: var(--minimalistDataColor0);
+}
+
+.minimalist .ct-series-b .ct-point, .minimalist .ct-series-b .ct-line, .minimalist .ct-series-b .ct-bar, .minimalist .ct-series-b .ct-slice-donut {
+  stroke: var(--minimalistDataColor1);
+}
+
+.minimalist .ct-series-b .ct-slice-pie, .minimalist .ct-series-b .ct-slice-donut-solid, .minimalist .ct-series-b .ct-area {
+  fill: var(--minimalistDataColor1);
+}
+
+.minimalist .ct-series-c .ct-point, .minimalist .ct-series-c .ct-line, .minimalist .ct-series-c .ct-bar, .minimalist .ct-series-c .ct-slice-donut {
+  stroke: var(--minimalistDataColor2);
+}
+
+.minimalist .ct-series-c .ct-slice-pie, .minimalist .ct-series-c .ct-slice-donut-solid, .minimalist .ct-series-c .ct-area {
+  fill: var(--minimalistDataColor2);
+}
+
+.minimalist .ct-series-d .ct-point, .minimalist .ct-series-d .ct-line, .minimalist .ct-series-d .ct-bar, .minimalist .ct-series-d .ct-slice-donut {
+  stroke: var(--minimalistDataColor3);
+}
+
+.minimalist .ct-series-d .ct-slice-pie, .minimalist .ct-series-d .ct-slice-donut-solid, .minimalist .ct-series-d .ct-area {
+  fill: var(--minimalistDataColor3);
+}
+
+.minimalist .ct-series-e .ct-point, .minimalist .ct-series-e .ct-line, .minimalist .ct-series-e .ct-bar, .minimalist .ct-series-e .ct-slice-donut {
+  stroke: var(--minimalistDataColor4);
+}
+
+.minimalist .ct-series-e .ct-slice-pie, .minimalist .ct-series-e .ct-slice-donut-solid, .minimalist .ct-series-e .ct-area {
+  fill: var(--minimalistDataColor4);
+}
+
+.minimalist .ct-series-f .ct-point, .minimalist .ct-series-f .ct-line, .minimalist .ct-series-f .ct-bar, .minimalist .ct-series-f .ct-slice-donut {
+  stroke: var(--minimalistDataColor5);
+}
+
+.minimalist .ct-series-f .ct-slice-pie, .minimalist .ct-series-f .ct-slice-donut-solid, .minimalist .ct-series-f .ct-area {
+  fill: var(--minimalistDataColor5);
+}
+
+.minimalist .ct-series-g .ct-point, .minimalist .ct-series-g .ct-line, .minimalist .ct-series-g .ct-bar, .minimalist .ct-series-g .ct-slice-donut {
+  stroke: var(--minimalistDataColor6);
+}
+
+.minimalist .ct-series-g .ct-slice-pie, .minimalist .ct-series-g .ct-slice-donut-solid, .minimalist .ct-series-g .ct-area {
+  fill: var(--minimalistDataColor6);
+}
+
+
+/*ende von charts*/
+
+/*tables stehen in einer klassenlosen section. wenn du also .minimalist section bearbeitest hat das auch effekt auf deren container. ansonsten steuer tabellen direkt an über*/
+
+.minimalist table{
+
+}
+
+.minimalist th,
+.minimalist td{
+
+}
+
+.minimalist thead{
+  font-family: "OpenSansBold", Sans-Serif;
+}
+
+.minimalist table,
+.minimalist th,
+.minimalist td{
+  border: 0.02em solid #030303;
+  padding: 0 0.5em;
+  background-color: var(--minimalistBckgColor);
+}
+
+.minimalist thead{
+
+}
+
+.minimalist tbody{
+
+}
+
+.minimalist tr{
+
+}
+
+.minimalist td{
+
+}
+
+/* latex - elemente sind in einer section mit klasse klatex*/
+.minimalist section.klatex{
+
+}
+
+/* layout-elemente sind sections mit section-klasse. sie beinhalten weitere elemente*/
+
+.minimalist section.section{
+
+}
+
+/*layout-element auf linker seite, nimmt ca. ein drittel der linken seite ein*/
+.minimalist section.section.left{
+
+}
+
+/*layout-element auf rechter seite, nimmt die hälfte des platzes ein, wenn nicht zwei weitere layout-sections "in reihe" stehen, dann nimmt er ein drittel*/
+.minimalist section.section.right{
+
+}
+
+/* node */
+.minimalist .node .msg{
+  background-color: #dfdfdf;
+}
+.minimalist .node .arrow.dashed .arrowimg::before, .node .arrow.noarrowdashed .arrowimg::before {
+  border-top: 0.1em dashed var(--minimalistTextColor);
+}
+.minimalist .node .simpleflow .node,
+.minimalist .node .flow .node{
+  background: var(--minimalistBckgColor);
+  border: 0.07em solid var(--minimalistNodeBorderColor);
+}
+.minimalist .ppage .node .tree .content{
+  border: 0.07em solid var(--minimalistNodeBorderColor);
+  border-radius: 0.1em;
+}
+.minimalist .ppage .node .arrowspace .arrowimg+div{
+  background-color: var(--minimalistNodeBckgColor);
+}
+.minimalist .node .tree .arrowimg::after{
+  background: linear-gradient(to top right, transparent 50%, #d3e2f4 50%);
+  border-top: 0.07em solid var(--minimalistTextColor);
+  border-right: 0.07em solid var(--minimalistTextColor);
+}
+.minimalist .node .arrow .arrowimg::after{
+  background: linear-gradient(to top right, transparent 50%, var(--minimalistTextColor) 50%);
+}
+.minimalist .simpleflow .arrow.broad .msg{
+  color: var(--minimalistBckgColor);
+}
+.minimalist .node .simpleflow .arrowspace .broad .triangle::before{
+  background-color: #515050;
+}
+.minimalist .node .simpleflow .arrowspace .broad .triangle{
+  background: linear-gradient(to top right, transparent 50%, #515050 50%);
+}
+.minimalist .node .node.cloud{
+  background-color: var(--minimalistBckgColor);
+  border: 0.07em solid var(--minimalistNodeBorderColor);
+}
+.minimalist .node .node.cloud::before{
+  background-color: var(--minimalistBckgColor);
+  border-top: 0.08em solid var(--minimalistNodeBorderColor);
+}
+.minimalist .node .node.cloud::after{
+  background-color: var(--minimalistBckgColor);
+  border-top: 0.08em solid var(--minimalistNodeBorderColor);
+}
+.minimalist .node .sequence .actor{
+  border: 0.07em solid var(--minimalistNodeBorderColor);
+  background: var(--minimalistBckgColor);
+}
+.minimalist .node .sequence .stroke{
+  width: 0.05em;
+  background: var(--minimalistTextColor);
+}
+.minimalist .node .sequence .arrow .arrowimg::after{
+  top: -0.25em;
+}
+.minimalist .node .broad .arrowimg::before{
+  border-bottom: 0.1em solid var(--minimalistTextColor);
+}
+.minimalist .node .sequence .node.cloud{
+  height: 3.2em;
+}
+.minimalist .node .sequence .cloud.actor{
+  background: none;
+  border: none;
+}
+.minimalist .node .sequence .note{
+  border: 0.06em solid var(--minimalistNodeBorderColor);
+  background: var(--minimalistBckgColor);
+}
+.minimalist .node .sequence .diamond.actor{
+  width: 3em;
+  height: 3em;
+  padding: 0.5em;
+}

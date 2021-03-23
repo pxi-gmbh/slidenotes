@@ -1,0 +1,786 @@
+/*screenreader only elements*/
+.screenreader-only {
+ position: absolute;
+ height: 1px;
+ width: 1px;
+ clip: rect(1px 1px 1px 1px); // IE 6 and 7
+ clip: rect(1px,1px,1px,1px);
+ clip-path: polygon(0px 0px, 0px 0px, 0px 0px);
+ -webkit-clip-path: polygon(0px 0px, 0px 0px, 0px 0px);
+ overflow: hidden !important;
+ }
+
+/*textarea und errorlayer:*/
+#texteditor{
+	background:white;
+	position:initial;
+	height:400px;
+}
+#texteditorerrorlayer{
+	color:unset;
+	overflow-y:auto;
+	overflow-x:none;
+	z-Index:1;
+	/*font-weight:bolder;*/
+}
+
+#texteditorerrorlayer, #quelltext, #wysiwygarea {
+  font-family: monospace;
+	font-size: 1em;
+	position:absolute;
+	border: 1px solid;
+  margin: 1px;
+  padding: 1px;
+	width: 70vw;/*550px;*/
+	height:75vh;
+	line-height:1.5em;
+}
+#quelltext{
+	z-Index:2;
+	background:none;
+	color:transparent;
+	caret-color:black;
+}
+
+.linenr {
+    color: grey;
+	display:none;
+}
+.error{
+
+}
+#texteditorerrorlayer .error{
+	color: red;
+	border-bottom:3px solid red;
+}
+.proposedsymbol{
+	color:grey;
+	background:white;
+	margin-left: 5px;
+}
+.errordescription{
+	background:rgba(0,255,255,0.8);
+	float: right;
+	color: red;
+}
+/*mdcodeeditor*/
+#carret.unfocused{
+  border-right:1px solid black;
+  margin-right:-1px;
+}
+
+.backgroundline{
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+.backgroundline.h1{
+	color:blue;
+	font-weight: bold;
+}
+.backgroundline.h2{
+	color:blue;
+}
+.backgroundline b, .backgroundline i, .backgroundline strike{
+	border-bottom:1px solid lightgreen;
+}
+.backgroundline.code, .backgroundline code,
+.backgroundline.codehead, .backgroundline.metadata.codehead{
+	background:orange;
+	font-family:unset;
+	font-size:unset;
+}
+.backgroundline.code{
+	display:inline-block;
+	width:100%;
+}
+.backgroundline.quote{
+	background:gainsboro;
+	font-style:italic;
+	display:inline-block;
+	width:100%;
+}
+
+#texteditorerrorlayer .pagenr {
+    /*content: "»»» new page";*/
+    color: white;
+		font-style:italic;
+}
+.backgroundline.pagebreak {
+    display: inline-block;
+    background: grey;
+    width: 100%;
+}
+.backgroundline.data{
+	display:inline-block;
+	width: 100%;
+	background:yellow;
+}
+.backgroundline.metadataseparator {
+    background: darkgreen;
+}
+
+.backgroundline.metadata {
+    background: lightgreen;
+}
+
+.backgroundline.layout{
+	display:inline-block;
+	width:100%;
+	background: rgba(238, 199, 85, 0.54);
+}
+.backgroundline .imagetag{
+	color:blue;
+	font-weight:bold;
+	background:lightblue;
+}
+.backgroundline .imagesrc, .backgroundline .imagealt{
+	color:green;
+}
+.backgroundline .imagesrc.imagenotfound{
+	color:red;
+}
+.backgroundline.footnote{
+	background:lightgrey;
+	display:inline-block;
+	width:100%;
+}
+.backgroundline .firstfootnote{
+	border-top:1px dashed;
+	margin-top:-1px;
+}
+.backgroundline .footnoteanchor{
+	color:blue;
+}
+.backgroundline .comment {
+	background:lightgrey;
+	font-style:italic;
+}
+
+/*mdcodeeditor imagespreview */
+#texteditorimagespreview{
+	font-family:monospace;
+	width:700px;
+}
+#texteditorimagespreview img{
+	float:right;
+}
+/*presentation */
+.ppage{
+	/*display:none;*/
+	visibility: hidden;
+	width:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	height:100vh;
+	overflow:auto;
+}
+.ppage.active{
+	display:block;
+	visibility: visible;
+}
+
+#praesentationrahmen{
+	display:none;
+}
+#praesentationrahmen.fullscreen {
+	display: block;
+}
+#praesentation {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+	height:100%;
+	overflow: auto;
+	left:0;
+}
+#praesentationrahmen.fullscreen .praesentationsteuerung{
+	position: fixed;
+	bottom:0;
+	z-index: 1001;
+}
+
+#slidenoteLoadingScreen{
+	position:fixed;
+	top:0;
+	left:0;
+	width:100vw;
+	height:100vh;
+	background:blue;
+	color:white;
+	visibility:hidden;
+	z-index: -1;
+}
+#slidenoteLoadingScreen.active{
+	visibility:visible;
+	z-index: 9999;
+}
+
+h1{
+	text-align: center;
+}
+
+#texteditorbuttons input {
+	width:unset;
+}
+.text {
+
+}
+
+#fehlercoderahmen{
+ 	background: snow none repeat scroll 0 0;
+    display: none;
+    height: 100%;
+    overflow-y: auto;
+    position: absolute;
+    top: 0;
+    z-index: 10;
+}
+
+#fehlercoderahmen.active{
+	display:block;
+}
+#fehlercoderahmen > input {
+    position: fixed;
+    right: 18px;
+    top: 0;
+}
+
+/* vorschau neben texteditor: */
+#wysiwygarea.debugmode{
+	left:550px;
+}
+.hidden {
+	display:none;
+}
+/*wysiwyg-vollbildmodus */
+#slidenotediv.vollbild{
+	background: white none repeat scroll 0 0;
+    position: fixed;
+    top: 00;
+    width: 90%;
+    z-index: 1000;
+	height:100vh;
+	overflow: none;
+	padding:1%;
+}
+
+.vollbild #wysiwygarea{
+	width:100%;
+	height:100%;
+	overflow: scroll;
+}
+
+/*
+#wysiwygrahmen::after {
+    clear:both;
+    width: 100%;
+	content:".";
+}
+#zieltext{
+	height: 80vh;
+	overflow-y:auto;
+	background:rgba(200,250,0,0.8);
+}
+*/
+/*getting rid of slidenotebuttons till killed out of code:*/
+#slidenotebuttons, #hiddencmsarea{
+	display:none;
+}
+
+#editorblock {
+    clear: both;
+    float: none;
+    height: 95vh;
+    position: initial;
+    width: 100%;
+		display:grid;
+		grid-template-areas: "outline outline header optionarea optionarea"
+													"buttonarea sidearealeft editorarea sidearearight sidearearight"
+													"footer footer footer footer footer";
+		grid-template-columns: 2em 2fr auto 2fr 2em;
+		grid-gap: 1px 2px;
+		grid-template-rows: 1fr 20fr 1fr;
+}
+#editorblock::after{
+	clear:both;
+	content:".";
+}
+/*grid-style:*/
+div#editorheader {
+    grid-area: header;
+}
+
+div#editoroptionbutton {
+    grid-area: optionarea;
+}
+
+div#texteditorbuttons {
+    grid-area: buttonarea;
+}
+
+div#sidebarcontainer {
+    grid-area: sidearealeft;
+}
+
+div#texteditor {
+    grid-area: editorarea;
+}
+
+div#contextfieldcontainer {
+    grid-area: sidearearight;
+}
+div#imagesblock{
+	display:none;
+	grid-area:editorarea;
+}
+
+div#footer {
+    grid-area: footer;
+}
+
+/*texteditorbuttons:*/
+#texteditorbuttons button {
+    display: block;
+    width: 2em;
+    height: 2em;
+    padding: 0;
+}
+
+div#texteditorbuttons {
+    z-index: 1;
+    width: 2em;
+    overflow: hidden;
+}
+
+div#texteditorbuttons img {
+    width: 1.6em;
+}
+
+/*sidebar*/
+div#sidebar {
+    position: absolute;
+    right: 0;
+}
+
+div#sidebarcontainer {
+    position: relative;
+    overflow: hidden;
+		/*min-width:12em;*/
+}
+
+#sidebar{
+	text-align:right;
+	font-size:1em;
+	font-family:monospace;
+	padding:3px;
+	color:gray;
+	line-height:1.5em;
+}
+#sidebar span.multilinemiddle {
+    color:unset;
+    border-left:1px solid transparent;
+}
+
+#sidebar span.multilinestart {
+    margin-top: -1px;
+    border-top: 1px solid gray;
+}
+
+#sidebar span.multilineend {
+border-bottom: 1px solid gray;
+    margin-bottom: -1px;
+}
+
+#sidebar span {
+    border-left: 1px solid gray;
+    color: transparent;
+		margin-left:-1px;
+}
+#sidebar span.singleline{
+	color:unset;
+	border-left:1px solid transparent;
+}
+#sidebar .carretline{
+	color:transparent;
+	border-left:1px solid transparent;
+	text-decoration:none;
+	margin-left:-1px;
+	visibility: visible;
+}
+#sidebar .carretline.hidden{
+	visibility: hidden;
+}
+div#nicesidebarsymbol {
+    position: absolute;
+    right: 0;
+    height: 1em;
+}
+
+div#nicesidebarsymbol img {
+    height: 1em;
+}
+/*#sidebar .carretline img{
+	height:1em;
+}*/
+#sidebar .continueline{
+	color:gray;
+	border-left:1px solid transparent;
+}
+#sidebar .replacement{
+	color:transparent;
+	border-left:1px solid transparent;
+}
+button{
+	background:white;
+	border:none;
+}
+button:hover{
+	background:lightgray;
+}
+
+#insertarea{
+	visibility: hidden;
+	position:absolute;
+	right:3px;
+	background:white;
+	padding: 0px 0px 10px 10px;
+	border:1px solid black;
+	border-right:none;
+	z-index:2;
+
+}
+#insertarea button{
+	display:block;
+	/*border:none;
+	background:white;*/
+}
+#insertarea label{
+	border:1px solid black;
+	position:relative;
+	top:-10px;
+	background:white;
+	right:4px;
+	margin-right:1px;
+	display:inline-block;
+}
+#insertarea #extrainsertmenu label{
+	top:unset;
+}
+
+#insertarea img{
+	height:1em;
+}
+
+.insertmenu-extra div#standardinsertmenu {
+    display: none;
+}
+.insertmenu-extra #extrainsertmenu{
+	display:block;
+}
+#extrainsertmenu{
+	display:none;
+}
+
+#cursorlinesymbol{
+	position:absolute;
+	right:-4px;
+	top:-7px;
+}
+
+/*header with notetitle and optionbutton*/
+div#editorheader {
+    text-align: center;
+}
+
+span#notetitle {
+    margin-left: 15px;
+    color: gray;
+    font-size: 1.4em;
+}
+
+#editorheader img {
+    height: 2em;
+    margin-bottom: -0.5em;
+}
+
+#editoroptionbutton {
+    text-align: right;
+}
+
+#editoroptionbutton a {
+    color: gray;
+    text-decoration: none;
+}
+#editoroptionbuttonbutton img {
+    height: 1.4em;
+    margin-bottom: -0.3em;
+}
+
+#importfile{
+	display:none;
+}
+
+/*export-options*/
+div#exportoptions {
+    grid-area: editorarea;
+    z-index: 10000;
+    background: rgba(255,255,255,0.5);
+    position: relative;
+		display:none;
+}
+div#exportoptions.active {
+	display:block;
+}
+
+div#exportoptions ul {
+    background: white;
+    position: absolute;
+    right: 0;
+    top: -10px;
+    list-style: none;
+}
+/*footer*/
+div#footer {
+    /*text-align: center;*/
+		justify-self: center;
+		align-self: end;
+}
+
+#footer button img {
+    height: 2em;
+    margin-bottom: -0.5em;
+}
+
+/*nightmode: easy-cssmode:*/
+div#slidenotediv.nightmode {
+    filter: invert(100%);
+    background: white;
+    color: black;
+}
+.nightmode #imagesblock img,
+.nightmode #contextfieldimage,
+.nightmode .imagesrc{
+	filter:invert(100%);
+}
+
+
+
+/* old nightmode:
+div#slidenotediv.nightmode {
+    background: black;
+    color: white;
+}
+
+#slidenotediv.nightmode button {
+    background: black;
+    color: white;
+}
+
+#slidenotediv.nightmode div#texteditorerrorlayer {
+    background: black;
+}
+
+#slidenotediv.nightmode img {
+    filter:invert(100%);
+}
+
+#slidenotediv.nightmode div#insertarea {
+    background: black;
+    border-color: white;
+}
+
+#slidenotediv.nightmode #insertarea label {
+    background: black;
+    border-color: white;
+}
+
+/*new optionmenu*/
+
+div#optionmenu {
+    grid-area: sidearearight;
+    /* display: grid; */
+		visibility: hidden;
+		padding:10px;
+}
+
+div#optionmenu.active{
+	visibility:visible;
+}
+
+#optionmenu ul {
+    list-style: none;
+    padding: 0;
+    /* float: left; */
+}
+
+div#themedescription {
+    margin-left: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+		padding:5px;
+}
+/*
+div#optionmenupresentationdesign {
+    display: inline-block;
+}*/
+#optionmenupresentationdesigncontainer{
+	display:grid;
+	grid-template-columns:1fr 1fr;
+}
+
+#optionmenu li {
+    font-size: 0.7em;
+}
+#nightmodetoggle span:first-child {
+    color: black;
+}
+
+#nightmodetoggle span {
+    color: gray;
+    margin: 5px;
+}
+
+.nightmode #nightmodetoggle span:first-child {
+    color: lightgray;
+}
+
+.nightmode #nightmodetoggle span {
+    color: black;
+}
+/*wysiwyg*/
+#wysiwygarea {
+	background:white;
+	border:1px solid black;
+	overflow:scroll;
+	outline:none;
+	padding:10px;
+	z-index: 3;
+
+}
+
+#wysiwygarea code{
+
+}
+#wysiwygarea data{
+	white-space: pre;
+	background: #e1e149;
+	border:1px solid black;
+	padding:5px;
+	display: block;
+	width:90%;
+
+}
+#wysiwygarea img{
+	height:100px;
+}
+
+#wysiwygarea .wysiwygselection{
+	color:white;
+	background-color:lightblue;
+
+}
+/*background-flickern wegmachen:*/
+#wysiwygrahmen ::selection{
+	color:white;
+	background:lightblue;
+}
+#wysiwygrahmen ::-moz-selection{
+	color:white;
+	background:lightblue;
+}
+#wysiwygarea:focus .wysiwygselection{
+	background-color:white;
+	color:black;
+}
+/* cursor faken: */
+@-webkit-keyframes blink {from , to { border-color:black}
+50%{border-color:transparent}
+}
+@-moz-keyframes blink {from , to { border-color:black}
+50%{border-color:transparent}}
+.cursor {
+	border-right: 1px solid black;
+	-webkit-animation: 1s blink step-end infinite;
+	-moz-animation: 1s blink step-end infinite;
+	margin-right:-1px;
+}
+/*options-menü*/
+#options {
+    position: absolute;
+    background: white;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+		display: none;
+		top:0px;
+}
+#options.visible{
+	display: block;
+}
+
+#options > h1 button {
+    float: right;
+    margin-right: 50px;
+}
+
+#options > h1 {
+    background: lightblue;
+    padding: 15px;
+}
+
+/*options-tabbar: */
+.tabbar h2 {
+  display: inline;
+  margin-left: 10px;
+  background: lightgrey;
+  padding: 10px;
+  padding-bottom: unset;
+}
+.tabbar h2.active {
+  border: 1px solid black;
+  border-top: 2px solid #2d2b2b;
+  border-bottom: none;
+  padding-bottom: 1px;
+}
+.tabbar {
+  border-bottom: 1px solid black;
+}
+.tabbar h2 {
+  display: inline;
+  margin-left: 10px;
+  background: lightgrey;
+  padding: 10px;
+  padding-bottom: unset;
+}
+.tabbar h2.active {
+  border: 1px solid black;
+  border-top: 2px solid #2d2b2b;
+  border-bottom: none;
+  padding-bottom: 1px;
+}
+.tabbar h2:hover {
+  background: darkgray;
+}
+.tabbar h2.active:hover {
+  background: lightgrey;
+}
+
+.optiontab {
+  display: none;
+}
+.optiontab.active {
+  display: block;
+}
+/*testsachen*/
+#designvorschau {
+    float: right;
+    width: 30%;
+    padding: 10px;
+    border: 1px solid;
+}
+
+#imagecontainer {
+	display:none;
+}

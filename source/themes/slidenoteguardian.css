@@ -1,0 +1,352 @@
+#slidenoteGuardianPasswortPrompt {
+  /*background: rgba(0,50,255,0.75);*/
+  height:100%;
+  left:0;
+  position: fixed;
+  top:0;
+  width: 100%;
+  z-index: 10000;
+  /*padding:40%;*/
+  text-align: center;
+  display:grid;
+  justify-content: center;
+  align-content: center;
+  background-color: var(--dialogbox-overlay);
+}
+
+/*div#slidenoteGuardianPasswordPromptTemplate*/
+.dialogbox.initial {
+  /*border-radius: 50%;
+  box-shadow: 0 0 14px -5px;
+  padding: 112px;
+  background: white;
+  width:400px;
+  height:400px;*/
+
+  animation-name:fadein;
+
+  animation-duration: 1.5s;
+  animation-fill-mode: forwards;
+}
+@keyframes fadein{
+  0%{opacity: 0}
+  100%{opacity: 1}
+}
+
+/*#slidenoteGuardianPasswordPromptTemplate*/
+.dialogbox.initial div{
+  text-align: center;
+}
+
+.dialogbox.initial .dialogtitle{
+  /*display: unset;
+  padding-left:10vh;
+  padding-right:10vh;*/
+}
+
+.dialogbox.initial .dialogtitle .dialogclosebutton{
+  display: none;
+}
+
+.dialogbox.initial .dialogcontent, .dialogbox.initial .buttonarea{
+  background: var(--dialogbox-bg-color);
+}
+
+/*initial buttons*/
+.dialogbox.initial .buttonarea button{
+  padding-top: calc(6*var(--pscale));
+  padding-bottom: calc(6*var(--pscale));
+  margin-top: calc(16*var(--pscale));
+  background: var(--arrow-box-button5-bg-color);
+  filter: drop-shadow(calc(3*var(--pscale)) calc(3*var(--pscale)) calc(5*var(--pscale)) var(--arrow-box-button5-bg-color));
+  /*box-shadow: 0 0 10px 1px rgba(144, 193, 200, 0.7);*/
+  transition: all 0.2s ease-in;
+  color: var(--dialogbox-button3-font2-color);
+}
+
+.initial.dialogbox .buttonarea button:first-child,
+.initial button#dialogconfirmbutton{
+  color: var(--arrow-box-button3-font-color);
+  background: var(--arrow-box-button5-bg-color);
+}
+
+.dialogbox.initial button#dialogcancelbutton{
+  background: var(--arrow-box-button5-bg-color);
+}
+
+#slidenoteGuardianPasswortPrompt .dialogbox.initial .buttonarea{
+  grid-template-columns: auto;
+  grid-template-rows: auto auto;
+  height: auto;
+}
+#slidenoteGuardianPasswortPrompt .dialogbox.initial #passwordgen{
+  grid-column: 1 / 3;
+  margin-top: unset;
+  margin-bottom: calc(16*var(--pscale));
+  opacity: 0.7;
+}
+
+#slidenoteGuardianPasswortPrompt .dialogbox.initial #slidenoteGuardianPasswordPromptEncrypt,
+#slidenoteGuardianPasswortPrompt .dialogbox.initial #skippassword{
+  grid-row: 2;
+}
+
+#forgottenPasswordDialogButton{
+  color: var(--text-color);
+  background: transparent;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+}
+
+
+/*#slidenoteGuardianPasswordPromptNotetitle{
+  display: flex;
+  align-items: end;
+}*/
+
+/*
+#slidenoteGuardianPasswortPrompt > div div{
+  margin-top:20px;
+}
+*/
+#slidenoteGuardianPasswortPrompt label{
+  display:block;
+  margin-top:20px;
+}
+
+#slidenoteGuardianPasswortPrompt input, .dialogbox.initial input{
+  display: block;
+  margin-bottom:20px;
+  margin-left: auto;
+  margin-right: auto;
+  width: unset;
+  border-radius: calc(12/10.8*1vh);
+  font-size: calc(20/16*1em);
+  padding: calc(3/10.8*1vh);
+  border: solid calc(1/10.8*1vh) var(--dialogbox-border-color);
+  box-shadow: inset 0 0 calc(2/10.8*1vh) calc(2/10.8*1vh) var(--shadow-lighter);
+  height: calc(40/20*1em);
+  box-sizing: border-box;
+  margin-top: calc(5/10.8*1vh);
+  background-color: var(--dialogbox-button3-bg-color);
+}
+
+#slidenoteGuardianPasswordPromptStore{
+  display:none;
+}
+
+input#username.hidden, input#password.hidden {
+  position: absolute;
+  top: -100%;
+}
+input#pwcheckfield.hidden,
+#slidenoteGuardianPasswordPromptRetypeLabel.hidden,
+#slidenoteGuardianPasswortPromptAfterText.hidden,
+#slidenoteGuardianPasswordPromptPasswordLabel.hidden,
+#slidenoteGuardianPasswordPromptTemplatePreText.hidden,
+label#slidenoteGuardianPasswordPromptUsernameLabel.hidden,
+#skippassword.hidden,
+#passwordgen.hidden {
+  display: none;
+}
+
+
+#slidenoteGuardianImportPromptWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0,0,0,0.7);
+  z-index: 9999;
+  padding:10%;
+}
+#slidenoteGuardianImportPrompt{
+  background:white;
+  padding:15px;
+  max-height:80%;
+  overflow:scroll;
+}
+
+#slidenoteGuardianImportPrompt div{
+  max-height:30vh;
+  overflow:scroll;
+}
+
+#slidenoteGuardianImportPrompt img{
+  max-width:100px;
+  max-height:100px;
+}
+
+#slidenoteGuardianCodePreview{
+  white-space:pre-wrap;
+}
+.importfile-image-preview-block, #slidenoteGuardianCodePreview {
+  overflow: hidden;
+  max-height:30vh;
+  margin: 1em;
+  border-radius: 1em;
+  box-shadow: inset black 0px 0px 0.5vh -0.2vh;
+}
+
+.importfile-image-preview-block ul, #slidenoteGuardianCodePreview ul {
+  overflow-y: auto;
+  max-height: 29vh;
+  margin-right: 1em;
+  margin-top: 0.5vh;
+  list-style: none;
+}
+
+.importfile-image-preview-block img{
+  height:4em;
+}
+
+div#slidenoteguardiandiff {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: black;
+  color: white;
+  z-index: 999;
+  display: grid;
+  grid-template-areas: "title title" "pretext pretext" "button1 button2" "cachedt localt";
+  grid-column-gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  height: 100%;
+}
+
+#slidenoteguardiandiff h1 {
+  grid-area: title;
+}
+
+#slidenoteguardiandiff .pretext {
+  grid-area: pretext;
+}
+
+.slidenoteguardian-diff {
+  height: 20em;
+  padding: 10px;
+  border: 1px solid red;
+  overflow-y: scroll;
+  max-width:90%;
+  white-space:pre-wrap;
+}
+
+.slidenoteguardian-diff-cache{
+  grid-area: localt;
+}
+.slidenoteguardian-diff-cms{
+  grid-area: cachedt;
+}
+.slidenoteguardiandiffdialog .dialogcontent{
+  grid-template-areas:
+  "pretext pretext"
+  "button1 button2"
+  "localt cachedt";
+  grid-gap:2vh;
+  padding:2vh;
+}
+.slidenoteguardiandiffdialog .pretext{
+  grid-area:pretext;
+}
+
+/*making options available during initial
+and all other options unavailable*/
+/*.initial div#optionarea, .initial .arrow_box {
+  z-index: 10001;
+}*/
+/*
+.midstate #optionarea button  {
+  display: none;
+}*/
+/*.initial #optionarea button{
+  opacity:0;
+}*/
+
+
+.midstate div#optionarea #optionsbutton{
+  display: block;
+  grid-column: 3;
+  opacity:1;
+}
+
+
+.initial div#optionmenuinterfacedesign,
+.initial .separator {
+  display: none;
+}
+/*making buttonarea invisible and untabable during initial phase*/
+.initial div#buttonarearight {
+  transition: all 3s ease;
+}
+
+/*blur-effect to fade-in:*/
+.initial.endstate #optionarea button,
+.endstate #buttonarearight,
+.endstate #playbuttonarea,
+.endstate #cloud,
+.endstate #loadnote,
+.endstate #editorblock {
+
+}
+.endstate.never {
+  /*opacity:0;*/
+  /*filter: blur(100px) contrast(0.5) saturate(10.5);*/
+  animation-name:pixelin;
+  animation-duration: 3s;
+  animation-iteration-count: 1;
+}
+@keyframes pixelin {
+  0%{
+    filter: blur(150px);
+    opacity:0;
+   }
+   50%{
+     filter:blur(150px);
+     opacity:1;
+   }
+  100%{ filter: blur(0px);}
+}
+
+.midstate #buttonarearight,
+.midstate #playbuttonarea {
+  display: none;
+}
+
+
+.abortedDecryption .fluidbutton,
+.abortedDecryption #changepasswordbutton,
+.abortedDecryption #cloud-box,
+.abortedDecryption #importexportbutton,
+.abortedDecryption #publishtocms {
+  pointer-events: none;
+  opacity: 0.5;
+}
+.abortedDecryption #cloud{
+  visibility: hidden;
+}
+.abortedDecryption #optionsbutton {
+  grid-column: 3;
+}
+
+.abortedDecryption #publishbutton {
+  grid-column: 2;
+}
+
+/*loading process*/
+#initialLoadingProgress {
+  position: absolute;
+  color: black;
+  z-index: 1501;
+  top: 50%;
+  left: 35%;
+}
+.midstate #initialLoadingProgress,
+.endstate #initialLoadingProgress{
+  display:none;
+}
+/*feedback dialog*/
+#template-feedback-form label {
+    display: inline;
+}

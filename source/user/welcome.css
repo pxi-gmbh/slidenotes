@@ -1,0 +1,331 @@
+/*welcome-screen: alternative url: /welcome */
+
+body.status--welcome #welcome-page{
+    display:block;
+}
+body.status--welcome #login-page{
+    display:none;
+}
+
+#error-message{
+    display:none;
+}
+.status--login-failed #error-message{
+    display:block;
+}
+
+#welcome-page{
+    display:none;
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#fcfcfc;
+}
+
+.dark #welcome-page{
+    background: inherit;
+}
+
+#welcome-page ul>li::before{
+    content: "";
+    display: none;
+}
+
+
+@font-face {
+    font-family: "rubikReg";
+    src: url("../fonts/Rubik-Regular.ttf");
+}
+
+@font-face {
+    font-family: "rubikMed";
+    src: url("../fonts/Rubik-Medium.ttf");
+}
+
+body #welcome-page{
+    font-family: "rubikReg";
+    font-size: 1em;
+    overflow: hidden;
+    height: 100%;
+}
+a{
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: none;
+}
+.dark a{
+    color: #1f1f1f;
+}
+
+.content{
+    height: calc(100vh - 14.87em); /* die 20em sind willkürlich*/
+    position: relative;
+    overflow: auto;
+}
+
+.view-header a {
+    background: #505050;
+    padding-left: 0.8em;
+    padding-top: 0.7em;
+    padding-bottom: 0.7em;
+    padding-right: 0.6em;
+    margin-bottom: 1em;
+    display: block;
+    border-radius: 0.5em;
+    color: white;
+    font-weight: normal;
+    margin-left: 0;
+    transition: 0.3s;
+    font-family: rubikMed;
+}
+
+.view-header a:hover{
+    background-color: #313131;
+    text-decoration: none;
+}
+
+.views-field a {
+    display: block;
+    width: 100%;
+    color: black;
+    font-weight: normal;
+    font-family: 'rubikMed';
+    text-overflow: ellipsis;
+}
+
+.views-field.views-field-title {
+    margin-top: 10px;
+}
+
+.views-field-field-slidenotenode span.field-content a {
+    display: unset;
+}
+
+.views-row, #slidenotelist-target li a{
+    background: #f3f3f3;
+    border-radius: 0.5em;
+    padding-left: 0.8em;
+    padding-top: 0.7em;
+    padding-bottom: 0.7em;
+    padding-right: 0.6em;
+    margin-bottom: 1em;
+    margin-left:0;
+    transition: 0.3s;
+    display: block;
+    line-height: 1.3em;
+}
+
+.views-row{
+    font-family: rubikReg;
+}
+
+.views-row:hover, #slidenotelist-target li a:hover{
+    text-decoration: none;
+    background-color: #DEECEE;
+}
+.dark .views-row:hover, .dark #slidenotelist-target li a:hover{
+    background-color: #CA9D7D;
+}
+
+.field-content:a{
+    text-decoration: none;
+}
+
+.views-field-title{
+    font-family: rubikMed;
+}
+
+
+.column-wrapper{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 4ch;
+}
+
+div.column-block {
+    background: none;
+    border: none;
+}
+
+
+.node {
+    border: none;
+}
+
+.column-block .content{
+    padding:0;
+}
+
+.node {
+    margin-bottom: 1.5em;
+    padding:0;
+    border:none;
+}
+
+.view-header a img {
+    margin-right: 2ch;
+    height: 1em;
+}
+
+.column-block h2 {
+    border-bottom: none;
+    font-weight: normal;
+    font-family: 'rubikReg';
+    font-size: 1.25em;
+    margin-bottom: 1.5em;
+}
+
+h1#page-title {
+    background: none;
+    color: #626262;
+    text-align: center;
+    font-weight:normal;
+    font-family: 'rubikReg';
+    font-size: 2em;
+    padding-top: 50px;
+    padding-bottom: 15px;
+}
+.dark h1#page-title{
+    color: #fafafa;
+}
+
+#page-title + .node{
+    padding-top: 15px;
+    padding-right: 23px;
+    padding-left: 23px;
+}
+
+.node{
+    text-align: center;
+    font-weight:normal;
+    font-size: 2em;
+}
+
+div#main {
+    max-width: 70em;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-y: auto;
+}
+
+#logout-welcome-page{
+    position: absolute;
+    left:0.5em;
+    top: 0.5em;
+    color: #505050;
+    width: 1.5em;
+}
+.dark #logout-welcome-page {
+    color: #ccc;
+}
+
+/*loading animation*/
+/*loading animation start*/
+
+#circle-loading-animation {
+    display: none;
+  position: absolute;
+  top: 12.2em;
+  left: 12em;
+}
+
+.status--logging-in #circle-loading-animation {
+  display: block;
+
+}
+#circle-loading-animation::before,
+#circle-loading-animation::after {
+  content: '';
+  width: 0.7em;
+  height: 0.7em;
+  display: block;
+  border-radius: 50%;
+  position: absolute;
+  transform-origin: 50% 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+#circle-loading-animation::before {
+  background: transparent;
+  border: 0.13em solid #72C3D3;
+  animation: growCircle 1s ease-out infinite;
+  background: #CD7B67;
+}
+#circle-loading-animation::after {
+  background: #CD7B67;
+}
+@keyframes growCircle {
+  0% {
+    transform: translate(-50%,-50%) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%,-50%) scale(2.5);
+    opacity: 0;
+  }
+}
+/*loading animation end*/
+
+@media (prefers-color-scheme: dark) {
+    #welcome-page{
+        background: inherit;
+    }
+    a{
+        color: #1f1f1f;
+    }
+    .views-row:hover, #slidenotelist-target li a:hover{
+        background-color: #CA9D7D;
+    }
+    h1#page-title{
+        color: #fafafa;
+    }
+    #logout-welcome-page {
+        color: #ccc;
+    }
+}
+
+@media only screen and (max-width: 768px){
+    div#main{
+        overflow: hidden;
+    }
+    h1#page-title{
+      padding-top: 30px;
+    }
+    #page-title + .node{
+        padding-left: 0;
+        padding-right: 0;
+        padding-top: 0;
+    }
+    #page-title + .node p, .column-block h2 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .column-wrapper{
+        display: block;
+    }
+
+    #welcome-page .content {
+        /*height: calc(53vh - 11.8em);*/
+        /*iOS Safari address bar shrinking of 63px*/
+        height: calc(53vh - 10.8em - 63/3.75*1vw/2 + 35px/2);
+        border-bottom: 0.15em solid #626262;
+    }
+    .node{
+        margin-bottom: 0.3em;
+    }
+    .column-block h2 {
+        margin-top: 1.2em;
+        margin-bottom: 0.5em;
+    }
+
+}
+
+#pwrecovery{
+  font-size:small;
+}

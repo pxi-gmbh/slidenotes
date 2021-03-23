@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 34 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;">
+    <g transform="matrix(1,0,0,1,-182.859,-151.444)">
+        <g transform="matrix(1,0,0,1,199.748,160.512)">
+            <g transform="matrix(1,0,0,1,-16.889,-9.0685)">
+                <clipPath id="_clip1">
+                    <rect x="0" y="0" width="33.778" height="18.137"/>
+                </clipPath>
+                <g clip-path="url(#_clip1)">
+                    <g id="Gruppe_60" transform="matrix(1,0,0,1,-1656.12,-83.708)">
+                        <g id="Pfad_27" transform="matrix(1,0,0,1,1660,82.969)">
+                            <path d="M15.02,0.781C22.037,1.413 22.594,8.451 22.594,8.451C24.925,7.775 27.439,8.739 28.72,10.8C30.925,14.373 29.854,16.472 27.12,17.8C24.386,19.128 3.931,19.343 -0.732,17.8C-5.395,16.257 -4.563,8.77 -0.256,6.491C4.051,4.212 6.208,6.839 6.208,6.839C6.208,6.839 8,0.148 15.02,0.781Z" style="fill:rgb(144,193,200);fill-rule:nonzero;"/>
+                        </g>
+                        <g id="Pfad_28" transform="matrix(1,0,0,1,-5162.04,-25.889)">
+                            <path d="M6829.44,120.878L6832.17,123.858L6839.39,117.958" style="fill:rgb(144,193,200);fill-rule:nonzero;stroke:white;stroke-width:1.5px;"/>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

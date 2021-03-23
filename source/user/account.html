@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>slidenotes | account</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+
+
+	<link rel='stylesheet' href='assets/css/style.css'>
+	<link rel='stylesheet' href='welcome.css'>
+	<link rel="stylesheet" href="/themes/dialoger.css">
+	<script type="text/javascript" src='/themes/dialoger.js'></script>
+</head>
+<body>
+<div id="login-page">
+		<a href="https://www.slidenotes.io"><img class="center-horizontal" src="slidenotes-icon.png"></a>
+		<div id="error-message">
+		</div>
+		<section class="center-horizontal" >
+		<form id="loginform" method="post" accept-charset="utf-8">
+			<div id="account-expire-wrapper">
+				your account is valid till <span id="account-expire-date"></span>
+			</div>
+
+			<label for="email">email</label>
+			<br>
+			<input id="emailValue" type="email" name="email_address"/>
+			<br>
+			<br>
+			<label for="oldpassword">old password</label>
+			<br>
+			<input id="pwOld" type="password" name="oldpassword"/>
+			<br>
+			<br>
+			<label for="password">password</label>
+			<br>
+			<input id="pwValue" type="password" name="password"/>
+			<br>
+			<br>
+			<label for="retypepassword">retype password</label>
+			<br>
+			<input id="pwRetype" type="password" name="retypepassword"/>
+			<br>
+			<br>
+			<label for="login" style="display: none">update profile</label>
+			<input  type="submit" name="login" id="submit" value="update profile" />
+			<a id="cancelform" href="/">cancel and back to editor</a>
+		</form>
+	</section>
+</div>
+<script type="text/javascript"><!--
+function checkPasswordRetype(){
+	let pwfield = document.getElementById('pwValue');
+	let retypefield = document.getElementById('pwRetype');
+	let issame = (pwfield.value==retypefield.value);
+	retypefield.classList.toggle('not-correct',!issame);
+	return issame;
+}
+function updateUser(e) {
+	if (e.preventDefault) e.preventDefault();
+	let email = document.getElementById("emailValue").value;
+	let pw = document.getElementById("pwValue").value;
+	document.body.className="status--updating";
+	if(pw.length>0 && !checkPasswordRetype()){
+		console.warn('password retype wrong - do something to tell the user?');
+		return false;
+	};
+	let payload = {};
+	if(email!=oldemail)payload.email=email;
+	if(pw.length>0){
+		payload.password=pw;
+		payload.oldpassword = document.getElementById("pwOld").value;
+	}
+	tryUpdate(payload);
+
+	// You must return false to prevent the default form behavior
+	return false;
+}
+async function tryUpdate(payload){
+	let apiurl = '/api/user/';
+	let resp = await patchJson(apiurl,payload);
+	if(resp && !resp.error && resp.status){
+		//console.warn(resp.body.text());
+		//update succesfull - do something visualy for the user
+		dialoger.buildDialog({
+			title:'updated successfully',
+			content:'your changes are saved into db.',
+			type:'alert',
+			okbutton:'go back to editor',
+		},function(){
+			location.href='/';
+		});
+		console.log('updated user succesfully');
+	}else{
+		console.log('could not update user',resp);
+	}
+}
+
+var form = document.getElementById('loginform');
+if (form.attachEvent) {
+	form.attachEvent("submit", updateUser);
+} else {
+	form.addEventListener("submit", updateUser);
+}
+var token;
+var oldemail;
+async function init(){
+	token = document.cookie.substring(document.cookie.indexOf("=")+1);
+	try{
+		let userdata = await getJson('/api/user/');
+		if(userdata && userdata.email){
+			oldemail = userdata.email;
+			document.getElementById("emailValue").value=userdata.email;
+		}
+		if(userdata && userdata.payedTill){
+			document.getElementById("account-expire-date").innerText = new Date(userdata.payedTill).toLocaleDateString(navigator.language);
+			if(userdata.payedTill < Date.now()){
+				let wrapper = document.getElementById('account-expire-wrapper');
+				wrapper.innerText = "your account has been expired";
+				wrapper.classList.add("expired");
+			}
+		}
+	}catch(err){
+		console.warn('init went wrong',err);
+	}
+	document.getElementById("pwValue").addEventListener('keyup',checkPasswordRetype);
+	document.getElementById("pwRetype").addEventListener('keyup',checkPasswordRetype);
+}
+
+
+async function patchJson(url,payload){
+	try{
+		const resp = await fetch(url,{
+			method:'PATCH',
+			headers:{
+				'Content-Type' : 'application/json',
+				'auth-token': token
+			},
+			body:JSON.stringify(payload)
+		});
+		if(resp.status===200)return resp.json();
+		else console.log(resp.body);
+		return {error:true, msg:resp.json()};
+	}catch(err){
+		return {error:true,err:err};
+	}
+}
+async function getJson(url){
+	const resp = await fetch(url,{
+		method:'GET',
+		headers:{
+			'auth-token':token
+		}
+	});
+	return resp.json();
+}
+
+
+init();
+--></script>
+
+
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>slidenotes | one time login</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+
+
+	<link rel='stylesheet' href='assets/css/style.css'>
+	<link rel='stylesheet' href='welcome.css'>
+	<link rel='stylesheet' href='onetimelogin.css'>
+	<link rel="stylesheet" href="/themes/dialoger.css">
+	<script type="text/javascript" src='/themes/dialoger.js'></script>
+</head>
+<body class="pre-login">
+  <!--body can have different stati:
+status-pre-login
+status-no-valid-url
+status-url-too-old
+status-url-used
+status-no-connection
+status-new-user
+status-reset-pw
+status-updating
+-->
+<div id="login-page">
+		<a href="https://www.slidenotes.io"><img class="center-horizontal" src="slidenotes-icon.png"></a>
+		<div id="error-message">
+		</div>
+		<section class="center-horizontal">
+	    <section class="subsection" id="pre-login">
+	      please wait... checking your one-time-link
+	    </section>
+	    <section class="subsection error" id="error-no-valid-url">
+	      <h2>an error occured</h2>
+	      <p>your url is not a valid one-time-link</p>
+	    </section>
+	    <section class="subsection error" id="error-no-connection">
+	      <h2>an error occured</h2>
+	      <p>seems like internet went down on the way. please try again later.</p>
+	    </section>
+	    <section class="subsection error" id="error-url-too-old">
+	      <h2>an error occured</h2>
+	      <p>your one-time-link has expired</p>
+	    </section>
+	    <section class="subsection error" id="error-url-used">
+	      <h2>an error occured</h2>
+	      <p>your one-time-link has already been used</p>
+	    </section>
+	    <section class="subsection" id="newUser">
+	      <h2>welcome to slidenotes.io </h2>
+	      <p>please enter a password for your new slidenotes.io-account <span class="display-email">EMAIL@EMAIL</span></p>
+	    </section>
+	    <section class="subsection" id="resetPassword">
+	      <h2>you can now change the password for your email <span class="display-email">EMAIL@EMAIL</span> </h2>
+	    </section>
+			<section class="subsection" id="pwform">
+	      <!--email is here for purpose of password-manager-->
+			<form id="loginform" method="post" accept-charset="utf-8">
+	      <label for="email">email</label>
+				<input id="emailValue" type="email" name="email_address"/>
+	      <label for="pwValue">password</label>
+				<br>
+				<input id="pwValue" type="password" name="password" pattern=".{8,}" title="minimum 8 characters" required/>
+				<div class="screenreaderonly">
+					minimum 8 characters
+				</div>
+				<br>
+				<br>
+				<label for="pwRetype">retype password</label>
+				<br>
+				<input id="pwRetype" type="password" name="retypepassword" required/>
+				<br>
+				<br>
+				<input type="checkbox" id="toc-privacynotice" name"terms-of-service-privacynotice" required />
+				<label for="toc-privacynotice">you agree to the <a href="https://slidenotes.io/terms-of-service.html" target="_blank" rel="noopener noreferrer">terms of service</a> and <a href="https://slidenotes.io/privacy-notice.html" target="_blank" rel="noopener noreferrer">privacy notice</a> of slidenotes.io</label>
+				<br>
+				<br>
+				<label for="submit" style="display: none">update profile</label>
+				<input  type="submit" name="login" id="submit" value="update profile" />
+			</form>
+		</section>
+	</section>
+</div>
+<script type="text/javascript"><!--
+function checkPasswordRetype(){
+	let pwfield = document.getElementById('pwValue');
+	let retypefield = document.getElementById('pwRetype');
+	let issame = (pwfield.value==retypefield.value);
+	retypefield.classList.toggle('not-correct',!issame);
+	return issame;
+}
+
+function cleanNotCorrect(){
+	this.classList.toggle('not-correct',false);
+}
+function updateUser(e) {
+	if (e.preventDefault) e.preventDefault();
+	//let email = document.getElementById("emailValue").value;
+  let url = location.search.substring(1);
+  let pwfield = document.getElementById('pwValue');
+	let pw = pwfield.value;
+	var bodyclass=document.body.className;
+	document.body.className="status-updating";
+	if(pw.length>0 && !checkPasswordRetype()){
+		console.warn('password retype wrong - do something to tell the user?');
+		document.body.className=bodyclass;
+		return false;
+	};
+  if(pw.length<8){
+		pwfield.classList.toggle('not-correct',true);
+		document.body.className=bodyclass;
+		return false;
+	}
+	let payload = {
+    url:url,
+    password:pw
+  };
+	tryUpdate(payload);
+
+	// You must return false to prevent the default form behavior
+	return false;
+}
+async function tryUpdate(payload){
+	let apiurl = '/api/user/onetimelogin';
+	let resp = await patchJson(apiurl,payload);
+	if(resp && !resp.error && resp.token){
+    token = resp.token;
+		//console.warn(resp.body.text());
+		//update succesfull - do something visualy for the user
+    //put token into cookie:
+    document.cookie = 'authtoken='+token+'; expires=0; path=/; SameSite=Strict';
+		dialoger.buildDialog({
+			title:'updated successfully',
+			content:'your new password is saved into db.',
+			type:'alert',
+			okbutton:'start slidenoteeditor',
+		},function(){
+			location.href='/user/';
+		});
+		console.log('updated user succesfully');
+  }else if(resp && resp.error && resp.errorclass){
+    document.body.className = 'status-'+resp.errorclass;
+	}else{
+    document.body.className = "status-no-connection";
+		console.log('could not update user',resp);
+	}
+}
+
+var form = document.getElementById('loginform');
+if (form.attachEvent) {
+	form.attachEvent("submit", updateUser);
+} else {
+	form.addEventListener("submit", updateUser);
+}
+var token;
+var onetimelink;
+var onetimeurl;
+async function init(){
+  onetimeurl = location.search.substring(1);
+	let pwfield = document.getElementById('pwValue');
+	let retypefield = document.getElementById('pwRetype');
+	pwfield.addEventListener('keyup',checkPasswordRetype);
+	retypefield.addEventListener('keyup',checkPasswordRetype);
+	pwfield.addEventListener('focus',cleanNotCorrect);
+	retypefield.addEventListener('focus',cleanNotCorrect);
+  if(onetimeurl.length<10){
+    //url not valid
+    document.body.className = "status-no-valid-url";
+    return;
+  }
+	try{
+		onetimelink = await getJson('/api/user/onetimelogin/'+onetimeurl);
+		if(onetimelink && onetimelink.error){
+			document.body.className = "status-"+onetimelink.errorclass;
+			return;
+		}else if(!onetimelink){
+      document.body.className = "status-no-connection";
+			return;
+    }
+    if(onetimelink.newUser){
+      document.body.className = "status-new-user";
+    }else{
+      document.body.className = "status-reset-pw";
+    }
+    document.getElementById('emailValue').value=onetimelink.email;
+    let allemails = document.getElementsByClassName('display-email');
+    for (var x=0;x<allemails.length;x++){
+      allemails[x].innerText=onetimelink.email;
+    }
+    document.getElementById("pwValue").addEventListener('keyup',checkPasswordRetype);
+    document.getElementById("pwRetype").addEventListener('keyup',checkPasswordRetype);
+	}catch(err){
+		console.warn('init went wrong',err);
+	}
+}
+
+
+async function patchJson(url,payload){
+	try{
+		const resp = await fetch(url,{
+			method:'PATCH',
+			headers:{
+				'Content-Type' : 'application/json',
+				'auth-token': token
+			},
+			body:JSON.stringify(payload)
+		});
+		if(resp.status===200)return resp.json();
+		else console.log(resp.body);
+		return {error:true, msg:resp.json()};
+	}catch(err){
+		return {error:true,err:err};
+	}
+}
+async function getJson(url){
+	const resp = await fetch(url,{
+		method:'GET',
+		headers:{
+			'auth-token':token
+		}
+	});
+	if(resp.status===200||resp.status===400){
+		return resp.json();
+	}
+}
+
+
+init();
+--></script>
+
+
+</body>
+</html>

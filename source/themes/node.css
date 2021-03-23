@@ -1,0 +1,616 @@
+.ppage .node{
+  font-size: 0.9em;
+}
+
+section.node.griditem {
+  height: 100%;
+  max-height: 90vh;
+  text-align: center;
+}
+
+/* would be amazing if browsers came to their senses and displayed it the same way.
+only enable if miracle happens. */
+/* .node div.node{
+  text-decoration: underline;
+  text-decoration-color: lightcoral;
+  text-decoration-skip-ink: none;
+  text-decoration-thickness: 2.5ex;
+  text-underline-offset: -1.8ex;
+} */
+
+.node .sequence {
+    display: grid;
+    grid-row-gap: 0.05em;
+}
+
+.node .sequence .stroke {
+    grid-row: 1/last;
+    width: 3px;
+    height: 100%;
+    background: black;
+    justify-self: start;
+}
+
+.node .sequence .actor {
+  border: 3px solid;
+  padding: 1ch;
+  background: aliceblue;
+  text-align: center;
+}
+.node .sequence .actor.cloud{
+    border: none;
+    padding: 0;
+    background: none;
+    display: grid;
+    justify-items: center;
+}
+.node .sequence .actor .cloud.node {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    width:12ch;
+}
+.node .sequence .cloud.actor.top {
+    display: grid;
+    align-items: end;
+}
+
+.node .sequence .diamond.actor {
+    transform: rotate(45deg);
+    width: 4ch;
+    height: 4ch;
+    position: relative;
+    justify-self: center;
+}
+
+.node .sequence .actor .diamond.node {
+  transform: rotate(-45deg);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  align-items: center;
+}
+
+.node .sequence .actor .diamond div {
+    transform: none;
+}
+
+
+.node .sequence .actor.circle{
+    border-radius:50%;
+    display:grid;
+    align-items:center;
+}
+.node .sequence .arrow {
+    overflow: hidden;
+    width:100%;
+}
+.node .sequence .arrow .arrowimg{
+  /*background: transparent;
+  background-size: cover;
+  background-position: right;
+  */
+  height:1em;
+  width:100%;
+  position: relative;
+}
+
+.node .sequence .arrow div {
+    text-align: center;
+    min-height:0.5em;
+}
+
+.node .sequence .arrow.toleft .arrowimg {
+    transform: scaleX(-1);
+}
+
+.node .sequence .block.actor{
+  display: grid;
+  align-content: center;
+}
+/*
+old background-images:
+background-image:url("/themes/node/sequencearrowdashed.png");
+background-image:url("/themes/node/sequencearrowopen.png");
+background-image:url("/themes/node/sequencearrownormal.png");
+*/
+
+/*pure css arrows:*/
+.node .arrowimg::after {
+    width: 0.5em;
+    height: 0.5em;
+    content: "";
+    /* border-right: 3px solid;
+    border-top: 3px solid; */
+    position: absolute;
+    right: 0;
+    transform: rotate(45deg);
+    top: -0.19em;
+    background: linear-gradient(to top right, transparent 50%, black 50%);
+}
+
+.node .arrowimg::before {
+    width: 100%;
+    height: 0;
+    border-top: 2px solid;
+    position: absolute;
+    top: 0;
+    content: " ";
+    left: 0;
+}
+.node .broad .arrowimg::before {
+    height: 2px;
+    border-bottom: 0.1em solid black;
+    width: 98%;
+    top: -0.17em;
+}
+.node .arrow.dashed .arrowimg::before,
+.node .arrow.noarrowdashed .arrowimg::before{
+  border-top:2px dashed;
+}
+
+.node .noarrow .arrowimg::after,
+.node .noarrowdashed .arrowimg::after {
+    display:none;
+}
+
+.node .arrow.open .arrowimg::after{
+  background:none;
+}
+.node .sequence .arrow.normal .arrowimg{
+}
+.node .sequence .arrow.noarrow .arrowimg{
+  border-top:3px solid;
+}
+.node .sequence .arrow.noarrowdashed .arrowimg{
+  border-top:3px dashed;
+}
+.node .sequence .note {
+    border: 1px solid;
+    text-align: center;
+    padding: 0.2em;
+    background: aliceblue;
+    width: 100%;
+    font-size: 0.85em;
+}
+
+.node .sequence .note.right {
+    justify-self: start;
+    margin-left:1ch;
+}
+.node .sequence .note.left{
+  justify-self:end;
+  margin-right:1ch;
+}
+
+.node .simpleflow .node,
+.node .flow .node {
+    background: aliceblue;
+    border: 1px solid;
+    border-radius: 50%;
+    width: 10ch;
+    height: 10ch;
+    text-align: center;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    grid-row: 2/2;
+    padding: 0.3em;
+}
+
+.node .simpleflow .arrow {
+    width:100%;
+    height:100%;
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    position: relative;
+    grid-template-columns:100%;
+}
+.node .simpleflow .msg{
+  z-index: 2;
+}
+
+.node .simpleflow .triangle {
+    display: none;
+}
+.node .simpleflow .arrowspace .broad .triangle{
+  display:block;
+}
+
+.node .simpleflow .arrowspace .arrowimg {
+    position: relative;
+    width: 100%;
+    margin-top:0;
+}
+
+
+.node .simpleflow .arrowspace .broad .arrowimg{
+  background-size: cover;
+  background-position: right;
+  position: absolute;
+  width:100%;
+  height:100%;
+  z-index: 1;
+  display:grid;
+  grid-template-columns:5fr 3fr;
+  margin-top:0;
+  margin-right:4ch;
+}
+.node .simpleflow .arrowspace .arrow.toleft .arrowimg {
+    margin-right: -2ch;
+}
+/*
+background: url('node/simpleflowhorizontal.png');
+old background-urls:
+background-image:url('node/simpleflowhorizontalmulti.png');
+*/
+.simpleflow .arrowspace .broad .arrowimg::before,
+.node .simpleflow .arrowspace .broad .arrowimg::after {
+    display:none;
+}
+  /*
+.simpleflow .arrowspace .arrowimg::before{
+    height: 60%;
+    background: lightblue;
+    top: 20%;
+    left: 0;
+    border: none;
+    width: 75%;
+}
+.node .simpleflow .arrowspace .arrowimg::after {
+    height: 4.5em;
+    width: 4.5em;
+    right: 0;
+    top: 10%;
+    background: linear-gradient(to top right, transparent 50%, lightblue 50%);
+    border: none;
+}
+*/
+
+.node .simpleflow .arrowspace .broad .triangle {
+    width: 100%;
+    background: linear-gradient(to top right, transparent 50%, lightblue 50%);
+    transform: rotate(45deg);
+    grid-column: 2;
+    align-self: center;
+}
+
+.node .simpleflow .arrowspace .broad .triangle::after {
+    padding-bottom: 100%;
+    content: " ";
+    display: block;
+}
+.node .simpleflow .arrowspace .broad .triangle::before {
+  content: "";
+  width: 180%;
+  padding-top: 100%;
+  position: absolute;
+  background: lightblue;
+  bottom: -50%;
+  transform: rotate(-45deg);
+  left: -89%;
+}
+
+.node .simpleflow .multi .triangle {
+    display: none;
+}
+
+.node .simpleflow .arrow.multi .arrowimg{
+  height:100%;
+  width:100%;
+  position: absolute;
+}
+.node .simpleflow .multi {
+    height: 3em;
+    align-content: unset;
+}
+.node .simpleflow .multi .msg{
+  align-self: end;
+}
+
+.node .multi .arrowimg::before {
+    border-left: 2px solid;
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+    border-top: none;
+    height: 100%;
+    content:"";
+}
+
+.node .multi.arrow.dashed .arrowimg::before,
+.node .multi.arrow.noarrowdashed .arrowimg::before {
+    border-left: 2px dashed;
+    border-bottom: 2px dashed;
+    border-right: 2px dashed;
+    border-top: none;
+}
+
+.node .multi.noarrow .arrowimg::after,
+.node .multi.noarrowdashed .arrowimg::after {
+    display: none;
+}
+
+.node .multi .arrowimg::after {
+    top: 0;
+    right: -0.45em;
+    transform: rotate(-45deg);
+}
+
+.node .simpleflow .arrow.multi.toleft .arrowimg{
+  transform:scaleX(-1);
+}
+
+.node .simpleflow .arrow.toleft .arrowimg{
+  transform:scaleX(-1);
+}
+.node .simpleflow .arrowspace{
+  grid-row:2/2;
+  display: grid;
+  grid-template-rows: repeat(auto-fit,minmax(1em,1fr));
+  width:100%;
+  height:100%;
+}
+.node .simpleflow {
+    display: grid;
+    grid-template-rows: 10ch;
+    grid-template-columns: repeat(3,1fr 1fr 1fr 1fr);
+}
+.node .simpleflow .node.diamond {
+    transform: rotate(45deg);
+    border-radius: unset;
+}
+
+.node.diamond div {
+    transform: rotate(-45deg);
+}
+
+.node .node.circle {
+    border-radius: 50%;
+}
+.node .node.cloud {
+  border-radius: 99em;
+  background-color: aliceblue;
+  text-align: center;
+  position: relative;
+  height: 4em;
+  width: 8em;
+  border:0.07em solid #010101;
+  font-size: 0.6em;
+  transform: scale(1.5);
+  align-self: center;
+}
+
+.node .node.cloud::before {
+  border-top: 0.15em solid #010101;
+  border-radius: 50%;
+  background-color: aliceblue;
+  position: absolute;
+  content: "";
+  left: 5%;
+  z-index: 3;
+  width: 64%;
+  height: 100%;
+  transform: rotate(-15deg);
+  top: -32%;
+}
+
+.node .node.cloud::after {
+  border-top: 0.15em solid #010101;
+  border-radius: 50%;
+  position: absolute;
+  background-color: aliceblue;
+  height: 50%;
+  width: 30%;
+  position: absolute;
+  content: "";
+  z-index: 2;
+  transform:rotate(25deg);
+  top: -16%;
+  left: 59%;
+}
+
+.node .node.cloud div {
+    z-index: 4;
+}
+.node .node.block{
+  border-radius:unset;
+}
+
+.node .tree{
+  display:grid;
+  justify-items: center;
+  align-items: center;
+}
+
+.node .tree .node {
+    width: 100%;
+    text-align: center;
+    display: grid;
+    justify-items:center;
+}
+
+.node .tree .arrowspace{
+  display: grid;
+  grid-template-columns: auto;
+  grid-auto-flow: column;
+  grid-gap: 3em;
+}
+
+.node .tree .arrowspace .arrowimg {
+    position: relative;
+    width: 100%;
+    height: 3em;
+    z-index: 1;
+}
+
+.node .tree .arrowspace .arrowimg::after {
+    right: auto;
+    transform: rotate(135deg);
+    height: 4em;
+    width: 4em;
+    opacity: 0.3;
+    top: -2em;
+}
+
+.node .tree .arrowspace .arrowimg::before {
+    display: none;
+}
+.node .tree .arrowspace .up .arrowimg::after{
+  transform: rotate(-45deg);
+  top: 1em;
+}
+
+.node .tree .arrowspace div {
+    z-index: 2;
+}
+
+.node .tree .arrowspace .down,
+.node .tree .arrowspace .up {
+  display: grid;
+  grid-template-areas:"arrow";
+  justify-items: center;
+  text-align: center;
+}
+
+.node .tree .down > div{
+  grid-area:arrow;
+  align-self: start;
+}
+.node .tree .up > div {
+  grid-area: arrow;
+  align-self: end;
+}
+
+
+.node .tree .content {
+    border: 3px solid;
+    border-radius: 9px;
+    width: 90%;
+    justify-self: center;
+}
+/*flow:*/
+.node .flow{
+  display:grid;
+  height:100%;
+  width:100%;
+}
+
+.node .flow .node{
+  height:4em;
+  width:10ch;
+  z-index: 10;
+}
+
+.node .flow .arrow{
+  width:100%;
+  height:100%;
+  position: relative;
+  display: grid;
+  z-index: 1;
+}
+.node .flow .arrow.right{
+  border-bottom:1px solid;
+}
+.node .flow .arrow.left{
+  border-top:1px solid;
+  margin-top:1ch;
+}
+.node .flow .arrow.rightdown,
+.node .flow .arrow.rightdownmulti{
+  border-top:1px solid;
+  border-right:1px solid;
+}
+.node .flow .arrow.downleft{
+  border-right:1px solid;
+  border-bottom:1px solid;
+  margin-top:-10px;
+  /*height:90%; does not work as intended*/
+}
+.node .flow .arrow.downleftmulti{
+  border-right:1px solid;
+  border-bottom:1px solid;
+  border-radius: 0 10px 10px 0;
+}
+.node .flow .arrow.downmulti{
+  border-top:1px solid;
+  border-right:1px solid;
+  border-bottom:1px solid;
+  border-radius: 0 10px 10px 0;
+  display: grid;
+  align-items: center;
+  margin-top:-30px;
+  margin-left:-20px;
+}
+.node .flow .arrow.down{
+  border-right:1px solid;
+}
+.node .flow .arrow.up{
+  border-left:1px solid;
+  margin-left:1.6ch;
+}
+.node .flow .arrow.rightup{
+  border-right:1px solid;
+  border-bottom:1px solid;
+}
+.node .flow .arrow::after {
+    width: 1ch;
+    height: 1ch;
+    content: "";
+    border-right: 3px solid;
+    border-top: 3px solid;
+    position: absolute;
+    background: linear-gradient(to top right, transparent 50%, black 50%);
+}
+.node .flow .arrow.right::after {
+  right: 3px;
+  bottom: -0.7ch;
+  transform: rotate(45deg);
+}
+.node .flow .arrow.downleftmulti::after,
+.node .flow .arrow.downmulti::after,
+.node .flow .arrow.downleft::after{
+  left: 0.3ch;
+  bottom:-0.6ch;
+  transform:rotate(-135deg);
+}
+.node .flow .arrow.left::after {
+  left: 0.3ch;
+  top:-0.6ch;
+  transform:rotate(-135deg);
+}
+.node .flow .arrow.rightdown::after,
+.node .flow .arrow.rightdownmulti::after,
+.node .flow .arrow.down::after {
+  right:-0.6ch;
+  bottom:0.3ch;
+  transform:rotate(135deg);
+}
+.node .flow .arrow.rightup::after{
+  right:-0.7ch;
+  top:0.3ch;
+  transform:rotate(-45deg);
+}
+.node .flow .arrow.up::after {
+  left:-0.7ch;
+  top:0.3ch;
+  transform:rotate(-45deg);
+}
+.node .flow .arrow .msg {
+    width: 100%;
+    align-self: end;
+    text-align: center;
+}
+
+.node .flow .arrow.left .msg {
+    align-self: start;
+}
+
+.node .flow .arrow.rightup .msg {
+    margin-bottom: -1.5em;
+}
+
+.node .flow .arrow.down .msg,
+.node .flow .arrow.up .msg {
+    align-self: center;
+}

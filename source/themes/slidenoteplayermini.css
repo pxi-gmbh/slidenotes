@@ -1,0 +1,24 @@
+
+.controlarea{
+  position:fixed;
+  width:100%;
+  left:0;
+  bottom:0;
+  background:black;
+}
+.controlbutton{
+  background:black;
+  border: 1px solid;
+  color:rgb(50,50,50);
+  padding: 5px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+.controlbutton:hover{
+  background:rgb(50,50,50);
+}
+.controlarea:hover .controlbutton{
+  color:white;
+}

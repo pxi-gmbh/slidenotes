@@ -1,0 +1,610 @@
+/*basis-theme "dark"*/
+/*jegliche css-deklaration muss mit klasse .dark starten */
+
+/* hintergrund wird pro ppage festgelegt, nicht nur einmal fürs theme. sollte in zukunft geändert werden, aber momentan ists noch so.
+ppage ist der jeweilige presentation-slide.
+generelle sachen, wie bspw. schriftfarben, schriften etc. in die hauptdeklaration, abweichungen dann in den weiteren.
+ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt es einfach und semantisch, dann sollte nicht viel schief gehen.*/
+
+
+
+:root{
+  --darkBckgColor: #030303;
+  --darkTextColor: #f4f4f4;
+
+  --darkDataColor0: #E7DB74;
+  --darkDataColor1: #A87DF5;
+  --darkDataColor2: #67D8EF;
+  --darkDataColor3: #F92472;
+  --darkDataColor4: #68CA28;
+  --darkDataColor5: #aeaec8;
+  --darkDataColor6: #dd8e49;
+
+  --darkNodeBorderColor: #ffffff;
+  --darkNodeBckgColor: #353923;
+}
+
+@font-face{
+  font-family: "Staatliches";
+  src: url("/fonts/themes/dark/Staatliches-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face{
+  font-family: "Ubuntu-Light";
+  src: url("/fonts/themes/dark/Ubuntu-Light.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face{
+  font-family: "Ubuntu-Medium";
+  src: url("/fonts/themes/dark/Ubuntu-Medium.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face{
+  font-family: "Ubuntu-LightItalic";
+  src: url("/fonts/themes/dark/Ubuntu-LightItalic.ttf");
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face{
+  font-family: "Ubuntu-MediumItalic";
+  src: url("/fonts/themes/dark/Ubuntu-MediumItalic.ttf");
+  font-weight: bold;
+  font-style: italic;
+}
+@font-face{
+  font-family: "UbuntuMonoReg";
+  src: url("/fonts/UbuntuMono-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+.dark,
+.dark .ppage {
+	background: var(--darkBckgColor);
+	color: var(--darkTextColor);
+  font-weight: normal;
+  font-family: "Ubuntu-Light", Sans-Serif;
+  font-size: 1.1em;
+}
+
+.dark .ppage .progressbar{
+  background: var(--darkTextColor);
+  height: 0.2em;
+  border-radius: 0;
+}
+
+
+
+/*code affects both: inlinecode and codeblock*/
+.dark code {
+  font-family: "UbuntuMonoReg", Monospace;
+  font-size: 0.9em;
+}
+/*inline*/
+.dark p code, .dark h1 code, .dark h2 code, .dark h3 code{
+  padding: 0.12em 0.2em 0.12em 0.2em;
+  color: white;
+  background-color: #484848;
+  text-shadow: none;
+}
+
+
+
+/*codeblock affects only codeblocks*/
+.dark code.codeblock{
+
+}
+
+
+
+
+.dark h1,
+.dark h2,
+.dark h3{
+  font-family: "Staatliches", Sans-Serif;
+  font-weight: normal;
+  line-height: 1em;
+
+  text-shadow: 0.05em 0.03em var(--darkBckgColor);
+}
+
+.dark h1{
+  font-size: 4.5em;
+  margin-top: 20vh;
+}
+.dark h1.griditem,
+.dark .griditem h1{
+  max-width: 90vw;
+  margin-bottom: calc((var(--h1scale) - 1)*2em);
+  margin-top: calc((var(--h1scale) - 1)*2em + 25vh);
+  transform: scale(var(--h1scale));
+  font-size: calc(1/var(--h1scale)*4em);
+}
+
+
+.dark h2,
+.dark h3{
+	margin-bottom: 0.7em;
+  margin-top: 0.5em;
+}
+
+.dark h2{
+	font-size: 2.5em;
+}
+.dark h2 img{
+  height: 1.3em;
+}
+
+.dark h3{
+ margin-bottom: 0.2em;
+ font-size: 2em;
+}
+.dark h3 img{
+  height:1.8em;
+}
+
+.dark .pblock h1+p{
+  font-size: 1.3em;
+}
+
+.dark .pblock h1+p,
+.dark .pblock h2+p,
+.dark .pblock h3+p {
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+.dark .inline .pblock h1+p,
+.dark .inline .pblock h2+p,
+.dark .inline .pblock h3+p,
+.dark .section .pblock h1+p,
+.dark .section .pblock h2+p,
+.dark .section .pblock h3+p{
+  text-align: left;
+  margin-top: 1em;
+}
+
+.dark .pblock h2+p,
+.dark .pblock h3+p {
+
+}
+
+.dark p{
+  line-height: 1.3em;
+}
+.dark p>span{
+  background-color: var(--darkBckgColor);
+  padding: 0 0.1em;
+}
+.dark p br{
+  margin-bottom: 0.5em;
+}
+
+.dark .pblock h1+p img,
+.dark .pblock h2+p img,
+.dark .pblock h3+p img{
+
+}
+
+/*
+should be declared in blocks.css as general rule,
+only overwrite whats really necesary
+standard declaration is: max-height: 1em;
+*/
+.dark p img,
+.dark ul img,
+.dark ol img{
+}
+/*the floating ones inside a p-blocks
+standard is:
+max-height: 6em;
+float:left/right;
+margin:1ch;
+*/
+.dark p img.floatingleftimage{
+}
+.dark p img.floatingrightimage{
+}
+
+
+.dark a{
+  text-decoration: underline;
+  font-family: "Ubuntu-LightItalic", Sans-Serif;
+  color: var(--darkTextColor);
+}
+
+.dark .imageblock{
+  font-size: 0.8em;
+}
+
+.dark b{
+  font-family: "Ubuntu-Medium", Sans-Serif;
+}
+
+.dark i{
+  font-family: "Ubuntu-LightItalic", Sans-Serif;
+  font-size: 0.95em;
+}
+
+.dark b i{
+  font-family: "Ubuntu-MediumItalic", Sans-Serif
+}
+
+.dark strike{
+
+}
+
+.dark ul,
+.dark ol{
+  padding: 0 0.9em;
+  line-height: 1.3em;
+
+}
+
+.dark ul{
+
+}
+
+.dark ol{
+
+}
+
+.dark li+li{
+  margin: 0.3em 0;
+}
+
+.dark li{
+  background-color: var(--darkBckgColor);
+  padding: 0 0.1em;
+}
+
+.dark code.codeblock li{
+  overflow: hidden;
+  background-color: transparent;
+}
+.dark .codeblock.none{
+  background-color: rgb(35, 36, 31);
+}
+
+
+
+/*sub-lists (unterpunkte/verschachtelung der listen)*/
+
+.dark ul ul,
+.dark ol ul{
+
+}
+
+.dark ol ul,
+.dark ol ol{
+
+}
+
+.dark mark{
+  background-color: #f7f7f7;
+  text-shadow: none;
+}
+
+.dark quote{
+  text-align: center;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-thickness: 0.02em;
+  text-underline-offset: 0.3em;
+  line-height: 1.5em;
+  font-family: "Ubuntu-LightItalic", Sans-Serif;
+}
+
+.dark p code{
+
+}
+.dark code.codeblock{
+
+}
+
+/* charts:*/
+
+/* alle charts sind in einer section mit klasse chart*/
+.dark section.chart{
+  font-size: 0.7em;
+  background: var(--darkBckgColor);
+  /*Portrait to 4:3*/
+  /*max-height: calc(85.2vw/1.618); /*100vw - (padding-left + padding-right) = 85.2vw; golden ratio = 1.618*/
+}
+
+/*pie-charts:*/
+.dark section.chart-pie{
+	font-family: "Ubuntu-Medium";
+}
+
+/*bar-charts*/
+.dark section.chart-bar{
+
+}
+
+/*line-charts*/
+.dark section.chart-line{
+  padding: 0 0 0 0.7em;
+
+}
+
+
+/*alle labels einer chart - wenn nur für bestimmte charts gewollt, muster von oben erweitern, also bspw. .dark .chart-bar .ct-label. hier die größen der schrift und farben für die labels generell anpassen */
+.dark .ct-label{
+  color: var(--darkTextColor);
+  fill: var(--darkTextColor);
+}
+.dark .ct-label.ct-vertical.ct-start{
+  border-bottom: 0.15em solid var(--darkTextColor);
+}
+.dark .ct-label.ct-horizontal.ct-end{
+  border-right: 0.1em dashed var(--darkTextColor)
+}
+.dark .ct-chart-pie .ct-label,
+.dark .ct-chart-donut .ct-label{
+  fill: rgba(0, 0, 0, 1);
+  text-shadow: 0 0 3px white;
+}
+
+.dark .ct-grid{
+	stroke: var(--darkTextColor);
+}
+
+/*x-achsen-label*/
+.dark .chart-x-axis-label{
+
+}
+
+/*y-achsen-label*/
+.dark .chart-y-axis-label{
+
+}
+
+/*dataset-label, was oben drüber steht und bspw. jahreszahl beinhaltet:*/
+.dark .chart-datasetlabel{
+  border: none;
+  padding: 0;
+  margin-left: 1em;
+}
+
+/*die box davon:*/
+.dark .chart-datasetlabel-box{
+
+}
+
+.dark .chart-datasetlabel-box.chart-datasetlabel-box-0{
+	background: var(--darkDataColor0);
+}
+.dark .chart-datasetlabel-box.chart-datasetlabel-box-1{
+	background: var(--darkDataColor1);
+}
+.dark .chart-datasetlabel-box.chart-datasetlabel-box-2{
+	background: var(--darkDataColor2);
+}
+.dark .chart-datasetlabel-box.chart-datasetlabel-box-3{
+	background: var(--darkDataColor3);
+}
+.dark .chart-datasetlabel-box.chart-datasetlabel-box-4{
+	background: var(--darkDataColor4);
+}
+.dark .chart-datasetlabel-box.chart-datasetlabel-box-5{
+	background: var(--darkDataColor5);
+}
+.dark .chart-datasetlabel-box.chart-datasetlabel-box-6{
+	background: var(--darkDataColor6);
+}
+/*datasetlabel und ihre boxen können auch einzeln angesprochen werden und sind von 0 an durchnummeriert. erstes datasetlabel heißt .chart-datasetlabel-0 */
+
+
+/*farben: ich fasse die zusammen um einheitlichkeit herzustellen. jeder block umfasst immer äußere und innere farbe. das schema kann weiter erweitert werden, aber ich belasse es erstmal bei 5 farben. nicht deklarierte farben nimmt er die standard-farben die er schon hat. die ersten 5 farben sollten auf die präsentation zugeschnitten sein. jede farbe ist als "ct-series-a" bis "ct-series-z" paar.*/
+
+.dark .ct-series-a .ct-point, .dark .ct-series-a .ct-line, .dark .ct-series-a .ct-bar, .dark .ct-series-a .ct-slice-donut {
+  stroke: var(--darkDataColor0);
+}
+
+.dark .ct-series-a .ct-slice-pie, .dark .ct-series-a .ct-slice-donut-solid, .dark .ct-series-a .ct-area {
+  fill: var(--darkDataColor0);
+}
+
+.dark .ct-series-b .ct-point, .dark .ct-series-b .ct-line, .dark .ct-series-b .ct-bar, .dark .ct-series-b .ct-slice-donut {
+  stroke: var(--darkDataColor1);
+}
+
+.dark .ct-series-b .ct-slice-pie, .dark .ct-series-b .ct-slice-donut-solid, .dark .ct-series-b .ct-area {
+  fill: var(--darkDataColor1);
+}
+
+.dark .ct-series-c .ct-point, .dark .ct-series-c .ct-line, .dark .ct-series-c .ct-bar, .dark .ct-series-c .ct-slice-donut {
+  stroke: var(--darkDataColor2);
+}
+
+.dark .ct-series-c .ct-slice-pie, .dark .ct-series-c .ct-slice-donut-solid, .dark .ct-series-c .ct-area {
+  fill: var(--darkDataColor2);
+}
+
+.dark .ct-series-d .ct-point, .dark .ct-series-d .ct-line, .dark .ct-series-d .ct-bar, .dark .ct-series-d .ct-slice-donut {
+  stroke: var(--darkDataColor3);
+}
+
+.dark .ct-series-d .ct-slice-pie, .dark .ct-series-d .ct-slice-donut-solid, .dark .ct-series-d .ct-area {
+  fill: var(--darkDataColor3);
+}
+
+.dark .ct-series-e .ct-point, .dark .ct-series-e .ct-line, .dark .ct-series-e .ct-bar, .dark .ct-series-e .ct-slice-donut {
+  stroke: var(--darkDataColor4);
+}
+
+.dark .ct-series-e .ct-slice-pie, .dark .ct-series-e .ct-slice-donut-solid, .dark .ct-series-e .ct-area {
+  fill: var(--darkDataColor4);
+}
+
+.dark .ct-series-f .ct-point, .dark .ct-series-f .ct-line, .dark .ct-series-f .ct-bar, .dark .ct-series-f .ct-slice-donut {
+  stroke: var(--darkDataColor5);
+}
+
+.dark .ct-series-f .ct-slice-pie, .dark .ct-series-f .ct-slice-donut-solid, .dark .ct-series-f .ct-area {
+  fill: var(--darkDataColor5);
+}
+
+.dark .ct-series-g .ct-point, .dark .ct-series-g .ct-line, .dark .ct-series-g .ct-bar, .dark .ct-series-g .ct-slice-donut {
+  stroke: var(--darkDataColor6);
+}
+
+.dark .ct-series-g .ct-slice-pie, .dark .ct-series-g .ct-slice-donut-solid, .dark .ct-series-g .ct-area {
+  fill: var(--darkDataColor6);
+}
+
+
+/*ende von charts*/
+
+/*tables stehen in einer klassenlosen section. wenn du also .dark section bearbeitest hat das auch effekt auf deren container. ansonsten steuer tabellen direkt an über*/
+
+.dark table{
+
+}
+
+.dark th,
+.dark td{
+
+}
+
+.dark thead{
+  font-family: "Ubuntu-Medium";
+}
+
+.dark table,
+.dark th,
+.dark td{
+  border: 0.02em solid #030303;
+  padding: 0 0.5em;
+  background-color: var(--darkBckgColor);
+}
+
+.dark thead{
+
+}
+
+.dark tbody{
+
+}
+
+.dark tr{
+
+}
+
+.dark td{
+
+}
+
+/* latex - elemente sind in einer section mit klasse klatex*/
+.dark section.klatex{
+
+}
+
+/* layout-elemente sind sections mit section-klasse. sie beinhalten weitere elemente*/
+
+.dark section.section{
+
+}
+
+/*layout-element auf linker seite, nimmt ca. ein drittel der linken seite ein*/
+.dark section.section.left{
+
+}
+
+/*layout-element auf rechter seite, nimmt die hälfte des platzes ein, wenn nicht zwei weitere layout-sections "in reihe" stehen, dann nimmt er ein drittel*/
+.dark section.section.right{
+
+}
+
+/*node-sequenzen*/
+/* node */
+.dark .node .msg{
+  background-color: var(--darkNodeBckgColor);
+  color: var(--darkTextColor);
+}
+.dark .node .arrow.dashed .arrowimg::before, .node .arrow.noarrowdashed .arrowimg::before {
+  border-top: 0.1em dashed var(--darkTextColor);
+}
+.dark .node .simpleflow .node,
+.dark .node .flow .node{
+  background: var(--darkBckgColor);
+  border: 0.2em solid var(--darkNodeBorderColor);
+}
+.dark .ppage .node .tree .content{
+  border: 0.07em solid var(--darkNodeBorderColor);
+  border-radius: 0.1em;
+}
+.dark .ppage .node .arrowspace .arrowimg+div{
+  background-color: var(--darkBckgColor);
+}
+.dark .node .tree .arrowimg::after{
+  background: linear-gradient(to top right, transparent 50%, var(--darkBckgColor) 50%);
+  border-top: 0.15em solid var(--darkTextColor);
+  border-right: 0.15em solid var(--darkTextColor);
+  opacity: 1;
+  margin-top: 0.1em;
+}
+.dark .node .arrow .arrowimg::after{
+  background: linear-gradient(to top right, transparent 50%, var(--darkTextColor) 50%);
+}
+.dark .simpleflow .arrow.broad .msg{
+  color: var(--darkBckgColor);
+}
+.dark .node .simpleflow .arrowspace .broad .triangle::before{
+  background-color: var(--darkTextColor);
+}
+.dark .node .simpleflow .arrowspace .broad .triangle{
+  background: linear-gradient(to top right, transparent 50%, var(--darkTextColor) 50%);
+}
+.dark .node .node.cloud{
+  background-color: var(--darkBckgColor);
+  border: 0.2em solid var(--darkNodeBorderColor);
+}
+.dark .node .node.cloud::before{
+  background-color: var(--darkBckgColor);
+  border-top: 0.2em solid var(--darkNodeBorderColor);
+}
+.dark .node .node.cloud::after{
+  background-color: var(--darkBckgColor);
+  border-top: 0.2em solid var(--darkNodeBorderColor);
+}
+.dark .node .sequence .actor{
+  border: 0.2em solid var(--darkNodeBorderColor);
+  background: var(--darkBckgColor);
+}
+.dark .node .sequence .stroke{
+  width: 0.05em;
+  background: var(--darkTextColor);
+}
+.dark .node .broad .arrowimg::before{
+  border-bottom: 0.1em solid var(--darkTextColor);
+}
+.dark .node .sequence .arrow .arrowimg::after{
+  top: -0.32em;
+}
+.dark .node .arrowimg::after{
+  width: 0.7em;
+  height: 0.7em;
+  top: -0.3em;
+}
+.dark .node .sequence .node.cloud{
+  height: 3.2em;
+}
+.dark .node .sequence .cloud.actor{
+  background: none;
+  border: none;
+}
+.dark .node .sequence .note{
+  border: 0.06em solid var(--darkNodeBorderColor);
+  background: var(--darkBckgColor);
+}
+.dark .node .sequence .diamond.actor{
+  width: 3em;
+  height: 3em;
+  padding: 0.5em;
+}

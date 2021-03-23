@@ -1,0 +1,8 @@
+[{"title":"welcome to slidenotes","filename":"welcome.md","url":"welcome"},
+{"title":"cloud, export & presentation","filename":"export.md","url":"export"},
+{"title":"image tutorial","filename":"image.md","url":"image"}, 
+{"title":"chart tutorial","filename":"chart.md","url":"chart"},
+{"title": "layout tutorial", "filename": "layout.md", "url":"layout"}, 
+{"title":"code tutorial","filename":"code.md","url":"code"},
+{"title": "node tutorial", "filename": "node.md", "url":"node"}
+]

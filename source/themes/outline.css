@@ -1,0 +1,53 @@
+#outlineblock {
+    display: grid;
+	font-size: 0.63em;
+    grid-area: outline;
+    /*grid-template-areas: "symbol title" "symbol count" "symbol speaking";*/
+    grid-template-rows: repeat(2, 1fr);
+    text-transform: lowercase;
+    justify-items: start;
+    text-align: left;
+}
+
+#outlineblock img {
+    grid-area: symbol;
+}
+
+div#outlineMenu {
+    grid-row-start: 2;
+    grid-row-end: 3;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    z-index: 100;
+    background: white;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    border: 1px solid gray;
+    padding: 3px;
+    border-radius: 4px;
+}
+
+#outlineMenu button {
+    display: block;
+}
+
+button.outlineMenu-slide {
+    width: 100%;
+    text-align: left;
+    margin-left: -8px;
+	margin-top: 2em;
+}
+
+button.outlineMenu-title {
+    text-align: right;
+    margin-left: 30%;
+}
+
+.outlineMenu-text {
+    text-align: right;
+    margin-left: 35%;
+}
+
+#outlineblock.withoutSpeakTime #outlineSpeakTime{
+  display:none;
+}

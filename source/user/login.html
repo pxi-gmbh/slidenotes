@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>slidenotes | login</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+
+
+	<link rel='stylesheet' href='assets/css/style.css'>
+	<link rel='stylesheet' href='welcome.css'>
+	<link rel='stylesheet' href='/themes/dialoger.css'>
+	<script type="text/javascript" src="/themes/dialoger.js"></script>
+</head>
+<body class="status-pre-load">
+<div id="login-page">
+		<a href="https://www.slidenotes.io"><img class="center-horizontal" src="slidenotes-icon.png"></a>
+		<div id="error-message">
+			<h2>login failed</h2>
+			<p>username or password wrong. please check and try again</p>
+		</div>
+		<section class="center-horizontal" >
+		<form id="loginform" method="post" accept-charset="utf-8">
+
+			<label for="emailValue">email</label>
+			<br>
+			<input id="emailValue" type="email" name="email_address" required/>
+			<br>
+			<br>
+			<label for="pwValue">password</label>
+			<br>
+			<input id="pwValue" type="password" name="password" required/>
+			<br>
+			<br>
+			<label for="submit" style="display: none">login</label>
+			<input class="center-horizontal" type="submit" name="login" id="submit" value="login" />
+			<br>
+			<br>
+			<br>
+			<input class="center-horizontal" type="button" name="pwrecovery" id="pwrecovery" value="forgot your password?" onclick="recoverPw();"/>
+		</form>
+		<div id="circle-loading-animation"></div>
+	</section>
+</div>
+<div id="welcome-page">
+  <div id="main">
+    <h1 class="title" id="page-title">welcome!</h1>
+
+    <div class="node"><p>what do you want to do?</p></div>
+
+		<a href="/user/" onclick='document.cookie = "authtoken=; expires=0; path=/";' id="logout-welcome-page">
+			<img src="../images/buttons/arrow-back_login.svg" alt="arrow back">
+			logout
+		</a>
+
+    <div class="column-wrapper">
+       <div class="column-block">
+        <h2>work on a slidenote</h2>
+        <div class="content">
+            <div class="view-header">
+              <a href="#" title="start a new slidenote" class="newslidenote" onclick="createNewSlidenote()"><img src="/images/buttons/plus-greywhite.svg">start a new slidenote</a>
+              <a href="/?tutorial=welcome" title="try a tutorial" class="newslidenote"><img src="/images/buttons/arrow-to.svg"> try a tutorial</a>
+            </div>
+            <div class="view-content">
+                <ul id="slidenotelist-target">
+                    <li>
+                        <a href="/?id=$NID" class="slidenotelist-link">$SLIDENOTETITLE</a>
+                    </li>
+                </ul>
+            </div>
+        	</div>
+    		</div>
+				<div class="column-block">
+					<h2>view a published presentation</h2>
+
+				<div class="content">
+					<ul id="presentationlist-target">
+						<li class="presentationlist-entry">
+							<div class="views-row">
+  <div class="views field views-field-title"><a href="/presentation.htm?$PRESENTATIONURL" target="_blank">$PRESENTATIONTITLE</a></div>
+  <div class="views-field views-field-created">    <span class="views-label views-label-created">creation date: </span>    <span class="field-content">$PRESENTATIONCREATIONDATE</span>  </div>
+  <div class="views-field views-field-field-slidenotenode">    <span class="views-label views-label-field-slidenotenode">from slidenote: </span>    <span class="field-content"><a href="/?id=$PRESENTATIONNID">$PRESENTATIONNOTETITLE</a></span>  </div>
+  <div class="views-field views-field-comment-count">        <span class="field-content">$PRESENTATIONCOMMENTCOUNT Comments</span>  </div>
+  <div class="views-field views-field-last-comment-timestamp">    <span class="views-label views-label-last-comment-timestamp">last comment time: </span>    <span class="field-content">$PRESENTATIONLASTUPDATED</span>  </div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+  </div>
+</div>
+<script type="text/javascript"><!--
+var token;
+function tokenIsStillValid(cookietoken){
+	let tokenobj = JSON.parse(atob(cookietoken.split('.')[1]));
+	let timeinseconds = Math.floor(Date.now()/1000);
+	if(tokenobj.ttl && timeinseconds-tokenobj.iat<tokenobj.ttl){
+		console.log('token valid for', tokenobj.ttl-(timeinseconds-tokenobj.iat));
+		return true;
+	}
+	console.log('token invalid:',timeinseconds-tokenobj.iat,tokenobj.ttl);
+	//if(timeinseconds-tokenobj.iat<tokenValidTime)return true;
+	return false;
+}
+function init(){
+	let cookie = document.cookie.substring(document.cookie.indexOf('authtoken=')+'authtoken='.length);
+	if(cookie.length>5 && tokenIsStillValid(cookie)){
+		token=cookie;
+		loginSuccessfull();
+	}else{
+		document.body.className="";
+	}
+}
+function preLogin(e) {
+	if (e.preventDefault) e.preventDefault();
+
+	if(document.body.className=="status--logging-in")return false; //we are logging in, so dont do it again
+	let email = document.getElementById("emailValue").value;
+	let pw = document.getElementById("pwValue").value;
+	document.body.className="status--logging-in";
+	login(email,pw);
+
+	// You must return false to prevent the default form behavior
+	return false;
+}
+
+var form = document.getElementById('loginform');
+if (form.attachEvent) {
+	form.attachEvent("submit", preLogin);
+} else {
+	form.addEventListener("submit", preLogin);
+}
+async function login(preemail, prepw){
+	let email = preemail || prompt('email please');
+	let pw = prepw || prompt('password please');
+	console.log(email,pw.length);
+	try{
+		let resp = await postJson('/api/user/login',{email:email,password:pw});
+		console.log('login:',resp);
+		if(resp.ok===false || resp.error===true){
+			setTimeout('loginFailed()',300);
+			return;
+		}
+		token=resp;
+		setTimeout('document.cookie = "authtoken="+token+"; expires=0; path=/"; SameSite="Strict"',200);
+		setTimeout('loginSuccessfull()',300);
+	}catch(err){
+		console.log('login-failed',err);
+	}
+}
+
+async function loginFailed(){
+	document.body.className = "status--login-failed";
+}
+
+var slidenotelist;
+var presentationlist;
+
+async function loginSuccessfull(){
+	if(location.search.indexOf('req')>-1){
+		let nid = location.search.substring(location.search.indexOf('=')+1);
+		location.href="/?nid="+nid;
+		return;
+	}
+	try{
+		slidenotelist = await getJson('/api/notes/');
+		presentationlist = await getJson('/api/presentation/user');
+	}catch(err){
+		if(err=="invalid token"){
+			document.cookie = "authtoken=; expires=0; path=/";
+			document.body.className="status--login";
+		}
+		console.log('welcome failed', err);
+	}
+	if(slidenotelist){
+		writeSlidenoteList();
+	}
+	if(presentationlist){
+		writePresentationList();
+	}
+	document.body.className = 'status--welcome';
+	document.title = "slidenotes | welcome";
+}
+
+function writeSlidenoteList(){
+	let target = document.getElementById('slidenotelist-target');
+	const template = target.innerHTML;
+	var newhtml = "";
+	for(var x=0;x<slidenotelist.length;x++){
+		let newentry = template;
+		//newentry = newentry.replace('$SLIDENOTETITLE',slidenotelist[x].title);
+		newentry = newentry.replace('$NID',slidenotelist[x].nid);
+		newhtml+=newentry;
+	}
+	target.innerHTML = newhtml;
+	let slidenotelinks = document.getElementsByClassName('slidenotelist-link');
+	for(var x=0;x<slidenotelist.length;x++){
+		slidenotelinks[x].innerText = slidenotelist[x].title;
+	}
+}
+
+function localeDateString(timestamp){
+	let date = new Date(timestamp);
+	let datestring = date.toLocaleDateString(navigator.language);
+	let hours = date.getHours();
+	if(hours<10)hours ="0"+hours;
+	let mins = date.getMinutes();
+	if(mins<10)mins = '0'+mins;
+	return datestring + ' - '+hours+':'+mins;
+}
+
+function writePresentationList(){
+	let target = document.getElementById('presentationlist-target');
+	const template = target.innerHTML;
+	var newhtml = "";
+	for(var x=0;x<presentationlist.length;x++){
+		let newentry = template;
+		let newcdate = localeDateString(presentationlist[x].creationDate);
+		let newupdate = localeDateString(presentationlist[x].lastUpdated);
+
+		//newentry = newentry.replace('$SLIDENOTETITLE',slidenotelist[x].title);
+		newentry = newentry.replace('$PRESENTATIONURL',presentationlist[x].url);
+		newentry = newentry.replace('$PRESENTATIONCREATIONDATE',newcdate);
+		newentry = newentry.replace('$PRESENTATIONLASTUPDATED',newupdate);
+		newentry = newentry.replace('$PRESENTATIONNID',presentationlist[x].nid);
+		newentry = newentry.replace('$PRESENTATIONCOMMENTCOUNT',presentationlist[x].enccomments.length);
+		newhtml+=newentry;
+	}
+	target.innerHTML = newhtml;
+	let presentationlilist = document.getElementsByClassName('presentationlist-entry');
+	for(var x=0;x<presentationlilist.length;x++){
+		let notetitle = "";
+		for(var nt=0;nt<slidenotelist.length;nt++)if(slidenotelist[nt].nid===presentationlist[x].nid)notetitle=slidenotelist[nt].title;
+		presentationlilist[x].querySelector('.views-field-title a').innerText = presentationlist[x].title;
+		presentationlilist[x].querySelector('.views-field-field-slidenotenode a').innerText = notetitle;
+	}
+}
+
+async function createNewSlidenote(){
+	try{
+		let newnote = await postJson('/api/notes/',{});
+		if(newnote){
+			//load new created slidenote:
+			location.href="/?id="+newnote.nid;
+		}
+	}catch(err){
+		return {err:err};
+	}
+}
+
+
+async function postJson(url,payload){
+	try{
+		const resp = await fetch(url,{
+			method:'POST',
+			headers:{
+				'Content-Type' : 'application/json',
+				'auth-token': token
+			},
+			body:JSON.stringify(payload)
+		});
+		if(resp.status===200 || resp.status===400)return resp.json();
+		else console.log(resp.body);
+		return resp;
+	}catch(err){
+		return err;
+	}
+}
+async function getJson(url){
+	const resp = await fetch(url,{
+		method:'GET',
+		headers:{
+			'auth-token':token
+		}
+	});
+	if(resp.status==400){
+		throw "invalid token";
+	}else{
+		return resp.json();
+	}
+}
+
+async function recoverPw(){
+	const emailtext="please type in the email-address of your account";
+	var dialogoptions = {
+		type:"prompt",
+		title:"password recovery",
+		content:emailtext,
+		closebutton:true,
+		inputtype:"email",
+
+	}
+	var email = "";
+	while(email===""){
+		email = await dialoger.prompt(dialogoptions);
+		console.log(email);
+		if(email==null)break;
+		empos = email.indexOf('@');
+		pointpos = email.indexOf('.',empos+1);
+		if(empos==-1 || pointpos==-1){
+			dialogoptions = {
+				type:"prompt",
+				title:"password recovery",
+				content:"error: "+email+" is not a valid email\n"+emailtext,
+				closebutton:true,
+				inputtype:"email",
+			};
+			email = "";
+		}else{
+			break;
+		}
+	}
+	if(email==null)return; //nothing to do without email
+	let waitingdialogoptions = {
+		type:"dialog",
+		title:"requesting one time link",
+		content:"please wait - requesting one time link for "+email,
+	}
+	dialoger.buildDialog(waitingdialogoptions);
+
+	var otlresp = await postJson('/api/user/onetimelogin',{email:email});
+	console.log(otlresp);
+	if(otlresp.error){
+			let errordialogoptions = {
+				type:"alert",
+				title:"error",
+			}
+			if(otlresp.errorclass)errordialogoptions.content=otlresp.errorclass;
+			dialoger.buildDialog(errordialogoptions);
+	}else if(otlresp.emailSent){
+		let successdialogoptions = {
+			type:"alert",
+			title:"one time link successfully created",
+			content:"a one time login link for your account has been created and sent to "+otlresp.email+"\n"+
+			"this one time login is valid for 24h",
+		}
+		dialoger.buildDialog(successdialogoptions);
+	}
+}
+
+
+init()
+--></script>
+
+
+</body>
+</html>

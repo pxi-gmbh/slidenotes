@@ -1,0 +1,633 @@
+/*basis-theme "colorful"*/
+/*jegliche css-deklaration muss mit klasse .colorful starten */
+
+/* hintergrund wird pro ppage festgelegt, nicht nur einmal fürs theme. sollte in zukunft geändert werden, aber momentan ists noch so.
+ppage ist der jeweilige presentation-slide.
+generelle sachen, wie bspw. schriftfarben, schriften etc. in die hauptdeklaration, abweichungen dann in den weiteren.
+ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt es einfach und semantisch, dann sollte nicht viel schief gehen.*/
+
+
+
+:root{
+  --colorfulBckgColor: #ffffff;
+  --colorfulTextColor: #030303;
+  --colorfulHeadlineBckgColor: #f7ff00;
+  --colorfulHeadlineTextShadow: #05fff3;
+
+  --colorfulDataColor0: #F51AA4;
+  --colorfulDataColor1: #59DBD4;
+  --colorfulDataColor2: #5CFF8D;
+  --colorfulDataColor3: #FF7F0F;
+  --colorfulDataColor4: #A300CC;
+  --colorfulDataColor5: #D12300;
+  --colorfulDataColor6: #572100;
+
+  --colorfulNodeBorderColor: #a6a6a6;
+  --colorfulNodeBckgColor: #FDB575;
+}
+
+@font-face{
+  font-family: "FredokaOne";
+  src: url("/fonts/themes/colorful/FredokaOne-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face{
+  font-family: "RobotoCondReg";
+  src: url("/fonts/themes/colorful/RobotoCondensed-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face{
+  font-family: "RobotoCondBold";
+  src: url("/fonts/themes/colorful/RobotoCondensed-Bold.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face{
+  font-family: "RobotoCondItalic";
+  src: url("/fonts/themes/colorful/RobotoCondensed-Italic.ttf");
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face{
+  font-family: "RobotoCondBoldItalic";
+  src: url("/fonts/themes/colorful/RobotoCondensed-BoldItalic.ttf");
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face{
+  font-family: "CourierPrime-Regular";
+  src: url("/fonts/themes/colorful/CourierPrime-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+.colorful,
+.colorful .ppage {
+	background: var(--colorfulBckgColor);
+	color: var(--colorfulTextColor);
+  font-weight: normal;
+  font-family: "RobotoCondReg", Sans-Serif;
+  font-size: 1.1em;
+}
+
+.colorful .ppage .progressbar{
+  background: var(--colorfulHeadlineTextShadow);
+  border-radius: 0 0 99px;
+}
+
+
+
+/*code affects both: inlinecode and codeblock*/
+.colorful code {
+  font-family: "CourierPrime-Regular", Monospace;
+  font-size: 0.9em;
+}
+/*inline*/
+.colorful p code, .colorful h1 code, .colorful h2 code, .colorful h3 code{
+  padding: 0.12em 0.2em 0.12em 0.2em;
+  color: white;
+  background-color: var(--code-backg);
+  text-shadow: none;
+}
+
+
+
+/*codeblock affects only codeblocks*/
+.colorful code.codeblock{
+
+}
+
+
+
+
+.colorful h1,
+.colorful h2,
+.colorful h3{
+  font-family: "FredokaOne", Sans-Serif;
+  font-weight: normal;
+  line-height: 1em;
+
+  text-shadow: 0.05em 0.03em var(--colorfulHeadlineTextShadow);
+}
+
+.colorful h1{
+  font-size: 4em;
+  margin-top: 25vh;
+  color: #095959;
+}
+.colorful h1:before{
+  content:"";
+  width: 1000vw;
+  height:106.5vh;
+  background-color: var(--colorfulHeadlineBckgColor);
+  display: block;
+  position: absolute;
+  z-index: -1;
+  margin-left: -100vw;
+  margin-top: -100vh;
+}
+.colorful h1.griditem,
+.colorful .griditem h1{
+  max-width: 90vw;
+  margin-bottom: calc((var(--h1scale) - 1)*2em);
+  margin-top: calc((var(--h1scale) - 1)*2em + 25vh);
+  transform: scale(var(--h1scale));
+  font-size: calc(1/var(--h1scale)*4em);
+}
+
+.colorful h2,
+.colorful h3{
+	margin-bottom: 0.7em;
+}
+.colorful h2{
+  font-size: 2.5em;
+}
+.colorful h2 img{
+  height: 2.2em;
+}
+
+.colorful .ppage > h2:first-child::before,
+.colorful .ppage > .pblock:first-child > h2:first-child::before{
+  content:"";
+  width: 1000vw;
+  height:104.5vh;
+  background-color: var(--colorfulHeadlineBckgColor);
+  display: block;
+  position: absolute;
+  z-index: -1;
+  margin-left: -100vw;
+  margin-top: -100vh;
+}
+
+.colorful h3{
+ margin-bottom: 0.2em;
+ font-size: 1.5em;
+}
+.colorful h3 img{
+  height: 1.3em;
+}
+
+.colorful .pblock h1+p{
+  font-size: 1.3em;
+}
+
+.colorful .pblock h1+p,
+.colorful .pblock h2+p,
+.colorful .pblock h3+p {
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+.colorful .inline .pblock h1+p,
+.colorful .inline .pblock h2+p,
+.colorful .inline .pblock h3+p,
+.colorful .section .pblock h1+p,
+.colorful .section .pblock h2+p,
+.colorful .section .pblock h3+p{
+  text-align: left;
+  margin-top: 1em;
+}
+
+.colorful .pblock h2+p,
+.colorful .pblock h3+p {
+
+}
+
+.colorful p{
+	/* text-shadow: 0 0 0.5em var(--colorfulBckgColor); */
+  line-height: 1.3em;
+}
+.colorful p>span{
+  background-color: var(--colorfulBckgColor);
+  padding: 0 0.1em;
+}
+.colorful p br{
+  margin-bottom: 0.5em;
+}
+
+.colorful .pblock h1+p img,
+.colorful .pblock h2+p img,
+.colorful .pblock h3+p img{
+
+}
+/*standard declared in blocks.css: max-height:1em*/
+.colorful p img,
+.colorful ul img,
+.colorful ol img{
+}
+/*the floating ones inside a p-blocks
+standard is:
+max-height: 6em;
+float:left/right;
+margin:1ch;
+*/
+.colorful p img.floatingleftimage{
+}
+.colorful p img.floatingrightimage{
+}
+
+
+.colorful a{
+  text-decoration: underline;
+  font-family: "RobotoCondReg", Sans-Serif;
+  color: var(--colorfulTextColor);
+}
+
+.colorful .imageblock{
+  font-size: 0.8em;
+}
+
+.colorful b{
+  font-family: "RobotoCondBold", Sans-Serif;
+}
+
+.colorful i{
+  font-family: "RobotoCondItalic", Sans-Serif;
+  font-size: 0.95em;
+}
+
+.colorful b i{
+  font-family: "RobotoCondBoldItalic", Sans-Serif
+}
+
+.colorful strike{
+
+}
+
+.colorful ul,
+.colorful ol{
+  padding: 0 0.9em;
+  line-height: 1.3em;
+}
+
+.colorful ul{
+
+}
+
+.colorful ol{
+
+}
+
+.colorful li+li{
+  margin: 0.3em 0;
+}
+
+.colorful code.codeblock li{
+  overflow: hidden;
+  background-color: transparent;
+}
+.colorful .codeblock.none{
+  background-color: rgb(35, 36, 31);
+  color: white;
+}
+
+
+
+/*sub-lists (unterpunkte/verschachtelung der listen)*/
+
+.colorful ul ul,
+.colorful ol ul{
+
+}
+
+.colorful ol ul,
+.colorful ol ol{
+
+}
+
+.colorful mark{
+  background-color: #63fb6d;
+}
+
+
+.colorful quote{
+  text-align: center;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-thickness: 0.02em;
+  text-underline-offset: 0.3em;
+  line-height: 1.5em;
+  font-family: "RobotoCondItalic", Sans-Serif;
+}
+
+.colorful p code{
+  font-size: 0.85em;
+}
+.colorful code.codeblock{
+
+}
+
+/* charts:*/
+
+/* alle charts sind in einer section mit klasse chart*/
+.colorful section.chart{
+  font-size: 0.7em;
+  /*Portrait to 4:3*/
+  /*max-height: calc(85.2vw/1.618); /*100vw - (padding-left + padding-right) = 85.2vw; golden ratio = 1.618*/
+}
+.colorful .ct-label.ct-vertical.ct-start{
+  border-bottom: 0.3em solid var(--colorfulHeadlineBckgColor);
+}
+.colorful .ct-label.ct-horizontal.ct-end{
+  border-right: 0.2em solid var(--colorfulHeadlineBckgColor);
+}
+
+/*pie-charts:*/
+.colorful section.chart-pie{
+
+}
+
+/*bar-charts*/
+.colorful section.chart-bar{
+
+}
+
+/*line-charts*/
+.colorful section.chart-line{
+  padding: 0 0 0 0.7em;
+
+}
+
+/*alle labels einer chart - wenn nur für bestimmte charts gewollt, muster von oben erweitern, also bspw. .colorful .chart-bar .ct-label. hier die größen der schrift und farben für die labels generell anpassen */
+.colorful .ct-label{
+  color: rgba(0, 0, 0, 0.7);
+}
+.colorful .ct-chart-pie .ct-label,
+.colorful .ct-chart-donut .ct-label{
+  fill: rgba(0, 0, 0, 1);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 1);
+  font-family: "RobotoCondBold", Sans-Serif;
+}
+
+.colorful .ct-grid{
+	stroke: var(--colorfulHeadlineBckgColor);
+  stroke-width:0.15em;
+  stroke-dasharray: 0;
+}
+
+/*x-achsen-label*/
+.colorful .chart-x-axis-label{
+
+}
+
+/*y-achsen-label*/
+.colorful .chart-y-axis-label{
+
+}
+
+/*dataset-label, was oben drüber steht und bspw. jahreszahl beinhaltet:*/
+.colorful .chart-datasetlabel{
+  border: none;
+  padding: 0;
+  margin-left: 1em;
+}
+
+/*die box davon:*/
+.colorful .chart-datasetlabel-box{
+
+}
+
+.colorful .chart-datasetlabel-box.chart-datasetlabel-box-0{
+	background: var(--colorfulDataColor0);
+}
+.colorful .chart-datasetlabel-box.chart-datasetlabel-box-1{
+	background: var(--colorfulDataColor1);
+}
+.colorful .chart-datasetlabel-box.chart-datasetlabel-box-2{
+	background: var(--colorfulDataColor2);
+}
+.colorful .chart-datasetlabel-box.chart-datasetlabel-box-3{
+	background: var(--colorfulDataColor3);
+}
+.colorful .chart-datasetlabel-box.chart-datasetlabel-box-4{
+	background: var(--colorfulDataColor4);
+}
+.colorful .chart-datasetlabel-box.chart-datasetlabel-box-5{
+	background: var(--colorfulDataColor5);
+}
+.colorful .chart-datasetlabel-box.chart-datasetlabel-box-6{
+	background: var(--colorfulDataColor6);
+}
+/*datasetlabel und ihre boxen können auch einzeln angesprochen werden und sind von 0 an durchnummeriert. erstes datasetlabel heißt .chart-datasetlabel-0 */
+
+
+/*farben: ich fasse die zusammen um einheitlichkeit herzustellen. jeder block umfasst immer äußere und innere farbe. das schema kann weiter erweitert werden, aber ich belasse es erstmal bei 5 farben. nicht deklarierte farben nimmt er die standard-farben die er schon hat. die ersten 5 farben sollten auf die präsentation zugeschnitten sein. jede farbe ist als "ct-series-a" bis "ct-series-z" paar.*/
+
+.colorful .ct-series-a .ct-point, .colorful .ct-series-a .ct-line, .colorful .ct-series-a .ct-bar, .colorful .ct-series-a .ct-slice-donut {
+  stroke: var(--colorfulDataColor0);
+}
+
+.colorful .ct-series-a .ct-slice-pie, .colorful .ct-series-a .ct-slice-donut-solid, .colorful .ct-series-a .ct-area {
+  fill: var(--colorfulDataColor0);
+}
+
+.colorful .ct-series-b .ct-point, .colorful .ct-series-b .ct-line, .colorful .ct-series-b .ct-bar, .colorful .ct-series-b .ct-slice-donut {
+  stroke: var(--colorfulDataColor1);
+}
+
+.colorful .ct-series-b .ct-slice-pie, .colorful .ct-series-b .ct-slice-donut-solid, .colorful .ct-series-b .ct-area {
+  fill: var(--colorfulDataColor1);
+}
+
+.colorful .ct-series-c .ct-point, .colorful .ct-series-c .ct-line, .colorful .ct-series-c .ct-bar, .colorful .ct-series-c .ct-slice-donut {
+  stroke: var(--colorfulDataColor2);
+}
+
+.colorful .ct-series-c .ct-slice-pie, .colorful .ct-series-c .ct-slice-donut-solid, .colorful .ct-series-c .ct-area {
+  fill: var(--colorfulDataColor2);
+}
+
+.colorful .ct-series-d .ct-point, .colorful .ct-series-d .ct-line, .colorful .ct-series-d .ct-bar, .colorful .ct-series-d .ct-slice-donut {
+  stroke: var(--colorfulDataColor3);
+}
+
+.colorful .ct-series-d .ct-slice-pie, .colorful .ct-series-d .ct-slice-donut-solid, .colorful .ct-series-d .ct-area {
+  fill: var(--colorfulDataColor3);
+}
+
+.colorful .ct-series-e .ct-point, .colorful .ct-series-e .ct-line, .colorful .ct-series-e .ct-bar, .colorful .ct-series-e .ct-slice-donut {
+  stroke: var(--colorfulDataColor4);
+}
+
+.colorful .ct-series-e .ct-slice-pie, .colorful .ct-series-e .ct-slice-donut-solid, .colorful .ct-series-e .ct-area {
+  fill: var(--colorfulDataColor4);
+}
+
+.colorful .ct-series-f .ct-point, .colorful .ct-series-f .ct-line, .colorful .ct-series-f .ct-bar, .colorful .ct-series-f .ct-slice-donut {
+  stroke: var(--colorfulDataColor5);
+}
+
+.colorful .ct-series-f .ct-slice-pie, .colorful .ct-series-f .ct-slice-donut-solid, .colorful .ct-series-f .ct-area {
+  fill: var(--colorfulDataColor5);
+}
+
+.colorful .ct-series-g .ct-point, .colorful .ct-series-g .ct-line, .colorful .ct-series-g .ct-bar, .colorful .ct-series-g .ct-slice-donut {
+  stroke: var(--colorfulDataColor6);
+}
+
+.colorful .ct-series-g .ct-slice-pie, .colorful .ct-series-g .ct-slice-donut-solid, .colorful .ct-series-g .ct-area {
+  fill: var(--colorfulDataColor6);
+}
+
+
+/*ende von charts*/
+
+/*tables stehen in einer klassenlosen section. wenn du also .colorful section bearbeitest hat das auch effekt auf deren container. ansonsten steuer tabellen direkt an über*/
+
+.colorful table{
+
+}
+
+.colorful th,
+.colorful td{
+
+}
+
+.colorful thead{
+  font-family: "RobotoCondBold";
+}
+
+.colorful table,
+.colorful th,
+.colorful td{
+  border: 0.2em solid var(--colorfulDataColor4);
+  padding: 0 0.5em;
+  background-color: var(--colorfulBckgColor);
+}
+
+.colorful thead{
+
+}
+
+.colorful tbody{
+
+}
+
+.colorful tr{
+
+}
+
+.colorful td{
+
+}
+
+/* latex - elemente sind in einer section mit klasse klatex*/
+.colorful section.klatex{
+
+}
+
+/* layout-elemente sind sections mit section-klasse. sie beinhalten weitere elemente*/
+
+.colorful section.section{
+
+}
+
+/*layout-element auf linker seite, nimmt ca. ein drittel der linken seite ein*/
+.colorful section.section.left{
+
+}
+
+/*layout-element auf rechter seite, nimmt die hälfte des platzes ein, wenn nicht zwei weitere layout-sections "in reihe" stehen, dann nimmt er ein drittel*/
+.colorful section.section.right{
+
+}
+
+
+/* node */
+.colorful .node .msg{
+  background-color: var(--colorfulNodeBckgColor);
+  margin: 0 0.5em;
+  padding: 0 0.5em;
+}
+.colorful .node .arrow.dashed .arrowimg::before, .node .arrow.noarrowdashed .arrowimg::before {
+  border-top: 0.2em dashed var(--colorfulDataColor3);
+}
+.colorful .node .simpleflow .node,
+.colorful .node .flow .node{
+  background: var(--colorfulDataColor1);
+  border: none;
+}
+.colorful .ppage .node .tree .content{
+  border: none;
+  border-radius: 99em;
+  background-color: var(--colorfulDataColor1);
+}
+.colorful .ppage .node .arrowspace .arrowimg+div{
+  background-color: var(--colorfulNodeBckgColor);
+}
+.colorful .node .tree .arrowimg::after{
+  background: linear-gradient(to top right, transparent 50%, var(--colorfulNodeBckgColor) 50%);
+  border-top: none;
+  border-right: none;
+  opacity: 1;
+}
+.colorful .node .arrow .arrowimg::after{
+  background: linear-gradient(to top right, transparent 50%, var(--colorfulDataColor3) 50%);
+  width: 1em;
+  height: 1em;
+  top: -0.42em;
+}
+.colorful .node .arrow .arrowimg::before{
+  border-top: 0.2em solid var(--colorfulDataColor3);
+}
+.colorful .simpleflow .arrow.broad .msg{
+  color: var(--colorfulTextColor);
+}
+.colorful .node .simpleflow .arrowspace .broad .triangle::before{
+  background-color: var(--colorfulDataColor3);
+}
+.colorful .node .simpleflow .arrowspace .broad .triangle{
+  background: linear-gradient(to top right, transparent 50%, var(--colorfulDataColor3) 50%);
+}
+.colorful .node .node.cloud{
+  background-color: var(--colorfulDataColor1);
+  border: none;
+}
+.colorful .node .node.cloud::before{
+  background-color: var(--colorfulDataColor1);
+  border-top: none;
+}
+.colorful .node .node.cloud::after{
+  background-color: var(--colorfulDataColor1);
+  border-top: none;
+}
+.colorful .node .broad .arrowimg::before{
+  border-bottom: 0.1em solid var(--colorfulDataColor3);
+}
+.colorful .node .sequence .arrow .arrowimg::after{
+  width: 0.7em;
+  height: 0.7em;
+}
+.colorful .node .sequence .actor{
+  border: none;
+  background: var(--colorfulDataColor1);
+}
+.colorful .node .sequence .stroke{
+  width: 0.12em;
+  background: var(--colorfulDataColor4);
+}
+.colorful .node .sequence .arrow .arrowimg::after{
+  top: -0.25em;
+}
+.colorful .node .sequence .arrow.broad .arrowimg::after{
+  top: -0.35em;
+}
+.colorful .node .sequence .node.cloud{
+  height: 3.2em;
+}
+.colorful .node .sequence .cloud.actor{
+  background: none;
+  border: none;
+}
+.colorful .node .sequence .note{
+  border: 0.2em solid var(--colorfulDataColor4);
+  background: var(--colorfulBckgColor);
+}
+.colorful .node .sequence .diamond.actor{
+  width: 3em;
+  height: 3em;
+  padding: 0.5em;
+}
