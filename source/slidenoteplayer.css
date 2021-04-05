@@ -39,6 +39,9 @@
   h3,
   p{
     hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    word-break: initial;
   }
 
   h1 img{

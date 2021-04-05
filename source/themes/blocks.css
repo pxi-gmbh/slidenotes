@@ -75,6 +75,7 @@ div > img.bgimg {
 .blocks ul img,
 .blocks ol img {
     max-height: 1em;
+    max-width: 1.5em;
 }
 .blocks span.imageline img{
   max-height: 3em;

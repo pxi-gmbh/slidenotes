@@ -576,9 +576,9 @@ nodetheme.builder = {
           if(parent==-1)parent = parseobj.aliases.indexOf(pline.actfrom);
           let child = parseobj.actors.indexOf(pline.actto);
           if(child==-1)child = parseobj.aliases.indexOf(pline.actto);
-          if(this.actors[child].parent!=null){
+          if(this.actors[child].parent!=null && this.actors[child].children.indexOf(this.actors[parent])==-1){
             //we should not reuse nodes so do nothing
-            console.log('syntax error in line '+x+": in trees a node can only have one parent", pline.sourcecode);
+            console.warn('syntax error in line '+x+": in trees a node can only have one parent", pline.sourcecode);
             continue;
           }
           if(this.hasParentInTree(this.actors[parent],this.actors[child])){
@@ -586,8 +586,8 @@ nodetheme.builder = {
             if(this.actors[child].children.indexOf(this.actors[parent])==-1){
               //invalid connection -
               //in tree its impossible to show arrows up for more then one level
-              console.log('syntax error in line '+x+': in trees you cant write arrows over more then one line',pline.sourcecode);
-            continue;
+              console.warn('syntax error in line '+x+': in trees you cant write arrows over more then one line',pline.sourcecode);
+              continue;
             }else{
               //parent of is in next line above so push arrows
               pline.direction='up';

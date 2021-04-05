@@ -486,8 +486,9 @@ background-image:url('node/simpleflowhorizontalmulti.png');
 .node .tree .content {
     border: 3px solid;
     border-radius: 9px;
-    width: 90%;
+    min-width: 90%;
     justify-self: center;
+    padding: 0 0.2em;
 }
 /*flow:*/
 .node .flow{

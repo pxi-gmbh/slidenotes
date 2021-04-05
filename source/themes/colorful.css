@@ -9,10 +9,12 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
 
 
 :root{
-  --colorfulBckgColor: #ffffff;
+  --colorfulBckgColor: #FFD676;
   --colorfulTextColor: #030303;
   --colorfulHeadlineBckgColor: #f7ff00;
   --colorfulHeadlineTextShadow: #05fff3;
+  --colorfulFirstBckgColor: #6562ed;
+  --colorfulColorBckgColor: #FFD676;
 
   --colorfulDataColor0: #F51AA4;
   --colorfulDataColor1: #59DBD4;
@@ -71,11 +73,25 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
   font-weight: normal;
   font-family: "RobotoCondReg", Sans-Serif;
   font-size: 1.1em;
+  /* instead inserted directly at end of file
+  background-image: url("/themes/image/colorful-bckg-image2.svg");
+  */
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: var(--colorfulColorBckgColor);
 }
 
 .colorful .ppage .progressbar{
   background: var(--colorfulHeadlineTextShadow);
   border-radius: 0 0 99px;
+  position: absolute;
+}
+
+.colorful p,
+.colorful div,
+.colorful section{
+  position: relative;
+  z-index: 1;
 }
 
 
@@ -102,48 +118,70 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
 
 
 
-
 .colorful h1,
 .colorful h2,
 .colorful h3{
   font-family: "FredokaOne", Sans-Serif;
   font-weight: normal;
   line-height: 1em;
-
-  text-shadow: 0.05em 0.03em var(--colorfulHeadlineTextShadow);
+}
+.colorful h2,
+.colorful h3{
+  text-shadow: 0.05em 0.05em var(--colorfulFirstBckgColor);
+  color: white;
+  line-height: 0.85em;
+  margin-bottom: 0.1em;
 }
 
+.colorful .ppage:first-child{
+  background-color: var(--colorfulFirstBckgColor);
+  /* instead inserted directly at end of file
+  background-image: url("/themes/image/colorful-bckg-image.svg");
+  */
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.colorful .ppage:first-child span{
+  color: white;
+  background-color: var(--colorfulFirstBckgColor);
+}
+
+.colorful .ppage:first-child h1::before{
+  background-color: transparent;
+}
+
+
 .colorful h1{
+  color: white;
   font-size: 4em;
   margin-top: 25vh;
-  color: #095959;
+  text-shadow: 0.03em 0.04em black;
 }
 .colorful h1:before{
   content:"";
   width: 1000vw;
-  height:106.5vh;
-  background-color: var(--colorfulHeadlineBckgColor);
+  height:50vh;
+  background-color: var(--colorfulFirstBckgColor);
   display: block;
   position: absolute;
   z-index: -1;
   margin-left: -100vw;
-  margin-top: -100vh;
+  margin-top: -15vh;
 }
 .colorful h1.griditem,
 .colorful .griditem h1{
   max-width: 90vw;
   margin-bottom: calc((var(--h1scale) - 1)*2em);
-  margin-top: calc((var(--h1scale) - 1)*2em + 25vh);
+  margin-top: calc((var(--h1scale) - 1)*-3em + 25vh);
   transform: scale(var(--h1scale));
-  font-size: calc(1/var(--h1scale)*4em);
+  font-size: calc(1/var(--h1scale)*7.5em);
+  line-height: calc(1/var(--h1scale)*1.1em);
 }
 
-.colorful h2,
-.colorful h3{
-	margin-bottom: 0.7em;
-}
 .colorful h2{
-  font-size: 2.5em;
+  font-size: 6.5em;
+  margin-left: -5vw;
+  margin-right: -5vw;
 }
 .colorful h2 img{
   height: 2.2em;
@@ -154,7 +192,7 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
   content:"";
   width: 1000vw;
   height:104.5vh;
-  background-color: var(--colorfulHeadlineBckgColor);
+  /* background-color: var(--colorfulHeadlineTextShadow); */
   display: block;
   position: absolute;
   z-index: -1;
@@ -164,7 +202,7 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
 
 .colorful h3{
  margin-bottom: 0.2em;
- font-size: 1.5em;
+ font-size: 2em;
 }
 .colorful h3 img{
   height: 1.3em;
@@ -193,7 +231,15 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
 
 .colorful .pblock h2+p,
 .colorful .pblock h3+p {
+  margin-top: 1em;
+  color: white;
+  font-size: 1.3em;
+  z-index: -1;
 
+}
+.colorful .pblock h2 + p > span, .colorful .pblock h3 + p > span{
+  background-color: var(--colorfulFirstBckgColor);
+  padding: 0.05em 0.4em;
 }
 
 .colorful p{
@@ -259,8 +305,10 @@ margin:1ch;
 
 .colorful ul,
 .colorful ol{
-  padding: 0 0.9em;
   line-height: 1.3em;
+  background-color: var(--colorfulBckgColor)
+  padding-left: 1.1em;
+  padding-right: 0.5em;
 }
 
 .colorful ul{
@@ -273,6 +321,11 @@ margin:1ch;
 
 .colorful li+li{
   margin: 0.3em 0;
+}
+
+.colorful code.codeblock ul,
+.colorful code.codeblock ol{
+  background-color: transparent;
 }
 
 .colorful code.codeblock li{
@@ -630,4 +683,12 @@ margin:1ch;
   width: 3em;
   height: 3em;
   padding: 0.5em;
+}
+
+.colorful .ppage:first-child{
+  background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg width='100%25' height='100%25' viewBox='0 0 1920 1080' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xml:space='preserve' xmlns:serif='http://www.serif.com/' style='fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;'%3E%3Crect id='ArtBoard1' x='0' y='0' width='1920' height='1080' style='fill:none;'/%3E%3CclipPath id='_clip1'%3E%3Crect id='ArtBoard11' serif:id='ArtBoard1' x='0' y='0' width='1920' height='1080'/%3E%3C/clipPath%3E%3Cg clip-path='url(%23_clip1)'%3E%3Cpath d='M436.037,799.365c184.416,130.786 -70.662,245.741 -166.832,381.345c-96.169,135.604 2.755,240.835 -181.661,110.048c-184.416,-130.787 -256.062,-347.062 -159.892,-482.666c96.169,-135.603 323.969,-139.514 508.385,-8.727Z' style='fill:%23f51aa4;'/%3E%3Cpath d='M1548.17,497.437c23.227,-224.889 412.19,-112 563.243,-42.576c151.054,69.424 236.169,-47.259 141.754,158.168c-94.414,205.428 -182.111,440.529 -333.165,371.105c-151.054,-69.425 -391.18,-299.363 -371.832,-486.697Z' style='fill:%2359dbd4;'/%3E%3Cpath d='M1122.83,621.247c62.604,-41.494 96.115,-27.601 131.052,-11.544c34.938,16.057 52.369,61.026 29.888,109.94c-22.481,48.914 -115.447,5.675 -150.385,-10.382c-34.937,-16.058 -47.388,-63.601 -10.555,-88.014Z' style='fill:%23a300cc;'/%3E%3Cpath d='M879.629,846.882c65.051,-9.314 108.904,36.804 97.24,67.668c-10.811,28.61 -32.751,44.397 -74.281,54.834c-41.529,10.437 -65.267,-3.2 -72.722,-32.862c-7.454,-29.663 11.492,-84.16 49.763,-89.64Z' style='fill:%23d12300;'/%3E%3Cpath d='M454.652,332.092c56.033,266.536 -341.154,117.467 -532.358,-124.1c-49.044,-61.962 106.108,-317.968 212.728,-332.947c106.619,-14.978 433.245,-140.814 458.38,228.76c9.75,143.361 -157.197,140.535 -138.75,228.287Z' style='fill:%23ff7f0f;'/%3E%3Cpath d='M423.171,399.847c-10.231,85.377 -202.06,35.814 -306.802,-46.21c-49.012,-38.382 19.938,-13.601 104.493,-6.931c103.805,8.189 210.715,-16.997 202.309,53.141Z' style='fill:%23fff;fill-opacity:0.1;'/%3E%3Cpath d='M958.447,70.223c-127.086,-178.114 2.723,-210.603 27.663,-510.619c6.397,-76.954 175.479,-143.101 241.533,-111.873c66.053,31.229 311.113,54.219 127.372,400.749c-71.275,134.422 -285.478,377.439 -396.568,221.743Z' style='fill:%235cff8d;'/%3E%3Cpath d='M298.452,747.083c73.738,31.403 135.021,72.505 123.868,98.694c-11.153,26.189 -66.289,-20.462 -140.028,-51.864c-73.739,-31.403 -148.807,-30.086 -137.654,-56.276c11.154,-26.189 80.075,-21.957 153.814,9.446Z' style='fill:%23fff;fill-opacity:0.13;'/%3E%3Cpath d='M1043.96,103.903c-28.732,-1.639 -64.408,-17.514 -62.788,-45.934c1.621,-28.419 35.621,-5.112 64.353,-3.474c28.732,1.638 72.957,-18.523 71.336,9.896c-1.62,28.419 -44.169,41.15 -72.901,39.512Z' style='fill:%23fff;fill-opacity:0.3;'/%3E%3Cpath d='M1588.84,438.071c16.714,-23.428 57.606,-42.214 80.779,-25.682c23.172,16.532 -14.68,32.855 -31.394,56.283c-16.714,23.428 -23.255,71.589 -46.428,55.057c-23.173,-16.532 -19.671,-62.231 -2.957,-85.658Z' style='fill:%23fff;fill-opacity:0.17;'/%3E%3Cpath d='M1200.63,604.033c17.719,1.015 50.264,15.353 35.716,38.75c-8.235,13.245 -24.945,4.677 -39.163,0.958c-14.218,-3.719 -52.092,9.327 -54.251,-4.363c-4.2,-26.643 39.979,-36.361 57.698,-35.345Z' style='fill:%23fff;fill-opacity:0.12;'/%3E%3Cpath d='M881.572,858.96c15.185,-4.833 46.514,-2.23 44.077,19.265c-1.379,12.17 -16.988,11.022 -32.174,15.855c-15.185,4.833 -32.357,16.604 -39.201,7.894c-13.321,-16.952 12.113,-38.181 27.298,-43.014Z' style='fill:%23fff;fill-opacity:0.12;'/%3E%3Cpath d='M450.692,853.459c28.281,3.233 40.622,53.195 12.341,49.962c-28.281,-3.233 -40.622,-53.195 -12.341,-49.962Z' style='fill:%23fff;fill-opacity:0.13;'/%3E%3Cpath d='M1597.78,551.056c28.281,3.233 40.622,53.195 12.341,49.962c-28.281,-3.233 -40.622,-53.194 -12.341,-49.962Z' style='fill:%23fff;fill-opacity:0.13;'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.colorful .ppage{
+  background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg width='100%25' height='100%25' viewBox='0 0 1920 1080' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xml:space='preserve' xmlns:serif='http://www.serif.com/' style='fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;'%3E%3Crect id='ArtBoard2' x='0' y='0' width='1920' height='1080' style='fill:none;'/%3E%3CclipPath id='_clip1'%3E%3Crect x='0' y='0' width='1920' height='1080'/%3E%3C/clipPath%3E%3Cg clip-path='url(%23_clip1)'%3E%3Cg opacity='0.5'%3E%3Cpath d='M274.414,884.483c184.416,130.786 -70.662,245.741 -166.832,381.345c-96.169,135.604 2.755,240.835 -181.661,110.048c-184.416,-130.786 -256.061,-347.062 -159.892,-482.665c96.169,-135.604 323.969,-139.515 508.385,-8.728Z' style='fill:%23f51aa4;'/%3E%3Cpath d='M1771.33,611.315c23.227,-224.889 412.19,-112 563.243,-42.576c151.054,69.425 236.169,-47.259 141.754,158.169c-94.414,205.427 -302.414,222.466 -411.777,203.346c-164.232,-28.712 -312.568,-131.605 -293.22,-318.939Z' style='fill:%2359dbd4;'/%3E%3Cpath d='M1333.25,874.064c34.893,-38.528 96.115,-27.602 131.052,-11.545c34.938,16.057 52.369,61.026 29.888,109.94c-22.481,48.914 -93.288,29.813 -127.67,9.815c-33.237,-19.333 -62.933,-75.458 -33.27,-108.21Z' style='fill:%23a300cc;'/%3E%3Cpath d='M811.355,1003.19c57.768,-9.314 96.711,36.804 86.354,67.668c-9.602,28.61 -29.085,44.397 -65.966,54.834c-36.88,10.437 -57.96,-3.2 -64.58,-32.862c-6.62,-29.663 10.205,-84.16 44.192,-89.64Z' style='fill:%23d12300;'/%3E%3Cpath d='M169.817,172.294c18.395,271.741 -379.392,400.029 -545.562,140.605c-42.623,-66.542 165.503,-622.962 273.085,-627.238c107.582,-4.275 11.212,-17.292 308.88,203.185c96.097,71.177 -48.658,102.416 -36.403,283.448Z' style='fill:%23ff7f0f;'/%3E%3Cpath d='M91.088,203.494c71.814,47.292 -54.194,185.085 -174.368,242.155c-56.234,26.704 -7.289,-12.223 36.45,-84.892c53.698,-89.214 78.921,-196.115 137.918,-157.263Z' style='fill:%23fff;fill-opacity:0.1;'/%3E%3Cpath d='M957.866,33.222c-127.086,-178.115 2.723,-210.604 27.663,-510.62c6.397,-76.954 175.48,-143.101 241.533,-111.872c66.053,31.228 311.113,54.218 127.372,400.748c-71.275,134.423 -285.478,377.44 -396.568,221.744Z' style='fill:%235cff8d;'/%3E%3Cpath d='M136.829,832.201c73.738,31.403 135.021,72.505 123.868,98.694c-11.153,26.19 -66.289,-20.461 -140.028,-51.864c-73.739,-31.403 -148.807,-30.086 -137.654,-56.276c11.154,-26.189 80.075,-21.956 153.814,9.446Z' style='fill:%23fff;fill-opacity:0.13;'/%3E%3Cpath d='M1043.38,66.901c-28.732,-1.638 -64.408,-17.514 -62.788,-45.933c1.621,-28.419 35.621,-5.113 64.353,-3.475c28.732,1.639 72.957,-18.523 71.337,9.897c-1.621,28.419 -44.17,41.149 -72.902,39.511Z' style='fill:%23fff;fill-opacity:0.3;'/%3E%3Cpath d='M1812,551.949c16.714,-23.428 57.606,-42.214 80.779,-25.682c23.172,16.533 -14.68,32.856 -31.394,56.283c-16.714,23.428 -23.255,71.589 -46.428,55.057c-23.173,-16.532 -19.671,-62.231 -2.957,-85.658Z' style='fill:%23fff;fill-opacity:0.17;'/%3E%3Cpath d='M1405.05,861.849c17.718,1.015 50.264,15.353 35.716,38.75c-8.235,13.246 -24.945,4.677 -39.163,0.958c-14.218,-3.719 -52.092,9.327 -54.251,-4.363c-4.2,-26.643 39.979,-36.361 57.698,-35.345Z' style='fill:%23fff;fill-opacity:0.12;'/%3E%3Cpath d='M813.08,1015.27c13.485,-4.833 41.306,-2.23 39.143,19.265c-1.225,12.17 -15.087,11.022 -28.572,15.855c-13.486,4.833 -28.735,16.604 -34.813,7.894c-11.83,-16.952 10.757,-38.181 24.242,-43.014Z' style='fill:%23fff;fill-opacity:0.12;'/%3E%3Cpath d='M289.069,938.577c28.281,3.233 40.622,53.195 12.341,49.962c-28.281,-3.233 -40.622,-53.195 -12.341,-49.962Z' style='fill:%23fff;fill-opacity:0.13;'/%3E%3Cpath d='M1820.94,664.934c28.281,3.233 40.622,53.195 12.341,49.962c-28.281,-3.232 -40.622,-53.194 -12.341,-49.962Z' style='fill:%23fff;fill-opacity:0.13;'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
