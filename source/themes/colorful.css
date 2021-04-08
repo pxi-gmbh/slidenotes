@@ -129,8 +129,12 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
 .colorful h3{
   text-shadow: 0.05em 0.05em var(--colorfulFirstBckgColor);
   color: white;
-  line-height: 0.85em;
+  line-height: 0.9em;
   margin-bottom: 0.1em;
+}
+.colorful h2,
+.colorful h2.griditem{
+  max-width: 90vw;
 }
 
 .colorful .ppage:first-child{
@@ -237,9 +241,16 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
   z-index: -1;
 
 }
-.colorful .pblock h2 + p > span, .colorful .pblock h3 + p > span{
+.colorful .pblock h2 + p > span,
+.colorful .pblock h3 + p > span{
   background-color: var(--colorfulFirstBckgColor);
   padding: 0.05em 0.4em;
+}
+
+.colorful section .pblock h2 + p > span,
+.colorful section .pblock h3 + p > span{
+  background-color: var(--colorfulBckgColor);
+  color: var(--colorfulTextColor);
 }
 
 .colorful p{
@@ -306,7 +317,7 @@ margin:1ch;
 .colorful ul,
 .colorful ol{
   line-height: 1.3em;
-  background-color: var(--colorfulBckgColor)
+  background-color: var(--colorfulBckgColor);
   padding-left: 1.1em;
   padding-right: 0.5em;
 }

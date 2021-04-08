@@ -109,6 +109,12 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
 
   text-shadow: 0.05em 0.03em var(--minimalistBckgColor);
 }
+.minimalist section h1,
+.minimalist section h2,
+.minimalist section h3{
+  margin-left: 0;
+  margin-right: 0;
+}
 
 .minimalist h1{
   font-size: 4em;

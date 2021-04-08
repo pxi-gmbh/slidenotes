@@ -1,9 +1,12 @@
+# version 1.1.1
+- small bugfixes
+
 # version 1.1
-updated colorfull-theme
-updated dark-theme
-fixed bug on node-trees
-fixed bug controlarea
-fixed minor-bugs
+- updated colorfull-theme
+- updated dark-theme
+- fixed bug on node-trees
+- fixed bug controlarea
+- fixed minor-bugs
 
 # version 1.0
 
