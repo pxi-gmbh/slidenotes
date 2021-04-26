@@ -751,7 +751,7 @@ slidenoteGuardian.prototype.initTutorial = function(){
   slidenote.appendFile("css","tutorial.css");
 
   this.startEditorAnimation();
-
+  slidenote.presentation.showpresentation();
 }
 
 var testresponse; //for testing-purpose
