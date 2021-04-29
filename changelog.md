@@ -7,7 +7,7 @@
 - small bugfixes
 
 # version 1.1
-- updated colorfull-theme
+- updated colorful-theme
 - updated dark-theme
 - fixed bug on node-trees
 - fixed bug controlarea
