@@ -186,7 +186,7 @@
 #praesentationrahmen.fullscreen {
 	display: block;
 }
-#praesentation {
+#praesentation, #slidenotepresentation {
     position: fixed;
     top: 0;
     width: 100%;

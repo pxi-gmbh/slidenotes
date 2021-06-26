@@ -641,7 +641,7 @@ newtheme.buildLines = function(block){
 slidenote.afterCodeEditorrender = null; //newtheme.highlighteditor;
 
 newtheme.highlightintexteditor = false;
-newtheme.addGlobalOption("checkbox", "highlighting of codeblocks in texteditor (experimental)", "hltexteditor",true);
+newtheme.addGlobalOption("checkbox", "highlighting of codeblocks in text editor (experimental)", "hltexteditor",true);
 //newtheme.addGlobalOption("checkbox", "show line numbers", "show line numbers",true, true)	;
 newtheme.showLineNumbers = true;
 newtheme.changeGlobalOption = function(optionnr, value){
@@ -652,6 +652,7 @@ newtheme.changeGlobalOption = function(optionnr, value){
 			slidenote.afterCodeEditorrender = this.highlighteditor;
 		} else{
 			slidenote.afterCodeEditorrender = null;
+			slidenote.parseneu(true);
 		}
 }
 

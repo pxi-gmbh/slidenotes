@@ -11,6 +11,7 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
 :root{
   --minimalistBckgColor: #f4f4f4;
   --minimalistTextColor: #030303;
+  --minimalistTextMarkerColor: #b7c8d0;
 
   --minimalistDataColor0: #96a0a4;
   --minimalistDataColor1: #5f7782;
@@ -75,7 +76,10 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
   border-radius: 0 0 99px;
 }
 
-
+.status-textmarker-active .minimalist ::selection{
+  background: var(--minimalistTextMarkerColor);
+  text-shadow: none;
+}
 
 /*code affects both: inlinecode and codeblock*/
 .minimalist code {
@@ -281,6 +285,7 @@ margin:1ch;
 
 .minimalist mark{
   background-color: #e3dada;
+  text-shadow: none;
 }
 
 

@@ -229,7 +229,7 @@ div#slidenoteguardiandiff {
   padding: 10px;
   border: 1px solid red;
   overflow-y: scroll;
-  max-width:90%;
+  width:90%;
   white-space:pre-wrap;
 }
 
@@ -246,6 +246,7 @@ div#slidenoteguardiandiff {
   "localt cachedt";
   grid-gap:2vh;
   padding:2vh;
+  grid-template-columns: 1fr 1fr;
 }
 .slidenoteguardiandiffdialog .pretext{
   grid-area:pretext;

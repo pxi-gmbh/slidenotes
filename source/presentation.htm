@@ -2,10 +2,12 @@
 <html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
   <title>slidenotes | presentation</title>
   <link rel="stylesheet" href="slidenoteplayer.css">
   <link rel="stylesheet" href="presentations.css">
   <link rel="stylesheet" href="themes/dialoger.css">
+  <link rel="stylesheet" href="themes/pointer.css">
   <link rel="stylesheet" href="themes/slidenoteguardian.css">
   <!-- css-block -->
   <!-- should i insert all standard-css here? like blocks.css etc.-->
@@ -13,6 +15,7 @@
   <!-- css-block -->
   <script src="multiuserpresentation.js"></script>
   <script src="themes/dialoger.js"></script>
+  <script src="themes/pointer.js"></script>
   <script language="javascript" src="slidenoteplayer.js"></script>
   <script language="javascript" src="slidenotes.js"></script>
   <!--added css and js-bibs from script:-->
@@ -356,10 +359,16 @@
         <span id="controlcommentcountseparator">/</span>
         <span id="controlcommenttotal"></span>
   		</button>
+      <!--
   		<button id="controlarea_multiuserdialog" class="controlbutton controlbuttonleft" onclick="ws.showDialog()" title="start a session">
   			<span class="screenreader-only">start a session</span>
   			<img src="images/buttons/cmsmultisession.svg">
   		</button>
+    -->
+      <button id="controlarea_open-config-dialog" class="controlbutton controlbuttonleft" onclick="slidenote.presentation.configDialog(true);" title="open presentation options">
+        <span class="screenreader-only">open presentation options</span>
+        <img src="images/buttons/presentation_presentation-options.svg">
+      </button>
   	</div>
 
   </div> <!--slidenotediv-->
@@ -440,6 +449,52 @@
     </details>
   </div>
   <div id="hidepresentation"></div>
+  <!-- additional templates -->
+  <template id="template-presentation-config-dialog">
+      <ul>
+        <li>
+          <input id="config-fullscreen" class="config-fullscreen" type="checkbox" onchange="slidenote.goFullScreen('slidenotepresentation');">
+          <label for="config-fullscreen">
+            <span>enable fullscreen</span>
+            <span class="keyboardshortcut">f</span> / <span class="keyboardshortcut">esc</span>
+            <span class='image-wrapper'><img src="images/buttons/presentation_fullscreen.svg"></span>
+          </label>
+        </li>
+        <li>
+          <input id="config-pointer" class="config-pointer" type="checkbox" onchange="if(this.checked)pointer.init();else pointer.deactivate();">
+          <label for="config-pointer">
+            <span>enable pointer</span>
+            <span class='image-wrapper'><img src="images/buttons/presentation_pointer.svg"></span>
+          </label>
+        </li>
+        <!--<li>
+          <input id="config-marker" class="config-marker menuitem" type="checkbox" onchange="document.body.classList.toggle('status-textmarker-active',this.checked);if(this.checked)textmarker.init();else textmarker.deactivate();">
+          <label for="config-marker">
+            <span>enable textmarker</span>
+            <span class='image-wrapper'><img src="images/buttons/presentation_textmarker.svg"></span>
+          </label>
+        </li>-->
+        <li>
+          <input id="config-multiusersession" type="checkbox" onchange="ws.toggleMultiUserPresentation(this.checked)">
+          <label for="config-multiusersession">
+            <span>multi user session</span>
+            <span id="spectatorcountwrapper">(
+              <span id="spectatorcount"></span>
+              spectators)
+            </span>
+            <span class='image-wrapper'><img src="images/buttons/presentation_multi-user-session.svg"></span>
+          </label>
+          <div class="multiuser-link">
+            <div id="multiuser-link-preview" class="multiuser-link-preview">
+
+            </div>
+            <button id="invitelink" class="invitelink" type="button" name="button">
+              <span>copy link</span>
+            </button>
+          </div>
+        </li>
+      </ul>
+  </template>
   <!-- additional starting-scripts-->
   <script language="javascript">
     var slidenoteguardian = {
@@ -458,18 +513,23 @@
       this.joinsession = (location.href.indexOf('join')>-1);
       //we dont start session here cause password is not set yet
       //we could cut the url here to be more standard-like if join is on
-
-      //get actual slidenote
-      let url = location.search.substring(1);
-      console.log(url);
-      try{
-        this.mongopresentation = await getJson('/api/presentation/url/'+url);
-      }catch(err){
-        console.warn('could not load presentation',err);
-        return {err:err};
+      if(this.joinsession){
+         let roomId = location.search.substring(location.search.indexOf('join')+'join'.length);
+         ws.joinSession(roomId);
+         return;
       }
-      if(this.mongopresentation.error){
-        //404-dialog:
+        //get actual slidenote from id
+        let url = location.search.substring(1);
+        console.log(url);
+        try{
+          this.mongopresentation = await getJson('/api/presentation/url/'+url);
+        }catch(err){
+          console.warn('could not load presentation',err);
+          // return {err:err};
+          this.mongopresentation={error:true}
+        }
+        if(this.mongopresentation.error){
+          //404-dialog:
           dialogoptions = {
             title:"404 - file not found",
             content:"we could not find a presentation with this url. please check your url for mistyping",
@@ -480,8 +540,9 @@
           dialoger.buildDialog(dialogoptions,function(){
             location.href='https://www.slidenotes.io';
           });
-        return;
-      }
+          return;
+        }
+
       this.encBufferString = this.mongopresentation.encnote;
       try{
         this.options = JSON.parse(this.mongopresentation.options);
@@ -625,8 +686,8 @@
 
       //if we have to join a session we should do it now as
       //password is set:
-      if(this.joinsession && ws)ws.joinSession();
-
+      // if(this.joinsession && ws)ws.joinSession();
+      // as for new logic its not called here anymore  
       //var imgblockpos = this.decText.indexOf("§§§€€€€€IMAGEBLOCK€€€€€§§§");
       //this.imageblockstring = this.decText.substring(imgblockpos+26);
       //this.decText = this.decText.substring(0,imgblockpos);

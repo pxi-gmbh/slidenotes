@@ -110,7 +110,7 @@
 #praesentationrahmen.fullscreen {
   display: block;
 }
-#praesentation {
+#praesentation, #slidenotepresentation {
   position: fixed;
   top: 0;
   width: 100%;
@@ -172,9 +172,10 @@ img.vertical.griditem{
   width: 100%;
   object-fit: contain;
   object-position: top;
-  max-height: 70vh;
+  max-height: 100%;
+  min-height: 10em;
 }
-.imageblock img{
+.imageblock > img{
 	max-width: 100%;
 	max-height: 80vh;
 }
@@ -331,7 +332,7 @@ b code{
   /*div.blocks .ppage.active, div.blocks .ppage{
     display: block;
   }*/
-  #praesentation{
+  #praesentation, #slidenotepresentation{
     font-size: calc(11.55/10*(0.5em + 1vw));
   }
   .ppage section.inline{
@@ -529,6 +530,10 @@ from here on forward only declarations for online-version */
 #controlcomment img{
   height: 70%;
 }
+#controlarea_open-config-dialog img{
+  height: 50%;
+  margin-top: 14%;
+}
 
 #controlarea.closed button, #controlarea.closed a{
   visibility: hidden;
@@ -622,6 +627,7 @@ from here on forward only declarations for online-version */
 }
 /*top-button: back-to-editor/controlarea_multiuserdialog*/
 #controlarea #controlarea_back-to-editor,
+#controlarea #controlarea_open-config-dialog,
 #controlarea #controlarea_multiuserdialog{
   left: calc(6.2/var(--piw)*100%);
   bottom: calc(153.6/var(--piw)*100/5.84*33%);

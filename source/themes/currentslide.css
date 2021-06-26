@@ -1,0 +1,24 @@
+/*block in background, top and height are set by javascript*/
+#currentSlideBackground {
+    position: absolute;
+    width: 100%;
+    background: khaki;
+}
+/*each line in the texteditorerrorlayer belonging to
+the current slide*/
+.backgroundline.currentslide{
+  background: green;
+}
+/*
+first line is .background.pagebreak.currentslide
+to mark pagebreak of current slide
+but first slide does not have a pagebreak,
+instead the very first backgroundline has a
+before element which serves as pagebreak, therefore
+use following to alter:
+span.backgroundline.currentslide:first-child:before
+*/
+.backgroundline.pagebreak.currentslide,
+span.backgroundline.currentslide:first-child:before{
+  background:red;
+}

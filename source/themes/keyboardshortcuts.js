@@ -792,11 +792,16 @@ keyboardshortcuts.init = function(){
     //presentation-keyboard-navigation:
     this.addShortcut(new this.shortcut("presentation keyboard navigation",
       "presentation",
-      {multipleChoiceKeys:["ArrowLeft","ArrowRight", " ","Escape","Enter","0","1","2","3","4","5","6","7","8","9","f"],
+      {multipleChoiceKeys:[
+        "ArrowLeft","ArrowRight", " ","Escape","Enter",
+      "0","1","2","3","4","5","6","7","8","9",
+      "f","o","h"],
       metakey:false},
         function(e){
       var key=e.key;
       if(!fullscreen)return true;
+      let tag = e.target.tagName;
+      if(tag=='BUTTON' || tag=='INPUT')return true;
       if(key==="Escape")slidenote.presentation.showpresentation();
       if(key==="ArrowRight" || key===" ")slidenote.presentation.nextPage();
       if(key==="ArrowLeft")slidenote.presentation.lastPage();
@@ -815,6 +820,9 @@ keyboardshortcuts.init = function(){
       }
       console.log('presentation-key',key);
       if(key==="f")slidenote.goFullScreen(false, true);
+      if(key==="o")document.getElementById('controlarea_open-config-dialog').click();
+      if(key==="h")document.getElementById('controlarea_back-in').click();
+
     }));
 
     //look out for mac and load mac-standard-keys:

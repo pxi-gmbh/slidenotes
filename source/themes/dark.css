@@ -11,6 +11,8 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
 :root{
   --darkBckgColor: #030303;
   --darkTextColor: #f4f4f4;
+  --darkTextMarkerColor: #E7DB74;
+
 
   --darkDataColor0: #E7DB74;
   --darkDataColor1: #A87DF5;
@@ -77,6 +79,10 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
   border-radius: 0;
 }
 
+.status-textmarker-active .dark ::selection{
+  background: var(--darkTextMarkerColor);
+  text-shadow: none;
+}
 
 
 /*code affects both: inlinecode and codeblock*/

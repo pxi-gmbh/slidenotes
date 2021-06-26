@@ -2616,7 +2616,7 @@ slidenoteGuardian.prototype.loadDiff = async function(){
     var confirmp = document.getElementById("dialogcontainer");
     confirmp.parentNode.removeChild(confirmp);
   };
-  cachedButton.innerText = "load cached version";
+  cachedButton.innerText = "load version of browser";
   cmsButton.innerText = "load version of cloud";
   //var title = document.createElement("h1");
   //title.innerText = "Cached Version differs from Cloud-Status";
@@ -2625,7 +2625,8 @@ slidenoteGuardian.prototype.loadDiff = async function(){
   //dialogcontent.classList.add("dialogcontent");
   dialogcontent.id = "placeholder";
   var pretext = document.createElement("div");
-  pretext.innerText = "we found an unsaved version of this note in your local cache. load local cache or cloud?";
+  pretext.innerHTML = "we found a newer version of this slidenote saved by your browser.<br>"+
+                      "do you want to load from your browser or the cloud?";
   pretext.classList.add("pretext");
   function createList(text){
     var ul = document.createElement("ol");
@@ -2659,7 +2660,7 @@ slidenoteGuardian.prototype.loadDiff = async function(){
   //call dialog:
   var dialogoptions = {
     type:"dialog",
-    title: "cached version differs from cloud-status",
+    title: "found unsaved note in browser",
     content:dialogcontent,
     cssclass:"slidenoteguardiandiffdialog",
     closebutton:true,

@@ -1,4 +1,4 @@
-section.left img, section.right img{
+section.left > img, section.right > img{
   max-width:100%;
 }
 section.inline {

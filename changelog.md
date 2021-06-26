@@ -1,3 +1,9 @@
+# version 1.3
+- new multiuser interface
+- added pointer on presentations
+- fixed bugs on multiuser presentation
+- fixed minor bugs 
+
 # version 1.2
 - tutorials now start in presentation-mode
 - updated tutorials to reflect this change

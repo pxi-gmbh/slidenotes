@@ -18,6 +18,7 @@ xtraoptions.options[1].onchange = function(){
   if(!keyboardshortcuts)return;
   slidenote.keyboardshortcuts.enableTab = this.value;
 }
+
 xtraoptions.addGlobalOption("checkbox",xtraoptions.options[0].name,xtraoptions.options[0].name,true);
 xtraoptions.addGlobalOption("checkbox",xtraoptions.options[1].name,xtraoptions.options[1].name,false);
 //xtraoptions.addGlobalOption("checkbox","editorbuttons","Show Editorbuttons",true);
@@ -38,6 +39,5 @@ xtraoptions.loadConfigString = function(datastring){
   var data = datastring.split(";");
   for(var x=0;x<data.length;x++)this.changeGlobalOption(x,(data[x]==="true"));
 }
-
 
 slidenote.addTheme(xtraoptions);

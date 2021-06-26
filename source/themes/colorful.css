@@ -15,6 +15,7 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
   --colorfulHeadlineTextShadow: #05fff3;
   --colorfulFirstBckgColor: #6562ed;
   --colorfulColorBckgColor: #FFD676;
+  --colorfulTextMarkerColor: #F51AA4;
 
   --colorfulDataColor0: #F51AA4;
   --colorfulDataColor1: #59DBD4;
@@ -55,7 +56,7 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
 @font-face{
   font-family: "RobotoCondBoldItalic";
   src: url("/fonts/themes/colorful/RobotoCondensed-BoldItalic.ttf");
-  font-weight: normal;
+  font-weight: bold;
   font-style: italic;
 }
 @font-face{
@@ -85,6 +86,11 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
   background: var(--colorfulHeadlineTextShadow);
   border-radius: 0 0 99px;
   position: absolute;
+}
+
+.status-textmarker-active .colorful ::selection{
+  background: var(--colorfulTextMarkerColor);
+  text-shadow: none;
 }
 
 .colorful p,
@@ -145,7 +151,8 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
   background-repeat: no-repeat;
   background-size: cover;
 }
-.colorful .ppage:first-child span{
+.colorful .ppage:first-child span,
+.colorful .ppage:first-child span a{
   color: white;
   background-color: var(--colorfulFirstBckgColor);
 }
@@ -160,17 +167,6 @@ ich leg dir hier ein muster vor, in das du deine sachen eintragen kannst. halt e
   font-size: 4em;
   margin-top: 25vh;
   text-shadow: 0.03em 0.04em black;
-}
-.colorful h1:before{
-  content:"";
-  width: 1000vw;
-  height:50vh;
-  background-color: var(--colorfulFirstBckgColor);
-  display: block;
-  position: absolute;
-  z-index: -1;
-  margin-left: -100vw;
-  margin-top: -15vh;
 }
 .colorful h1.griditem,
 .colorful .griditem h1{
@@ -289,7 +285,7 @@ margin:1ch;
 
 .colorful a{
   text-decoration: underline;
-  font-family: "RobotoCondReg", Sans-Serif;
+  font-family: "RobotoCondItalic", Sans-Serif;
   color: var(--colorfulTextColor);
 }
 
@@ -364,6 +360,7 @@ margin:1ch;
 
 .colorful mark{
   background-color: #63fb6d;
+  text-shadow: none;
 }
 
 

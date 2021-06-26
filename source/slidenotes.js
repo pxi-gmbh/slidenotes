@@ -628,7 +628,7 @@ emdparser.prototype.renderCodeeditorBackground = function(){
 					 typ:"error",
 					 tag:this.perror[er].errorclass
 				 });
-				 if(this.perror[er].errorclass="image"){
+				 if(this.perror[er].errorclass=="image"){
 					 changes.push({
 						 line:this.perror[er].line,
 						 posinall:this.map.linestart[this.perror[er].line]+this.perror[er].rowend,//this.map.linestart[this.perror[er].line]+lines[this.perror[er].line].length,
@@ -773,6 +773,9 @@ emdparser.prototype.renderCodeeditorBackground = function(){
 		returnlines.push(temptext);
 		temptext="";
 	}
+	//adding margin-line:
+	//fix for firefox: - does not work and breaks code
+	//if(navigator.userAgent.indexOf('Firefox')>-1)returnlines.push('<div class="margin-bottom"></div>')
 	//console.log("changes:");//console.log(changes);
 	this.mdcodeeditorchanges = changes;
 	return returnlines; //temptext;
@@ -1491,7 +1494,7 @@ emdparser.prototype.renderMapToPresentation = function(){
 				//search for imageblock:
 				var followlines = lwh+1;
 				while(followlines < lines.length && lines[followlines].length>0 &&
-					(this.lineswithhtml[followlines]==null || this.lineswithhtml[followlines]=="imageline")
+					(this.lineswithhtml[followlines]==null)// || this.lineswithhtml[followlines]=="imageline")
 				){
 					this.lineswithhtml[followlines]="imageblock";
 					followlines++;
@@ -1507,13 +1510,37 @@ emdparser.prototype.renderMapToPresentation = function(){
 					});
 					changes.push({line:followlines, pos:lines[followlines].length,
 					posinall:lineend, html:"</div>", mdcode:"", typ:"end",weight:10});
-					//add brs to lines:
-					for(var brx=lwh;brx<followlines;brx++)
+					//add p-tag to imageblock:
 					changes.push({
-						line:brx, pos:lines[brx].length,
-						posinall:this.map.lineend[brx],
-						html:"<br>", mdcode:"", typ:"end", weight:9
+						line:lwh+1, pos:0,
+						posinall:this.map.linestart[lwh+1],
+						html:'<p>',mdcode:'',typ:'start',weight:0
 					});
+					changes.push({
+						line:followlines, pos:lines[followlines].length,
+						posinall:this.map.lineend[followlines],
+						html:'</p>',mdcode:'',typ:'end',weight:9
+					});
+					//add brs and spans to lines:
+					for(var brx=lwh;brx<=followlines;brx++){
+						if(brx>lwh){
+							changes.push({
+								line:brx, pos:0,
+								posinall:this.map.linestart[brx],
+								html:"<span>", mdcode:"", typ:"start", weight:0
+							});
+							changes.push({
+								line:brx, pos:lines[brx].length,
+								posinall:this.map.lineend[brx],
+								html:"</span>", mdcode:"", typ:"end", weight:8
+							});
+						}
+						if(brx<followlines)changes.push({
+							line:brx, pos:lines[brx].length,
+							posinall:this.map.lineend[brx],
+							html:"<br>", mdcode:"", typ:"end", weight:8
+						});
+					}
 
 				}
 			}//end of imageblock-search
@@ -3213,6 +3240,52 @@ pagegenerator.prototype.animatePresentationControl = function(toOpen){
 	}
 }
 
+pagegenerator.prototype.configDialog = async function(onlinepresentation){
+  let content = document.createElement("div");
+  content.id="placeholder";
+  let template = document.getElementById('template-presentation-config-dialog');
+  if(!template)return;
+  content.innerHTML = template.innerHTML;
+	let fullscreencheckb = content.getElementsByClassName('config-fullscreen')[0];
+	if(document.fullscreenElement)fullscreencheckb.checked = true;
+	if(window.pointer && pointer.isActive){
+		let pchk = content.querySelector('input#config-pointer');
+		pchk.checked = true;
+	}
+	// let mchk = content.querySelector('input#config-marker');
+	// mchk.checked = document.body.classList.contains('status-textmarker-active');
+	if(onlinepresentation){
+		let invitebutton = content.getElementsByClassName("invitelink")[0];
+		let invitepreview = content.getElementsByClassName("multiuser-link-preview")[0];
+		let ivlink = location.href.substring(0,location.href.indexOf('?'));
+		//if(ivlink.indexOf("#")>-1)ivlink = ivlink.substring(0,ivlink.indexOf("#"));
+		// ivlink+="?join";
+		ivlink += '?join';//+ivlink;
+		ivlink += await ws.createRoomId();//hash(location.search,true);
+		invitebutton.linkTarget = ivlink;
+		invitebutton.onclick = function(){copylink(this.linkTarget,this);};
+		invitepreview.innerText = ivlink;
+		if(window.ws && ws.server){
+			let usercount = ws.updateSpectatorCount();
+			let multichk = content.querySelector('input#config-multiusersession');
+			multichk.checked = true;
+			let muc = content.querySelector('#spectatorcount');
+			muc.innerText = usercount;
+		}
+
+	}
+  let dialogoptions ={
+      title:"presentation options",
+      type:"dialog",
+      content:content,
+      closebutton:true,
+			cssclass: 'presentation-options-dialog',
+      //focuson:invitebutton
+  }
+  dialoger.buildDialog(dialogoptions);
+}
+
+
 /* Theme-Objekt
  * Das Theme-Objekt ist die Hauptschnittstelle um Themes einzuspielen. Durch ein Plug-In ähnliches System können so zusätzliche
  * HTML-Tags und CSS-Klassen an die Präsentation gebracht werden.
@@ -3369,7 +3442,10 @@ Theme.prototype.loadConfigString = function(data){
 	//Hook-Funktion, gedacht zum Überschreiben in .js-Datei des Themes
 	//wird von slidenoteguardian benutzt um Configs zu laden
 }
-
+Theme.prototype.scroll = function(){
+	//Hook-Funktion, gedacht zum Überschreiben in .js-Datei des Themes
+	//wird von currentslide benutzt um auf scrollen zu reagieren
+}
 
 /* new extension manager: to separate code better as own object
  * handles all extension-related stuff like
@@ -3412,6 +3488,7 @@ ExtensionManager.prototype.loadBasicThemes = function(){
 	this.loadTheme("progressbar");
 	this.loadTheme("extraoptions",true);
 	this.loadTheme("node");
+	// this.loadTheme("currentslide");
 	//css-themes:
 	//this.loadTheme("azul");
 	//this.loadTheme("redalert");
@@ -4279,7 +4356,7 @@ var oldrendermode = false;
 * changed this function has to be called once.
 * it parses the sourcecode and calls the rendering-functions afterwards
 */
-slidenotes.prototype.parseneu = function(){
+slidenotes.prototype.parseneu = function(forceNewRender){
 	//error-handling: dont parse if editor is not ready/still loading themes:
 	if(!this.extensions.allThemesLoaded)return;
 	var startzeit = new Date();
@@ -4310,7 +4387,7 @@ slidenotes.prototype.parseneu = function(){
 			renderMinimizedSwitchOfInnerHtml(this.texteditorerrorlayer,newerrorlayer);
 		}else{
 			this.parser.renderedBackgroundLines = newerrorlines;
-			if(this.oldparser.renderedBackgroundLines){
+			if(this.oldparser.renderedBackgroundLines && !forceNewRender){
 				//remove old cursor so it does not stay if not inside changedlines
 				//let oldcarret = document.getElementById("carret");
 				//while(oldcarret){
@@ -5123,7 +5200,10 @@ slidenotes.prototype.scroll = function(editor){
 			//console.log(nssym);
 		}
 		//console.log("scroll");
-
+		let th=slidenote.extensions.themes;
+		for (let x=0;x<th.length;x++){
+			if(th[x].active)th[x].scroll();
+		}
 	}
 };
 
@@ -5203,7 +5283,7 @@ slidenotes.prototype.goFullScreen = function(targetId, preview){
 			}).catch(function(e){
 				console.error(e);
 			});
-		}else if(document.fullscreenElement==target && !document.body.classList.contains('fullscreen-editor')){
+		}else if(document.fullscreenElement==target && !document.body.classList.contains('editor-fullscreen')){
 			//close fullscreen
 			//delete target.onfullscreenchange;
 			document.exitFullscreen();
@@ -5377,7 +5457,7 @@ emdparser.prototype.insertChangedLines = function(oldnode,newerrorlines,olderror
         var tmpdiv = document.createElement("div");
         tmpdiv.innerHTML = newlines[actline];
         if(actline<oldchildren.length){
-            whichwerereplaced.push("replace in line"+actline+":"+tmpdiv.children[1].innerHTML + "<--" + oldchildren[actline].innerHTML);
+            whichwerereplaced.push("replace in line"+actline+":"+tmpdiv.children[0].innerHTML + "<--" + oldchildren[actline].innerHTML);
             oldnode.replaceChild(tmpdiv.children[0],oldchildren[actline]);
             replacedchilds++;
         }else{
@@ -5401,7 +5481,9 @@ emdparser.prototype.insertChangedLines = function(oldnode,newerrorlines,olderror
 
 
     console.log("Timecheck: insertChangedLines: \n replacedchilds:"+replacedchilds+" added:"+addedchilds + " removed:"+removedchilds + "deleted:"+deletedlinecount);
-		//console.log(changedlines);//console.log(whichwerereplaced); //console.log(whichwereremoved);
+		//console.log(changedlines);//
+		console.log(whichwerereplaced);
+		//console.log(whichwereremoved);
 		return changedlines;
 }
 //testinit();

@@ -2,7 +2,8 @@ var websocketurl = "wss://"+location.hostname+"/ws/";
 if(location.hostname=='localhost')websocketurl="ws://"+location.hostname+":3333";
 var ws = {server:null};
 
-ws.joinSession = function(){
+ws.joinSession = function(roomId){
+    this.room = roomId;
     this.init();
     //deactivate controls:
     document.body.classList.add("spectator");
@@ -20,12 +21,36 @@ ws.init = async function(){
         this.server = await new WebSocket(websocketurl);
      }
     this.server.onopen = function(){ws.init2();};
+    this.server.onclose = function(){
+      console.log('server closed')
+      let dialogoptions = {
+        title: 'connection to server lost',
+        type: 'alert',
+        content:'connection to slidenotes.io server lost - maybe internet went down?',
+        confirmbutton: 'retry',
+        containerClass: 'connection-lost',
+        closefunction: function(){
+          ws.toggleMultiUserPresentation(false);
+          document.getElementById('config-multiusersession').checked = false;
+        },
+      };
+      dialoger.buildDialog(dialogoptions, function(){
+        // setTimeout(function(){
+          ws.server=null;
+          ws.init();
+        // },10);
+      });
+    };
+    this.server.onerror = function(e){
+      console.log('ws-error',e);
+    };
 }
 
 ws.init2 = async function(){
-        this.room = await hash(location.pathname+slidenoteguardian.password);
+        if(!this.room)this.room = await this.createRoomId();//hash(location.search);//hash(location.pathname+slidenoteguardian.password);
         if(this.creator)this.sendMessage(this.room,"createRoom");
         else this.sendMessage(this.room,"joinRoom");
+
         this.server.onmessage = function incoming(msg){
             let data;
             try{
@@ -34,6 +59,7 @@ ws.init2 = async function(){
                 console.log(e, msg);
                 return;
             };
+            // console.log('message recieved',data);
             if(data.action==="syncToSlideNr"){
                 slidenoteplayer.gotoPage(data.msg,true);
             }
@@ -48,8 +74,9 @@ ws.init2 = async function(){
                 //gets a list with user-ids, including own:
                 //for now we only use the length - minus self to show spectators length:
                 ws.userlist=data.data;
-                let speclist = document.getElementById("spectatorcount");
-                if(speclist)speclist.innerText = ws.userlist.length-1;
+                //let speclist = document.getElementById("spectatorcount");
+                //if(speclist)speclist.innerText = ws.userlist.length-1;
+                ws.updateSpectatorCount();
             }
             if(data.action==="sendToAll" && data.options ==="pointerClick"){
               console.log('pointerClick',data.msg);
@@ -58,6 +85,55 @@ ws.init2 = async function(){
             if(data.action==="sendToAll" && data.options ==="textmarker"){
               console.log('textmarker',data.msg);
               textmarker.markText(data.msg);
+            }
+            if(data.action==="askCurrentState"){
+              console.log('current state',data);
+              let mpres = slidenoteguardian.mongopresentation;
+              currentState = {
+                action:'getCurrentState',
+                mongopresentation:{
+                  encimages: mpres.encimages,
+                  encnote:mpres.encnote,
+                  options:mpres.options,
+                  title:mpres.title,
+                },
+                actpage:slidenoteplayer.actpage,
+              }
+              ws.sendMessage(currentState, 'sendToId',{targetId:data.newUser});
+            }
+
+            if(data.action=="sendToId" && data.msg.action==='getCurrentState'){
+              console.log(data);
+              try {
+                slidenoteguardian.mongopresentation = data.msg.mongopresentation;
+                slidenoteguardian.encBufferString = data.msg.mongopresentation.encnote;
+                slidenoteguardian.notetitle = data.msg.mongopresentation.title;
+                slidenoteguardian.options = JSON.parse(data.msg.mongopresentation.options);
+              } catch (e) {
+                console.warn('could not load options, no valid json');
+              }
+              slidenoteplayer.actpage=data.msg.actpage;
+              if(slidenoteplayer.initialised){
+                slidenoteplayer.gotoPage(data.msg.actpage);
+              }else{
+                slidenoteguardian.init();
+              }
+            };
+            if(data.action=="error" && data.error=="room not created"){
+              let dialogoptions = {
+                title:"oops, something went wrong",
+                content:"the url is not valid. maybe session is not started yet?",
+                type: "alert",
+                confirmbutton: "try again",
+              }
+              console.log(ws.room);
+              dialoger.buildDialog(dialogoptions, function(){
+                if(ws.server){
+                  ws.sendMessage(ws.room,"joinRoom");
+                }else{
+                  ws.joinSession(ws.room);
+                }
+              });
             }
             /*
             if(data.action==="getUserNames"){
@@ -88,12 +164,49 @@ ws.sendTextmarker = function(transferobj){
   this.sendMessage(transferobj,"sendToAll", "textmarker");
 }
 
+ws.createRoomId = async function(){
+  let urlchars = "abcdefghijklmnopqrstuvwxyzABCDEF";
+  let prefix = "GHIJKLMNOPQRSTUVWXYZ1234567890_-" + "+=;.:&#";
+
+  let id=location.search.substring(1);
+  let textutf8 = new TextEncoder().encode(id);
+  //allthough its relatively weak we use SHA1 to diggest smaller url
+  let hash = new Uint8Array(await window.crypto.subtle.digest('SHA-1', textutf8));
+  var result = "";
+  for (let i=0;i<hash.length;i++){
+    let a=hash[i];
+    if(a>31){
+      let d=Math.floor(a/32);
+      a=a%32;
+      result+=prefix[d];
+    }
+    result+=urlchars[a];
+  }
+  return result;
+}
+
 //helper functions:
-hash = async function(text){
+hash = async function(text, url){
+  let urlchars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-";
+  let prefix = ";.:&#";
   let textutf8 = new TextEncoder().encode(text);
   let hash = new Uint8Array(await this.crypto.subtle.digest('SHA-256', textutf8));
+  console.log('hash:',hash);
   let result = "";
-  for(let i=0;i<hash.length;i++)result+=String.fromCharCode(hash[i]+255);
+  for(let i=0;i<hash.length;i++){
+    if(url){
+        let a=hash[i];
+        if(a>63){
+          let d=Math.floor(a/64);
+          a=a%64;
+          result+=prefix[d];
+        }
+        result+=urlchars[a];
+    }else
+    result+=String.fromCharCode(hash[i]+255);
+  }
+  // if(url)return btoa(result);
+
   return result;
 }
 
@@ -125,6 +238,7 @@ copylink = function(link, source){
 
 
 //showDialog shows the ws-dialog on click on ws-menu-item
+//unused at the moment?
 ws.showDialog = function(){
     let content = document.createElement("div");
     content.id="placeholder";
@@ -157,10 +271,30 @@ ws.showDialog = function(){
     }
     dialoger.buildDialog(dialogoptions);
 }
+ws.toggleMultiUserPresentation = function(goonline){
+  if(ws.server==null && goonline){
+    ws.createSession();
+  }
+  if(ws.server!=null && goonline==false){
+    ws.server=null;
+    return;
+  }
+  ws.updateSpectatorCount();
+}
+
+ws.updateSpectatorCount = function(){
+  let speccount = 0;
+  if(this.userlist)speccount=this.userlist.length-1; //dont count yourself
+  if(speccount<0)speccount=0; //could happen if userlist is not ready yet
+  let spcc = document.querySelector('#spectatorcount');
+  if(spcc)spcc.innerText = speccount;
+  return speccount;
+}
 
 
 
 /*pointer*/
+/* pointer moved to own file as its now used also in preview
 var pointerklick = function(event){
     function validNode(node){
       if(node.classList.contains('ppage'))return node;
@@ -224,12 +358,13 @@ var pointerklick = function(event){
         relativeDistanceY:relativeY
     }
     console.log('pointer makes klick',klick);
-    if(ws.server){
+    if(ws?.server){
       ws.sendPointer(klick);
     }
     klicks.push(klick);
     pointer.showPointer(klick);
 }
+
 var klicks = [];
 var pointer = {
   init:function(){
@@ -308,7 +443,7 @@ var pointer = {
 
 }
 //setTimeout("pointer.init()",3000);
-
+*/
 /*Text-marker:*/
 var textmarker = {
  active:false,

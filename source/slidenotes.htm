@@ -9,9 +9,11 @@
   <link rel="stylesheet" href="editor.css">
   <link rel="stylesheet" href="themes/slidenoteguardian.css">
   <link rel="stylesheet" href="themes/keyboardshortcuts.css">
+  <link rel="stylesheet" href="themes/pointer.css">
   <link rel="stylesheet" href="slidenoteplayer.css">
   <script language="javascript" src="slidenotes.js"></script>
   <script language="javascript" src="themes/dialoger.js"></script>
+  <script language="javascript" src="themes/pointer.js"></script>
   <script language="javascript" src="mongoguardian.js"></script>
   <script language="javascript" src="slidenoteguardian-mongo.js"></script>
   <script>
@@ -254,7 +256,7 @@
         title:"slide design",
         content: "design-list",
         closebutton:true,
-        cssclass:"presentationoptionsdialog",
+        cssclass:"themeswitchdialog",
         arrownavleftright:true
       };
       dialogoptions.content = this.buildPresentationMenu();
@@ -1454,7 +1456,7 @@
               </linearGradient>
             </defs>
 
-            <path id="vertical-blob2" d="M14.875,46.807c-4.78,-2.608 -8.802,3.216 -9.603,8.18c-0.901,5.578 4.19,10.159 9.951,10.159c5.762,0 8.369,-1.538 8.369,-7.189c0,-5.65 -2.965,-8.014 -8.717,-11.15Z" style="fill:url(#_gradient-vertical-blob2);">
+            <path d="M14.875,46.807c-4.78,-2.608 -8.802,3.216 -9.603,8.18c-0.901,5.578 4.19,10.159 9.951,10.159c5.762,0 8.369,-1.538 8.369,-7.189c0,-5.65 -2.965,-8.014 -8.717,-11.15Z" style="fill:url(#_gradient-vertical-blob2);">
               <animate class="animateToOpen" id="animate-to-open_vertical-blob2" begin="0" dur="0.2s" attributeName="d"
                 values="
                 M14.875,46.807c-4.78,-2.608 -8.802,3.216 -9.603,8.18c-0.901,5.578 4.19,10.159 9.951,10.159c5.762,0 8.369,-1.538 8.369,-7.189c0,-5.65 -2.965,-8.014 -8.717,-11.15Z;
@@ -1520,6 +1522,10 @@
           <button id="controlarea_preview-screen" class="controlbutton controlbuttonleft" onclick="presentation.enterPreviewMode();" title="enter preview mode">
             <span class="screenreader-only">enter preview mode</span>
             <img src="images/buttons/ctrlbuttonpreview.png">
+          </button>
+          <button id="controlarea_open-config-dialog" class="controlbutton controlbuttonleft" onclick="presentation.configDialog();" title="open presentation options">
+            <span class="screenreader-only">open presentation options</span>
+            <img src="images/buttons/presentation_presentation-options.svg">
           </button>
           <!-- back-to-editor -->
           <button id="controlarea_back-to-editor" class="controlbutton controlbuttonleft" onclick="presentation.showpresentation()" title="hide presentation">
@@ -1879,7 +1885,53 @@
     in short: apart from your login password, passwords can not be restored. we recommend using a password manager.
     </p>
   </div>
- </div>
+  <div id="template-presentation-config-dialog">
+    <ul>
+      <li>
+        <input id="config-fullscreen" class="config-fullscreen menuitem" type="checkbox" onchange="slidenote.goFullScreen('slidenotepresentation');">
+        <label for="config-fullscreen">
+          <span>enable fullscreen</span>
+          <span class="keyboardshortcut">f</span> / <span class="keyboardshortcut">esc</span>
+          <span class='image-wrapper'><img src="images/buttons/presentation_fullscreen.svg"></span>
+        </label>
+      </li>
+      <li>
+        <input id="config-pointer" class="config-pointer menuitem" type="checkbox" onchange="if(this.checked)pointer.init();else pointer.deactivate();">
+        <label for="config-pointer">
+          <span>enable pointer</span>
+          <span class='image-wrapper'><img src="images/buttons/presentation_pointer.svg"></span>
+        </label>
+      </li>
+      <!--<li>
+        <input id="config-marker" class="config-marker menuitem" type="checkbox" onchange="document.body.classList.toggle('status-textmarker-active',this.checked)">
+        <label for="config-marker">
+          <span>enable textmarker</span>
+          <span class='image-wrapper'><img src="images/buttons/presentation_textmarker.svg"></span>
+        </label>
+      </li>-->
+      <li class="disabled">
+        <input id="config-multiusersession" disabled="true" type="checkbox" onchange="">
+        <label for="config-multiusersession">
+          <span>multi user session</span>
+          <span class='image-wrapper'><img src="images/buttons/presentation_multi-user-session.svg"></span>
+        </label>
+        <!--
+        <div class="multiuser-link">
+          <div id="multiuser-link-preview" class="multiuser-link-preview">
+
+          </div>
+          <button id="invitelink" class="invitelink" type="button" name="button">
+            <span>copy link</span>
+          </button>
+        </div>
+      -->
+        <div class="multiuser-not-allowed">
+          only available in published presentation
+        </div>
+      </li>
+    </ul>
+  </div>
+</div> <!--end of templates -->
 
 
 </body>
