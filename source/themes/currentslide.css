@@ -2,12 +2,17 @@
 #currentSlideBackground {
     position: absolute;
     width: 100%;
-    background: khaki;
+    /*background: khaki;*/
+    /*some nicer way:*/
+    box-shadow: inset 0px 0px 6px 1px black;
+    margin-left: -4px;
+    /*hide it for now as we try something else:*/
+    display:none;
 }
 /*each line in the texteditorerrorlayer belonging to
 the current slide*/
 .backgroundline.currentslide{
-  background: green;
+  /*background: green;*/
 }
 /*
 first line is .background.pagebreak.currentslide
@@ -20,5 +25,32 @@ span.backgroundline.currentslide:first-child:before
 */
 .backgroundline.pagebreak.currentslide,
 span.backgroundline.currentslide:first-child:before{
-  background:red;
+  /*background:red;*/
+}
+
+
+/*body gets .currentslide-active when currentslide-plugin is active*/
+
+.currentslide-active #quelltext:focus~#editorblockfade{
+  /*display:none;*/
+  opacity:0;
+}
+
+.backgroundline{
+  transition: opacity 0.2s;
+}
+.backgroundline:not(.currentslide),
+.currentslide-active .backgroundline.code.metadata:not(.currentslide){
+  opacity: 0.6;
+}
+.currentslide-active .backgroundline.currentslide{
+  opacity:1;
+}
+
+.backgroundline.pagebreak:not(.currentslide){
+  background: repeating-linear-gradient( 45deg, #eaeaea, #eaeaea 5px, #d0d0d0 1px, #d0d0d0 11px);
+  color: var(--text-color);
+}
+.nightmode .backgroundline.pagebreak:not(.currentslide){
+  background: repeating-linear-gradient( 45deg, #535353, #535353 5px, #353535 1px, #353535 11px);
 }

@@ -2233,10 +2233,9 @@ button#dialogcancelbutton {
 }
 .presentation-options-dialog ul{
   list-style:none;
-  line-height: 2.5em;
+  line-height: 1.5em;
   margin: 0;
   padding: 0;
-  line-height: 3em;
 }
 .presentation-options-dialog li{
   display:grid;
@@ -2244,7 +2243,11 @@ button#dialogcancelbutton {
   grid-template-columns: auto auto;
   grid-gap: 0.2em 1ch;
   max-width: 30ch;
+  padding-bottom: 1em;
   border-bottom: solid 0.1em;
+}
+.presentation-options-dialog li + li{
+  margin-top: 1.5em;
 }
 .presentation-options-dialog li:last-of-type{
   border-bottom: none;
@@ -2253,7 +2256,6 @@ button#dialogcancelbutton {
   width: 1.5em;
   height: 1.5em;
   position: relative;
-  top: 0.8em;
 }
 .dialogbox.presentation-options-dialog li,
 .dialogbox.presentation-options-dialog [type="checkbox"]{
@@ -2552,7 +2554,6 @@ button .themepreview img {
   color: white;
   font-family: unset;
   font-size: unset;
-  opacity: 1;
 }
 
 .backgroundline.code {
@@ -2611,6 +2612,9 @@ white-space: pre;
   background: var(--light-dark-blue-backg);
   opacity: 0.7;
 }
+.backgroundline.code{
+  background: var(--code-backg);
+}
 
 .backgroundline.layout {
   display: inline-block;
@@ -2633,18 +2637,19 @@ white-space: pre;
 }
 
 .backgroundline.footnote {
-  background: #d3d3d3;
+  background-color: var(--light-blue-backg);
+  color: var(--emphazing-font-color);
   display: inline-block;
   width: 100%;
 }
 
 .backgroundline .firstfootnote {
-  border-top: 1px dashed;
-  margin-top: -1px;
+  border-top: 0.1em dashed;
 }
 
 .backgroundline .footnoteanchor {
-  color: var(--light-blue-backg);
+  background-color: var(--light-blue-backg);
+  color: var(--emphazing-font-color);
 }
 
 .backgroundline .comment {
@@ -2684,7 +2689,7 @@ white-space: pre;
   /*general*/
   --text-color: #fff;
   --interface-font-color: #CACACA;
-  --emphazing-font-color: #BE6F61;
+  --emphazing-font-color: #FFAEA0;
   --error-font-color: #ff0000;
   --editor-bg-color: #1B1917;
   /*lvl0-color*/

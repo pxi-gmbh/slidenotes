@@ -29,7 +29,7 @@ newtheme.renderFootnotesAmericanWay = function(){
     }
     footerpage.appendChild(footerlist);
     presentation.appendChild(footerpage);
-    
+
 }
 
 newtheme.renderFootnotesByPage = function(footnotemode){
@@ -50,7 +50,7 @@ newtheme.renderFootnotesByPage = function(footnotemode){
             footsups[s].innerText = newfootsign;
             foottexts[s].innerText = newfootsign + foottexts[s].innerText.substring(oldfootsign.length);
         }
-    
+
     }
 }
 
@@ -63,7 +63,7 @@ newtheme.buildFootnoteAnchorByPage = function(footnotemode, singlepage){
             allFootnotes.push(el);
         }
     }
-    allFootnotes.sort(function(a,b){return a.posinall - b.posinall;});
+    allFootnotes = allFootnotes.sort(function(a,b){return a.posinall - b.posinall;});
     var newSigns = [];
     var pagenr;
     var actcount = 1; //begins in 1, not in 0!
@@ -86,7 +86,7 @@ newtheme.buildFootnoteAnchorByPage = function(footnotemode, singlepage){
     }
     var text = slidenote.textarea.value;
     var selend = slidenote.textarea.selectionEnd;
-    var seldiff = 0;    
+    var seldiff = 0;
     for(var x=allFootnotesByPage.length-1;x>=0;x--){
         if(singlepage && allFootnotesByPage[x][0].pageNr!=singlepage)continue; //in singlepage mode only on singlepagenr
             //first the footers, then in second loop the anchors

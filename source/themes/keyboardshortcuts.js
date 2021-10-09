@@ -1131,7 +1131,7 @@ keyboardshortcuts.closeAutomagic = function(event){
       return "break";
     }
   }
-  if(key==='Enter'){
+  if(key==='Enter' && !event.ctrlKey && !event.metaKey && !event.shiftKey){
     let carret = document.getElementById('carret');
     let realpos = selend;
     if(carret && carret.innerHTML.length>1){

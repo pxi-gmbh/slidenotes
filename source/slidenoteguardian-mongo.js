@@ -1827,7 +1827,7 @@ slidenoteGuardian.prototype.loadConfig = async function(destination){
   var saveobject;
   try {
   saveobject = JSON.parse(savedConfigString);
-  }catch{
+  }catch(e){
   //load old config style? naa, just delete it...
     console.log("old config found");
     this.loadConfigOld(destination);
@@ -2604,6 +2604,15 @@ slidenoteGuardian.prototype.loadDiff = async function(){
   //confirmpage.id = "slidenoteguardiandiff";
   var cachedButton = document.createElement("button");
   cachedButton.onclick = function(){
+    slidenote.extensions.getThemeByName('history').backList.unshift({
+        value:cmsText,
+        selectionStart:0,
+        selectionEnd:0,
+        scrollTop:0,
+        newSelectionStart:0,
+        newSelectionEnd:0,
+        newScrollTop:0
+    });
     slidenoteguardian.loadNote("local");
     slidenoteguardian.initialised=true;
     var confirmp = document.getElementById("dialogcontainer");
@@ -2611,6 +2620,15 @@ slidenoteGuardian.prototype.loadDiff = async function(){
   };
   var cmsButton = document.createElement("button");
   cmsButton.onclick = function(){
+    slidenote.extensions.getThemeByName('history').backList.unshift({
+        value:cachedText,
+        selectionStart:0,
+        selectionEnd:0,
+        scrollTop:0,
+        newSelectionStart:0,
+        newSelectionEnd:0,
+        newScrollTop:0
+    });
     slidenoteguardian.loadNote("cms");
     slidenoteguardian.initialised=true;
     var confirmp = document.getElementById("dialogcontainer");

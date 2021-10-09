@@ -2260,7 +2260,7 @@ emdparser.prototype.parseMap = function(){
 
       }//end of pagebreak
       //footnote-anchor:
-      if(lines[x].indexOf("[^")>0){ //footnote-anchors arent allowed at linestart
+      if(lines[x].indexOf("[^")>=0){
           while(lines[x].indexOf("[^")>-1){
             var actpos = lines[x].indexOf("[^");
     				var endpos = lines[x].indexOf("]",actpos);
@@ -2283,14 +2283,33 @@ emdparser.prototype.parseMap = function(){
     					if(footnoteline==null){
     						//error: no footnote found
     						error="no footnote found";
-    						this.perror.push(new parsererror(x,actpos,endpos+1,"footnote-anchor",error));
+    						//this.perror.push(new parsererror(x,actpos,endpos+1,"footnote-anchor",error));
+								//this could also mean that there is code or data-block with separator inside
+								//so save fstart and fend
+								var fstart = {line:x,pos:actpos,html:"<sup>",
+									mdcode:"[^", label:"footnoteanchor", identifier:lines[x].substring(actpos+2,endpos),
+									typ:"start", footnoteline:undefined, tag:"footnote-anchor"};
+								var fend = {line:x, pos:endpos, html:"</sup>",
+								typ:"end",mdcode:"]", label:"footnoteanchor",
+									brotherelement:fstart, tag:"footnote-anchor"};
+								fstart.brotherelement = fend;
+								if(this.pendingFootnotes==undefined)this.pendingFootnotes=[];
+								this.pendingFootnotes.push({
+									anchorstart:fstart,
+									anchorend:fend,
+									identifier:lines[x].substring(actpos+2,endpos),
+									page:this.map.pagestart.length-1,
+								});
+								//delete footnote-anchor-tag to prevent further parsing of it:
+								lines[x]=lines[x].substring(0,actpos)+substitutewitheuro(endpos+1-actpos)+lines[x].substring(endpos+1);
+
     					}else{
     						//footnote anchor is ready, footnote found on same page at line footnoteline
     						//check if footnote is last element on page or only followed by other footnotes:
     						var islastelement=true;
     						for(var fx=footnoteline;fx<lines.length;fx++){
     							if(this.lines[fx].substring(0,3)==="---")break;
-    							if(lines[fx].substring(0,2)!="[^" && this.lineswithhtml!="footnote"){
+    							if(lines[fx].substring(0,2)!="[^"){
     								islastelement=false;
     								//console.log("footnote afterline "+fx+":"+lines[fx])
     							}
@@ -2299,7 +2318,7 @@ emdparser.prototype.parseMap = function(){
     							//everything is good, save the map-parsing:
     							this.lineswithhtml[footnoteline]="footnote";
     							var fstart = {line:x,pos:actpos,html:"<sup>",
-										mdcode:"[^", label:"footnoteanchor",
+										mdcode:"[^", label:"footnoteanchor", identifier:lines[x].substring(actpos+2,endpos),
     								typ:"start", footnoteline:footnoteline, tag:"footnote-anchor"};
     							var fend = {line:x, pos:endpos, html:"</sup>",
 									typ:"end",mdcode:"]", label:"footnoteanchor",
@@ -2347,13 +2366,48 @@ emdparser.prototype.parseMap = function(){
 					if(nextspace===-1)nextspace = lines[x].length;
   				this.perror.push(new parsererror(x,0,nextspace,"footnote","missing endsymbol ]:"));
   			}else{
-  				this.perror.push(new parsererror(x,0,endpos+2,"footnote","missing footanchor"));
-  				//console.log("footnote missing footanchor");
+					//check for pending footnotes as there could be some:
+					let identifier = lines[x].substring(2,endpos);
+					let pendingNote  = null;
+					if(this.pendingFootnotes){
+						for (let i=0;i<this.pendingFootnotes.length;i++){
+							if(this.pendingFootnotes[i].identifier==identifier && this.pendingFootnotes[i].page==this.map.pagestart.length-1){
+								pendingNote=this.pendingFootnotes.splice(i,1)[0];
+								break;
+							}
+						}
+					}
+					if(pendingNote && pendingNote.anchorstart){
+						let fnote = {line:x, pos:0, typ:"start",
+							html:"<p>"+identifier+":",mdcode:"[^"+identifier+"]:",
+							footanchor:pendingNote.anchorstart, tag:"footnote", label:"footnote"};
+						pendingNote.anchorstart.footer = fnote;
+						this.lineswithhtml[x]="footnote";
+						this.map.addElement(pendingNote.anchorstart);
+						this.map.addElement(pendingNote.anchorend);
+						this.map.addElement(fnote);
+						//delete footnote-tag in footnoteline to prevent further parsing of it:
+						lines[x]=substitutewitheuro(identifier.length+4)+lines[x].substring(identifier.length+4);
+					}else{
+						this.perror.push(new parsererror(x,0,endpos+2,"footnote","missing footanchor"));
+						//console.log("footnote missing footanchor");
+					}
   			}
   		}
   		//end of footnote
 
   }//end of for(x<lines) / parseperlines
+
+	//check for foot-note error
+  if(this.pendingFootnotes && this.pendingFootnotes.length>0){
+		for (let i=0;i<this.pendingFootnotes.length;i++){
+			this.perror.push(new parsererror(this.pendingFootnotes[i].anchorstart.line,
+				this.pendingFootnotes[i].anchorstart.pos,
+				this.pendingFootnotes[i].anchorend.pos+1,"footnote-anchor",
+				'no footnote found'));
+		}
+	}
+
   //simple-element-block
   //now parse the simple-elements:
   for(var x=0;x<lines.length;x++){
@@ -3488,7 +3542,7 @@ ExtensionManager.prototype.loadBasicThemes = function(){
 	this.loadTheme("progressbar");
 	this.loadTheme("extraoptions",true);
 	this.loadTheme("node");
-	// this.loadTheme("currentslide");
+	this.loadTheme("currentslide");
 	//css-themes:
 	//this.loadTheme("azul");
 	//this.loadTheme("redalert");
@@ -5022,6 +5076,7 @@ slidenotes.prototype.insertbutton = function(emdzeichen, mdstartcode, mdendcode)
 		    for(var fz=0;fz<=fnbefore+fnafter;fz++)emdstart+=fzeichen;
 		}else emdstart+= slidenote.textarea.value.substring(selstart,selend);
 		var insline = pend-fnafter;
+		if(pend==slidenote.parser.map.lineend.length)insline--;
 		var inspos = slidenote.parser.map.lineend[insline];
 		var txt = slidenote.textarea.value;
 		txt = txt.substring(0,selstart)+emdstart+emdend+

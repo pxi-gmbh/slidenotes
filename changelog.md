@@ -1,8 +1,16 @@
+# version 1.4
+- fixed bug on older android-firefox
+- fixed some accessibility
+- added old-state to cache on diff local to cloud state
+- added current-slide-focus in editor 
+- fixed footnote-bugs
+- fixed minor bugs
+
 # version 1.3
 - new multiuser interface
 - added pointer on presentations
 - fixed bugs on multiuser presentation
-- fixed minor bugs 
+- fixed minor bugs
 
 # version 1.2
 - tutorials now start in presentation-mode

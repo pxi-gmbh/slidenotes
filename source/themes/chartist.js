@@ -298,7 +298,8 @@ newtheme.importCsv = function(csv){
 
 newtheme.insert = function(selection){
   let example;
-  if(slidenote.parser.CarretOnElement()?.mdcode.indexOf('pie')>-1){
+  let coe = slidenote.parser.CarretOnElement();
+  if(coe && coe.mdcode && coe.mdcode.indexOf('pie')>-1){
     example=this.syntaxContainer.summary+this.syntaxContainer.metadataseparator+" summarize your data for screenreaders - the ingredience of lemonade\n"
     +this.syntaxContainer.headseparator
     +"\nwater:100\nlemonjuice:20\nsugar:30";

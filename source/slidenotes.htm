@@ -759,6 +759,7 @@
               //adding texteditorrahmensetzen on windows-resize
               window.addEventListener("resize",function(){
                 slidenote.texteditorrahmensetzen();
+                slidenote.parseneu();
                 //console.log("resize happened");
               });
               //add android-hacks
@@ -1120,7 +1121,7 @@
       </div></div></div>
       <div id="menuoptionseditor"><div class="arrow_box"><div class="arrow_box_content">
         <a href="/user/account.html" class="menuitem"><img src="images/buttons/bigmode_account.svg"><span>Account</span></a>
-        <a href='/user/' onclick='document.cookie = "authtoken=; expires=0; path=/";'class="menuitem"><img src="images/buttons/bigmode_logout.svg"><span>log out</span></a>
+        <a id="logoutbutton" href='/user/' onclick='document.cookie = "authtoken=; expires=0; path=/";'class="menuitem"><img src="images/buttons/bigmode_logout.svg"><span>log out</span></a>
         <div class="separator"><span>night shift</span></div>
         <button id="nightmodetoggle" class="menuitem">
           <div><img class="big-mode-only" src="images/buttons/darkmode.svg"><span class="big-mode-hidden">on</span></div>
@@ -1145,7 +1146,7 @@
         <div class="separator">slidenotes.io service</div>
         <ul>
   				<li><a href="?tutorial=welcome" class="menuitem">tutorials</a></li>
-          <li><button class="menuitem" onclick="slidenoteguardian.openFeedback()">feedback</button></li>
+          <li><button id="feedbackbutton" class="menuitem" onclick="slidenoteguardian.openFeedback()">feedback</button></li>
           <li><button class="menuitem" onclick="slidenote.showLicensesDialog()">licenses</button></li>
           <li><a href="https://slidenotes.io/privacy-notice.html" target="_blank" class="menuitem">privacy notice</a></li>
           <li><a href="https://slidenotes.io/terms-of-service.html" target="_blank" class="menuitem">terms of service</a></li>

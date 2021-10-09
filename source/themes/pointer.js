@@ -62,7 +62,7 @@ var pointerklick = function(event){
         relativeDistanceY:relativeY
     }
     console.log('pointer makes klick',klick);
-    if(window.ws?.server){
+    if(window.ws && window.ws.server){
       ws.sendPointer(klick);
     }
     klicks.push(klick);

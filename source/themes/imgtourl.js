@@ -702,6 +702,7 @@ newtheme.init = function(){
   button.title ="add image";
   button.name="image";
   button.classList.add("basicbutton");
+  button.classList.add('menuitem');
   var buttonimage = new Image();
   buttonimage.src=slidenote.imagespath+"buttons/image.svg";
   buttonimage.title = "image";

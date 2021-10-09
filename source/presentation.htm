@@ -32,7 +32,7 @@
 
 
   <div id="slidenotediv">
-  	<div id="slidenotepresentation" lang="en">
+  	<div id="slidenotepresentation" lang="en" aria-live="polite">
     <!-- insert slidenote here:-->
     <!--end of inserted slidenote-->
   	</div>
@@ -382,14 +382,14 @@
       <div class="dialogcontent">
       	<div id="slidenoteGuardianPasswordPromptTemplatePreText"></div>
       	<form onsubmit="event.preventDefault();" action="#" method="POST">
-      		<label id="slidenoteGuardianPasswordPromptUsernameLabel">FILENAME FOR EXPORT</label>
+      		<label for="username" id="slidenoteGuardianPasswordPromptUsernameLabel">filename for export</label>
       		<input type="text" id="username">
-      		<label>PASSWORD</label>
+      		<label for="password">password</label>
       		<input type="password" id="password">
-      		<label id="slidenoteGuardianPasswordPromptRetypeLabel">RE-TYPE PASSWORD</label>
+      		<label for="pwcheckfield" id="slidenoteGuardianPasswordPromptRetypeLabel">retype password</label>
       		<input type="password" id="pwcheckfield">
       		<div class="buttonarea">
-            <button type="submit" id="slidenoteGuardianPasswordPromptEncrypt">ENCRYPT</button>
+            <button type="submit" id="slidenoteGuardianPasswordPromptEncrypt">encrypt</button>
           </div>
       		<div id="slidenoteGuardianPasswortPromptAfterText"></div>
       	</form>
