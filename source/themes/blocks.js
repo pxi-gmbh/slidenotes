@@ -186,7 +186,7 @@ newtheme.buildgrid = function(gridcontainer){
       if(actelem.classList.contains("left") || actelem.classList.contains("right")){
         newline[x]=actelem;
       }else{
-        newline[x]={areaname:".", classList:""};
+        newline[x]={areaname:".", classList:{value:"",contains:function(css){return false}}};
       }
     }
     gridarray.push(newline);
@@ -198,7 +198,8 @@ newtheme.buildgrid = function(gridcontainer){
   for(var x=0;x<gridarray.length;x++){
   	if(gridarray[x].length>colums)colums=gridarray[x].length;
   	//do not only build 2-colums-template if neighbour is not vertical - build a 3-column instead:
-  	if(gridarray[x].length ==2 && colums ==2 && !gridarray[x][1].classList.contains("vertical"))colums=3;
+  	// if(gridarray[x].length ==2 && colums ==2 && (gridarray[x][1].areaname!="." && !gridarray[x][1].classList.contains("vertical")))colums=3;
+    if(gridarray[x].length ==2 && colums ==2 && !gridarray[x][1].classList.contains("vertical"))colums=3;
   }
   //console.log("gridarray:");
   //console.log(gridarray);

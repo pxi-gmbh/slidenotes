@@ -1387,6 +1387,7 @@ emdparser.prototype.comparePages = function(){
 /*helper function to check if line is empty or just contains blanks and should be considered as such*/
 emdparser.prototype.lineIsEmpty = function(line){
 	for (var x=0;x<line.length;x++){
+		if(line.substring(x,x+2)=='//')return true; //comment should be treated as empty
 		if(line.charAt(x)!=" ")return false;
 	}
 	return true;
@@ -1590,6 +1591,20 @@ emdparser.prototype.renderMapToPresentation = function(){
 	this.parsedcode=temptext;
   this.parselines(temptext);
 
+}
+
+emdparser.prototype.removeComments = function(sourcecode){
+	let result = sourcecode;
+	let allcomments = [];
+	let allelements = slidenote.parser.map.insertedhtmlelements;
+	for (let x=0;x<allelements.length;x++){
+		if(allelements[x].tag=="comment")allcomments.push(allelements[x]);
+	}
+	allcomments.sort(function(a,b){return a.posinall - b.posinall});
+	for(x=allcomments.length-1;x>=0;x--){
+		result = result.substring(0, allcomments[x].posinall)+result.substring(allcomments[x].posinall+allcomments[x].mdcode.length);
+	}
+	return result;
 }
 
 
@@ -1985,7 +2000,7 @@ emdparser.prototype.parseMap = function(){
 											//add new comment to map:
 											this.map.addElement({
 												line:x,pos:datahead.length,html:"",
-												mdcode:headcomment,typ:"start",tag:"comment", label:"comment"
+												mdcode:headcomment,typ:"start",tag:"comment", label:"presentation note"
 											});
 										}
 			    					this.dataobjects.push({
@@ -2051,7 +2066,7 @@ emdparser.prototype.parseMap = function(){
 					//valid comment found:
 					var mapcomstart = {
 						line:x, pos:0, html:"", mdcode:lines[x],
-						typ:"start", tag:"comment", label:"comment"
+						typ:"start", tag:"comment", label:"presentation note"
 					}
 					this.map.addElement(mapcomstart);
 					//prevent further parsing:
@@ -3211,6 +3226,9 @@ pagegenerator.prototype.showpresentation = function(forExport, close){
 		//praesesrahmen.style.height = document.height;
 		document.body.style.height = "100vh";
 		document.body.style.overflow = "hidden";
+		//add printing-classes:
+		this.addPrintingClasses();
+		if(aui)setTimeout("aui.startPresentation("+forExport+")",5);
 		//start presentation-preview in fullscreen:
 		//if(!document.fullscreenElement)slidenote.goFullScreen(false, true);
 	} else{
@@ -3239,6 +3257,10 @@ pagegenerator.prototype.showpresentation = function(forExport, close){
 		} else{
 			quelle.focus();
 		}
+		for (let x=0;x<slidenote.extensions.themes.length;x++){
+			let theme=slidenote.extensions.themes[x];
+			if(theme.active)theme.afterPresentationPreviewClose();
+		}
 		//console.log("parse neu ein");
 		slidenote.parseneu();
 		praesesrahmen.classList.remove("fullscreen");
@@ -3249,6 +3271,7 @@ pagegenerator.prototype.showpresentation = function(forExport, close){
 		//if(document.fullscreenElement && !document.body.classList.contains('fullscreen-editor')){
 		//	slidenote.goFullScreen(document.fullscreenElement, true); //close fullscreen
 		//}
+		if(aui)aui.endPresentation();
 	}
 }
 
@@ -3306,6 +3329,12 @@ pagegenerator.prototype.configDialog = async function(onlinepresentation){
 		let pchk = content.querySelector('input#config-pointer');
 		pchk.checked = true;
 	}
+	if(controlWindow){
+		let cwchk = content.querySelector('#config-multiscreen');
+		let windowopen = false; //(controlWindow.controlWindow != null && controlWindow.controlWindow.closed != false);
+		if(controlWindow.controlWindow && controlWindow.controlWindow.closed == false)windowopen=true;
+		cwchk.checked = windowopen; //dont know why i have to do it this complicated but a simple check does not work
+	}
 	// let mchk = content.querySelector('input#config-marker');
 	// mchk.checked = document.body.classList.contains('status-textmarker-active');
 	if(onlinepresentation){
@@ -3325,6 +3354,11 @@ pagegenerator.prototype.configDialog = async function(onlinepresentation){
 			multichk.checked = true;
 			let muc = content.querySelector('#spectatorcount');
 			muc.innerText = usercount;
+			if(window.videocaster){
+				let vidchk = content.querySelector('input#config-videocast');
+				if(vidchk)vidchk.checked=(videocaster.role=='sender');
+			}
+
 		}
 
 	}
@@ -3339,6 +3373,17 @@ pagegenerator.prototype.configDialog = async function(onlinepresentation){
   dialoger.buildDialog(dialogoptions);
 }
 
+pagegenerator.prototype.addPrintingClasses = function(){
+	setTimeout(function(){
+		let slides = document.getElementsByClassName('ppage');
+		for (let x=0;x<slides.length;x++){
+			if(slides[x].scrollHeight-slides[x].offsetHeight > 1){
+				slides[x].classList.add('print-2-pages');
+				console.log('add print-2-pages class to slide '+x,slides[x].scrollHeight, slides[x].offsetHeight, slides[x].scrollHeight-slides[x].offsetHeight )
+			}
+		}
+	},2000);
+}
 
 /* Theme-Objekt
  * Das Theme-Objekt ist die Hauptschnittstelle um Themes einzuspielen. Durch ein Plug-In ähnliches System können so zusätzliche
@@ -3501,6 +3546,10 @@ Theme.prototype.scroll = function(){
 	//wird von currentslide benutzt um auf scrollen zu reagieren
 }
 
+Theme.prototype.afterPresentationPreviewClose = function(){
+	//Hook-function
+	//wird genutzt von printer.js
+}
 /* new extension manager: to separate code better as own object
  * handles all extension-related stuff like
  * loading the themes etc.
@@ -3550,6 +3599,7 @@ ExtensionManager.prototype.loadBasicThemes = function(){
 	this.loadTheme("minimalist");
 	this.loadTheme("dark");
 	this.loadTheme("colorful");
+	this.loadTheme("printer");
 	//this.loadTheme("tufte");
 	//this.loadTheme("prototyp");
 	}else{
@@ -3652,6 +3702,7 @@ ExtensionManager.prototype.sortToolbar = function(){
 		"footnote",
 		"link",
 		"inlinecode",
+		"comment",
 		"code",
 		"chartist",
 		"node",
@@ -3659,7 +3710,6 @@ ExtensionManager.prototype.sortToolbar = function(){
 		"sections",
 		"hiddenobjects",
 		"klatex",
-		"comment",
 	];
 
 	let toollist = document.getElementById('toolbarbuttons');
@@ -5309,8 +5359,9 @@ slidenotes.prototype.appendFile = function(type, path){
 }
 
 slidenotes.prototype.goFullScreen = function(targetId, preview){
-	target = document.body;
+	var target;
 	if(targetId && targetId!='editor')target = document.getElementById(targetId);
+	if(!target)target = document.body;
 	if(!preview){
 		//lets go the editor into full screen mode
 		if(document.fullscreenElement){
@@ -5327,11 +5378,16 @@ slidenotes.prototype.goFullScreen = function(targetId, preview){
 		}
 	}else{
 		if(!document.fullscreenElement && target){
-			//target.onfullscreenchange = function(e){
-				//hide presentation on exiting fullscreen
-			//	console.warn(e);
-			//	if(!document.fullscreenElement)slidenote.presentation.showpresentation(false, true);
-			//}
+			// console.warn('going fullscreen')
+			document.onfullscreenchange = function(e){
+				// hide presentation on exiting fullscreen
+				// console.warn(e);
+				// if(!document.fullscreenElement)slidenote.presentation.showpresentation(false, true);
+				//checkbox hack:
+				let checkbox = document.getElementById('config-fullscreen');
+				if(checkbox)checkbox.checked = (document.fullscreenElement!=null);
+				// console.warn('fullscreen-change',document.fullscreenElement);
+			}
 			//only go fullscreen if not fullscreen allready
 			target.requestFullscreen({navigationUI:"hide"}).then(function(result){
 				console.log('entered fullscreen presentation');
@@ -5542,3 +5598,34 @@ emdparser.prototype.insertChangedLines = function(oldnode,newerrorlines,olderror
 		return changedlines;
 }
 //testinit();
+//capturing errors thrown in user-browser:
+var logError=[];
+window.onerror = function (msg, file, line, col, err) {
+    logError.push('The following error occurred: ' +
+    msg + '\nIn file: ' + file + '\nOn line: ' + line + 'stack:\n'+err.stack );
+		let dialog={
+			title:"oh no, something went wrong",
+			content:"a fatal error occurred—please help us by sending a bug report",
+			type:"confirm",
+			confirmtext:"i would like to try send a bug report",
+		}
+		dialoger.buildDialog(dialog,function(){
+			//open up bug report dialog
+			setTimeout(function(){
+				try {
+					slidenote.presentation.showpresentation(false,true);
+				} catch (e) {
+					console.warn(e);
+				}
+				slidenoteguardian.openFeedback();
+				document.getElementById('edit-field-feedback-type-und-25').checked=true;
+				let errormessage='\n---------- debug message ------------\n'+logError.join('\n');
+				let body = document.getElementById('feedback-body');
+				body.value=errormessage;
+				body.selectionStart=0;
+				body.selectionEnd=0;
+				body.focus();
+			},100);
+		});
+    return false;
+}

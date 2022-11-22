@@ -18,7 +18,8 @@ var dialoger = {
 * nocancelbutton: boolean (false) if confirm without cancel - optional
 * closebutton: boolean (false) if closebutton is placed on top right - optional
 * closebuttontext: text placed before x of button - optional
-* closefunction: function to call if canceled or closed - optional
+* closefunction: function to call if canceled, closed or confirmed - optional
+* cancelfunction: function to call if canceled
 + focuson: DOM-Node (null) the node that should be focused after build - optional
 * afterButtonArea: node to be appended on Area after Buttons (dont bother me...)
 * cssclass: css-class added to inner dialogbox
@@ -89,6 +90,9 @@ dialoger.buildDialog = function(options, followfunction){
     closebutton.onclick = closefunction;
     if(options.multiDialog)closebutton.target=container.id;
     title.appendChild(closebutton);
+    container.addEventListener('click',function(e){
+      if(e.target==container)closebutton.click();
+    })
   }
   dialogbox.appendChild(title);
   var dialogcontent = document.createElement("div");
@@ -285,14 +289,14 @@ dialoger.confirm = async function(options){
 
 }
 
-dialoger.alert = function(text, title){
+dialoger.alert = function(text, title, followfunction){
   let options = {
     type:"alert",
     title: "",
     content: text,
   }
   if(title)options.title=title;
-  this.buildDialog(options);
+  this.buildDialog(options,followfunction);
 }
 
 //just for testing purpose some elements:

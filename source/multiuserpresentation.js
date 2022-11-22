@@ -82,6 +82,10 @@ ws.init2 = async function(){
               console.log('pointerClick',data.msg);
               pointer.showPointer(data.msg);
             }
+            if(data.action==="sendToAll" && data.options ==="videocast"){
+              console.log('videoclick',data.msg);
+              videocaster.recievePicture(data.msg);
+            }
             if(data.action==="sendToAll" && data.options ==="textmarker"){
               console.log('textmarker',data.msg);
               textmarker.markText(data.msg);
@@ -529,6 +533,366 @@ var textmarker = {
     return node;
   },
 }
+
+/*experimental: videocast over websocket*/
+var videocaster = {
+    ongoingloop: false,
+    loopTimeout:null,
+    crop: {
+      projector:'standard',
+      x: 0,
+      y: 0,
+      width:320,
+      height:240,
+      resize:true,
+      maxInputWidth:640,
+    },
+    projectors:{
+      standard:{
+        width:320,
+        height:240,
+        x:0,
+        y:0,
+      },
+      full:{
+        width:640,
+        height:480,
+        x:0,
+        y:0,
+      },
+      circle:{
+        width:200,
+        height:200,
+        x:60,
+        y:20,
+      },
+      humanoid:{
+        width:160,
+        height:240,
+        x:80,
+        y:0,
+      }
+    },
+    role:null,
+    msPerFrame:40,
+    initSender: async function(){
+        if(this.role!=null)return;
+        this.videoOutput = document.createElement('canvas');
+        // this.videoOutput.style.width=this.crop.width+"px";
+        // this.videoOutput.style.height=this.crop.height+"px";
+        this.videoOutput.width=this.crop.width;
+        this.videoOutput.height=this.crop.height;
+        this.videoOutput.id='videoOutput';
+        this.videoInput = document.createElement('video');
+        this.videoInput.id="inputvideo";
+        this.role='sender';
+        this.initWrapper();
+        await this.captureVideo();
+        this.initCropper();
+        // this.setProjector('circle');
+        // setTimeout(function(){document.querySelector('#video-wrapper #videocast-projector-circle').click()},100);
+    },
+    initReciever: function(){
+      this.videoOutput = document.createElement('img');
+      this.videoOutput.id='videoOutput';
+      this.role='reciever';
+      this.initWrapper();
+      if(window.ws && ws.server)ws.sendMessage({newVideoClient:true},"sendToAll", "videocast");
+    },
+    initWrapper: function(){
+      let wrapper = document.createElement('div');
+      wrapper.id="video-wrapper";
+      wrapper.classList.add(this.role);
+      let template = document.getElementById('videocast-wrapper-template');
+      if(template)wrapper.innerHTML = template.innerHTML;
+      wrapper.appendChild(this.videoOutput);
+      if(this.videoInput)wrapper.appendChild(this.videoInput);
+      document.body.appendChild(wrapper);
+      this.wrapper=wrapper;
+    },
+    initCropper: function(){
+      this.cropper = document.getElementById('videocast-cropper');
+      this.cropperpreview = this.wrapper.querySelector('#videocast-cropper-preview');
+      this.setProjector('circle');
+      this.cropperpreview.onmousedown=function(e){
+        console.log(e);
+        videocaster.dragbegin(e);
+        // e.preventDefault();
+      }
+      this.cropperpreview.onmousemove=function(e){
+        // console.log(e);
+        videocaster.drag(e);
+        e.preventDefault();
+      }
+      this.cropperpreview.onmouseup=function(e){
+        console.log(e);
+        videocaster.dragend(e);
+        e.preventDefault();
+      }
+    },
+    calculateCrop: function(maximize) {
+      let input = this.videoInput;
+      let output = this.videoOutput;
+      let inputWidth = input.videoWidth || 640;
+      let inputHeight = input.videoHeight || 480;
+      let inputFormat = inputWidth/inputHeight;
+      let outputWidth = output.width;
+      let outputHeight = output.height;
+      // let shrinkmultiplier = inputWidth / outputWidth;
+      if(maximize || this.wrapper.classList.contains('maximized')){
+        inputWidth=640;
+      }else{
+        inputWidth=320;
+      }
+      this.crop.width=inputWidth;
+      this.crop.height=this.crop.width/inputFormat;
+
+      let diffX = this.crop.width - outputWidth;
+      let diffY = this.crop.height - outputHeight;
+      if (diffX > 0) this.crop.x = 0 - Math.floor(diffX / 2);
+      else this.crop.x = 0;
+      if (this.isMirror) this.crop.x *= -1;
+      if (diffY > 0) this.crop.y = 0 - Math.floor(diffY / 2);
+      else this.crop.y = 0;
+    },
+    openConfig: function(){
+      this.wrapper.classList.toggle('videocast-config-active');
+      if(!this.wrapper.classList.contains('videocast-config-active')){
+        //use selected config:
+        this.setProjector(this.crop.projector);
+        this.setManualCrop();
+        this.pauseTransmission=false;
+        return;
+      }
+      this.pauseTransmission=true;
+      //set maximized and change canvas-size to size without crop:
+      // if(!this.wrapper.classList.contains('maximized'))this.maximizeVideo();
+      // if(!this.crop.projector)this.setProjector('standard');
+      // this.crop.width=640;
+      this.calculateCrop(true);
+      this.crop.x=0;
+      this.crop.y=0;
+      this.videoOutput.width=this.crop.width;
+      this.videoOutput.height=this.crop.height;
+      //get left and top-position of canvas
+      this.crop.leftbase=this.videoOutput.offsetLeft;
+      this.crop.topbase=this.videoOutput.offsetTop;
+      //move cropper over canvas:
+      // this.cropper.style.left=this.crop.leftbase+"px";
+      // this.cropper.style.top=this.crop.topbase+"px";
+      this.dragPreview(this.crop.manualX,this.crop.manualY);
+    },
+    setProjector: function(projectorname, preview){
+      this.cropperpreview.className=projectorname;
+      this.crop.projector=projectorname;
+      if(!preview){
+        this.setProjectorClass();
+        this.videoOutput.width=this.projectors[projectorname].width;
+        this.videoOutput.height=this.projectors[projectorname].height;
+        this.calculateCrop();
+        if(window.ws && ws.server)ws.sendMessage({projector:projectorname},"sendToAll", "videocast");
+      }else{
+        this.crop.multiplierX=this.projectors[projectorname].multiplierX||2;
+        this.crop.multiplierY=this.projectors[projectorname].multiplierY||2;
+        this.crop.manualX=this.projectors[projectorname].x*this.crop.multiplierX;
+        this.crop.manualY=this.projectors[projectorname].y*this.crop.multiplierY;
+        this.cropperpreview.style.width=(this.projectors[projectorname].width*this.crop.multiplierX)+"px";
+        this.cropperpreview.style.height=(this.projectors[projectorname].height*this.crop.multiplierY)+"px";
+        this.cropper.style.left=(this.crop.leftbase+this.projectors[projectorname].x*this.crop.multiplierX)+"px";
+        this.cropper.style.top=(this.crop.topbase+this.projectors[projectorname].y*this.crop.multiplierY)+"px";
+      }
+    },
+    setProjectorClass: function(projectorname){
+      let projectors = Object.keys(this.projectors);
+      for (let x=0;x<projectors.length;x++){
+        this.wrapper.classList.toggle(projectors[x],projectors[x]==this.crop.projector);
+      }
+    },
+    setManualCrop: function(){
+      if(this.crop.manualX==undefined)return;
+      if(this.crop.multiplierX==undefined)this.crop.multiplierX=2;
+      if(this.crop.multiplierY==undefined)this.crop.multiplierY=2;
+      this.crop.x=Math.floor(this.crop.manualX/this.crop.multiplierX);
+      this.crop.y=Math.floor(this.crop.manualY/this.crop.multiplierY);
+      if(this.isMirror){
+         this.crop.x=320-this.projectors[this.crop.projector].width-this.crop.x;
+      }
+    },
+    dragbegin:function(e){
+      this.dragstart = {
+        clientX:e.clientX,
+        clientY:e.clientY,
+        x:this.crop.manualX||0,
+        y:this.crop.manualY||0,
+      };
+    },
+    drag:function(e){
+      if(this.dragstart==undefined)return;
+      let xdif=e.clientX-this.dragstart.clientX;
+      let ydif=e.clientY-this.dragstart.clientY;
+      let x=this.dragstart.x+xdif;
+      let y=this.dragstart.y+ydif;
+      if(x<0)x=0;
+      if(y<0)y=0;
+      if(x+this.cropperpreview.clientWidth>this.videoOutput.width){
+        x=this.videoOutput.width-this.cropperpreview.clientWidth;
+      }
+      if(y+this.cropperpreview.clientHeight>this.videoOutput.height){
+        y=this.videoOutput.height-this.cropperpreview.clientHeight;
+      }
+      this.dragPreview(x,y)
+    },
+    dragend:function(e){
+      this.dragstart=undefined;
+    },
+    dragPreview: function(x,y){
+      this.crop.manualX=x;//-this.crop.leftbase;
+      this.crop.manualY=y;//-this.crop.topbase;
+      this.cropper.style.left=(this.crop.leftbase+this.crop.manualX)+'px';
+      this.cropper.style.top=(this.crop.topbase+this.crop.manualY)+'px';
+    },
+    maximizeVideo: function(){
+      this.maximized = !this.maximized;
+      this.wrapper.classList.toggle('maximized',this.maximized);
+      if(this.maximized){
+        this.maximizedOldProjector=JSON.parse(JSON.stringify(this.crop));
+        this.setProjector('full');
+      }else{
+        this.videoOutput.width=this.projectors[this.maximizedOldProjector.projector].width;
+        this.videoOutput.height=this.projectors[this.maximizedOldProjector.projector].height;
+        this.setProjector(this.maximizedOldProjector.projector);
+        this.crop=this.maximizedOldProjector;
+
+      }
+      this.videoToCanvas();
+    },
+    minimizeVideo: function(){
+      this.pauseTransmission= !this.pauseTransmission;
+      this.wrapper.classList.toggle('video-off',this.pauseTransmission);
+      if(ws && ws.server)ws.sendMessage({videoOff:this.pauseTransmission},"sendToAll","videocast");
+    },
+    closeSender: function(){
+      if(window.ws && ws.server)ws.sendMessage({closeReciever:true},"sendToAll", "videocast");
+      this.inputstream.getTracks().forEach(function(track) {
+        if (track.readyState == 'live') {
+            track.stop();
+        }
+      });
+      clearTimeout(this.loopTimeout);
+      this.videoInput.srcObject=null;
+      this.videoInput= undefined;
+      this.videoOutput = undefined;
+      this.role=null;
+      document.body.removeChild(this.wrapper);
+      this.wrapper=undefined;
+    },
+    toggleSender: function(){
+      if(this.role==null)this.initSender();
+      else this.closeSender();
+    },
+    closeReciever: function(){
+      this.videoOutput = undefined;
+      this.role=null;
+      document.body.removeChild(this.wrapper);
+      this.wrapper=undefined;
+    },
+    captureVideo: function(){
+      let video = this.videoInput;
+      video.addEventListener('canplay', function() {
+        //mirror(); //as we dont want to mirror alway, only if needed
+        document.body.classList.add('video-active');
+        videocaster.videoToCanvas(false);
+      })
+
+      navigator.mediaDevices.getUserMedia({
+        video: true
+      }).then((stream) => {
+        videocaster.videoInput.srcObject = stream;
+        videocaster.inputstream = stream;
+        videocaster.openConfig();
+        document.getElementById('videocast-projector-circle').click();
+      });
+    },
+    videoToCanvas: async function() {
+      let activateMirror = this.isMirror;
+      let canvas = this.videoOutput;
+      this.videoInput.play();
+      if (this.ongoingloop) {
+        //stop old loop:
+        clearTimeout(this.loopTimeout);
+        ctx = null;
+        //destroy old canvas:
+        let newCanvas = document.createElement('canvas');
+        newCanvas.id = 'videoOutput';
+        newCanvas.width = canvas.width;
+        newCanvas.height = canvas.height;
+        canvas.parentElement.replaceChild(newCanvas, canvas);
+        this.videoOutput = newCanvas;
+        canvas = this.videoOutput;
+        this.ongoingloop = false;
+      }
+      let video = this.videoInput;
+      let output = this.videoOutput;
+      this.ctx = canvas.getContext('2d');
+      var loop = function() {
+        let crop=videocaster.crop;
+        videocaster.ctx.drawImage(videocaster.videoInput, 0-crop.x, 0-crop.y,crop.width, crop.height);
+        // videocaster.sendPicture(canvas.toDataURL("image/png"));
+        let imgdata = videocaster.ctx.getImageData(0,0,crop.width,crop.height);
+        // videocaster.sendPicture(imgdata);
+        if (videocaster.ongoingloop) videocaster.loopTimeout = setTimeout(loop, videocaster.msPerFrame);
+      }
+      // if (activateMirror) {
+      //   this.ctx.translate(video.videoWidth, 0);
+      //   this.ctx.scale(-1, 1);
+      // }
+      if (!this.ongoingloop) {
+        this.ongoingloop = true;
+        loop();
+        // this.canvasToVideo(activateMirror);
+      }
+    },
+    activateMirror: function(){
+      this.isMirror = !this.isMirror;
+      if(this.role=='sender')ws.sendMessage({mirror:this.isMirror},"sendToAll", "videocast");
+      this.wrapper.classList.toggle('mirror',this.isMirror);
+      this.videoToCanvas();
+    },
+    // activateMirrorCtx: function(){
+    //   this.ctx.translate(this.videoInput.videoWidth, 0);
+    //   this.ctx.scale(-1, 1);
+    // },
+    sendPicture: function(base64url){
+      //gets image from canvas in b64 and sends it over websocket:
+      if(this.pauseTransmission)return;
+      let transferobj = {
+        base64:base64url
+      };
+      if(window.ws && ws.server)ws.sendMessage(transferobj,"sendToAll", "videocast");
+    },
+    recievePicture: function(transferobj){
+      if(transferobj.closeReciever){
+        this.closeReciever();
+        return;
+      }
+      if(transferobj.newVideoClient){
+        if(this.role=='sender')ws.sendMessage({projector:this.crop.projector},"sendToAll", "videocast");
+        return;
+      }
+      if(transferobj.projector){
+        this.crop.projector=transferobj.projector;
+        this.setProjectorClass(transferobj.projector);
+        return;
+      }
+      if(transferobj.videoOff===false ||transferobj.videoOff ){
+        this.wrapper.classList.toggle('video-off',transferobj.videoOff);
+        return;
+      }
+      if(!this.videoOutput && this.role!="sender")this.initReciever();
+      this.videoOutput.src=transferobj.base64;
+    },
+}
+
 /*
 for future use: the peerworker, establishes and controls audio and video per webrtc
 
@@ -717,4 +1081,339 @@ function handleGetUserMediaError(e) {
   }
 
   closeVideoCall();
+}
+
+/*highly experimental: selfmade-videoencoding (gif-style)*/
+
+var encoder={
+  buildCircleArray: function (widthOfSquare){
+      let radius=widthOfSquare/2;
+      let can = document.createElement('canvas');
+      can.width=widthOfSquare;
+      can.height=widthOfSquare;
+      can.style.position='fixed';
+      can.style.top=0;
+      can.style.zIndex=99999;
+      can.style.border="5px solid red";
+      can.id="testcan";
+      document.body.appendChild(can);
+      let context = can.getContext('2d');
+      let centerX = widthOfSquare / 2;
+      let centerY = widthOfSquare / 2;
+
+      context.beginPath();
+      context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      context.fillStyle = 'green';
+      context.fill();
+    let imgdata = context.getImageData(0,0,widthOfSquare,widthOfSquare);
+    let circleArray = [];
+    let pixels=imgdata.data;
+    let total = 0;
+    for(let x=0;x<pixels.length;x+=4){
+        //console.log('rgba:',pixels[x],pixels[x+1],pixels[x+2],pixels[x+3]);
+        let isInsideCircle=(pixels[x+1]!=0)
+        circleArray.push(isInsideCircle)
+        if(isInsideCircle)total++;
+    }
+    document.body.removeChild(can);
+    //console.log(circleArray);
+    console.log('total inside circle:',total,'saved:',(widthOfSquare*widthOfSquare-total))
+    return circleArray;
+  },
+  init: function(){
+    this.circleArray=this.buildCircleArray(200);
+    this.bigCircleArray=this.buildCircleArray(400);
+  },
+  framenr:-1,
+  fps:25,
+  keyframeAllXSeconds:10,
+  lastkeyframe:null,
+  encodeFrame: function(imgdata, grayscale, forcekeyframe, reduceColors){
+    this.framenr++;
+    let sendArray=[]; //should be 8bit-Array or something like this
+    let circlex=-1;
+    let colors=this.lastColors || {count:{}, map:[]};
+    let colordata=[];
+    let keyframe=(forcekeyframe || this.framenr%(this.fps*this.keyframeAllXSeconds)==0);
+    let circleArray;
+    if(this.maximized)circleArray=this.bigCircleArray; else circleArray=this.circleArray;
+    // let countvalue=[];
+    sendx=0;
+    for(let imgx=0;imgx<imgdata.length;imgx+=4){
+        circlex++;
+        if(circleArray[circlex]){
+            if(grayscale){
+              let grayvalue = Math.floor((imgdata[imgx]+imgdata[imgx+1]+imgdata[imgx+2])/3);
+              sendArray[sendx]=grayvalue;
+              sendx++;
+            }else{
+              sendArray[sendx]=imgdata[imgx];
+              sendArray[sendx+1]=imgdata[imgx+1];
+              sendArray[sendx+2]=imgdata[imgx+2];
+              if(keyframe){
+                let cn=imgdata[imgx]+'_'+imgdata[imgx+1]+'_'+imgdata[imgx+2];
+              }
+              sendx+=3;
+            }
+        }
+    }
+    if(keyframe){
+        this.lastkeyframe=sendArray;
+        this.lastframe=null;
+        console.log('keyframe set with length:',sendArray.length);
+        return {data:sendArray,keyframe:true, grayscale:grayscale};
+    }
+    let changedData=[];
+    let changedColorData=[];
+    let changedx=0;
+    let changedPos=[];
+    let changedCombined=[];
+    colors=this.lastColors || {count:{}, map:[]};
+    let newcolors=[];
+    let keyf= this.lastframe || this.lastkeyframe;
+    if(grayscale){
+      for(let x=0;x<sendArray.length;x++){
+        let dif=Math.abs(sendArray[x]-this.lastkeyframe[x]);
+        if(dif>10){
+          changedData.push(sendArray[x]);
+          changedPos.push(x);
+        }
+      }
+      console.log('grayscale changedData with length:',changedData.length,'changes:',changedPos.length);
+      return {data:changedData,changedPos:changedPos,grayscale:grayscale};
+    }else{
+      for(let x=0;x<sendArray.length;x+=3){
+          if(this.comparePixels(sendArray[x],sendArray[x+1],sendArray[x+2],keyf[x],keyf[x+1],keyf[x+2])==false){
+            //pixel has changed:
+            changedPos.push(x);
+            changedData[changedx]=sendArray[x];
+            changedData[changedx+1]=sendArray[x+1];
+            changedData[changedx+2]=sendArray[x+2];
+            changedx+=3;
+          }
+        }
+        console.log('changedData with length:',changedData.length,'changes:',changedPos.length);
+        this.lastframe=sendArray;
+        return {data:changedData,changedPos:changedPos, changedCombined:changedCombined, colordata:colordata}
+    }
+  },
+
+  decodeFrame: function(frame, target){
+    if(frame.keyframe){
+      if(videocaster.maximized){
+        this.lastBigDecodedKeyframe=frame.data;
+        this.lastbigdecframe=frame.data;
+      }else{
+        this.lastDecodedKeyframe=frame.data;
+        this.lastdecframe=frame.data;
+      }
+    }
+    let imgdata = []
+    let x=0;
+    if(!frame.keyframe){
+      // imgdata=[];
+      //for test-purpose:
+      // if(this.lastdecmap&&this.lastColors.map&&this.lastdecmap.length!=this.lastColors.map.length)this.lastdecmap=this.lastColors.map;
+      if(frame.grayscale){
+        for(let gx=0;gx<frame.changedPos.length;gx++){
+          imgdata[frame.changedPos[gx]]=frame.data[gx];
+        }
+      }else{
+        let changepos=0;
+        let framedata=frame.data;
+        for(x=0;x<frame.changedPos.length;x++){
+          let pos=frame.changedPos[x];
+          imgdata[pos]=framedata[changepos];
+          imgdata[pos+1]=framedata[changepos+1];
+          imgdata[pos+2]=framedata[changepos+2];
+          changepos+=3;
+        }
+      }
+    }else if(frame.colormap){
+      this.lastdecmap=frame.colormap;
+    }
+
+    let insertdata;
+    let lastframe;
+    if(videocaster.maximized){
+      insertdata = this.lastBigDecodedInsertData || target.getImageData(0,0,400,400);
+      lastframe = this.lastbigdecframe || this.lastBigDecodedKeyframe;
+    }else{
+      insertdata = this.lastDecodedInsertData || target.getImageData(0,0,200,200);
+      lastframe = this.lastdecframe || this.lastDecodedKeyframe;
+    }
+
+    let circlex=-1;
+    sendx=0;
+    let gx=0;
+    for(let imgx=0;imgx<insertdata.data.length;imgx+=4){
+        circlex++;
+        if(this.circleArray[circlex]){
+          if(frame.grayscale){
+            if(imgdata[gx]==undefined){
+              insertdata.data[imgx]=this.lastDecodedKeyframe[gx];
+              insertdata.data[imgx+1]=this.lastDecodedKeyframe[gx];
+              insertdata.data[imgx+2]=this.lastDecodedKeyframe[gx];
+            }else{
+              insertdata.data[imgx]=imgdata[gx];
+              insertdata.data[imgx+1]=imgdata[gx];
+              insertdata.data[imgx+2]=imgdata[gx];
+            }
+            gx++;
+          }else{
+            if(imgdata[sendx]==undefined){
+              insertdata.data[imgx]=lastframe[sendx];
+              insertdata.data[imgx+1]=lastframe[sendx+1];
+              insertdata.data[imgx+2]=lastframe[sendx+2];
+            }else {
+              insertdata.data[imgx]=imgdata[sendx];
+              insertdata.data[imgx+1]=imgdata[sendx+1];
+              insertdata.data[imgx+2]=imgdata[sendx+2];
+              lastframe[sendx]=imgdata[sendx];
+              lastframe[sendx+1]=imgdata[sendx+1];
+              lastframe[sendx+2]=imgdata[sendx+2];
+            }
+            insertdata.data[imgx+3]=255;
+            sendx+=3;
+          }
+        }
+    }
+    // for(let cx=0;cx<frame.changedCombined.length;cx++){
+    //   let f=frame.changedCombined[cx];
+    //   insertdata[f.pos]=f.r;
+    //   insertdata[f.pos+1]=f.g;
+    //   insert
+    // }
+    if(videocaster.maximized){
+      if(frame.keyframe)this.lastDecodedInsertData=insertdata;
+      this.lastbigdecframe=lastframe;
+    }else{
+      if(frame.keyframe)this.lastDecodedInsertData=insertdata;
+      this.lastdecframe=lastframe;
+      if(this.decodeToLastFrame)this.lastframe=lastframe; //why does that better quality? if so maybe we should "decode" on sender to to have this effect 
+    }
+    // else this.lastDecodedKeyframe=insertdata.data;
+    // console.log('insertdata:',insertdata);
+
+    target.putImageData(insertdata,0,0);
+  },
+
+  compressPositions: function(positions){
+    if(!positions)return;
+    let countpositions = new Uint8Array(256);
+    let newpositions = new Uint8Array(positions.length);
+    for(let p=0;p<positions.length;p++){
+        let newpos=positions[p]/3;
+        let quotient = Math.floor(newpos/256);
+        countpositions[quotient]++;
+        newpositions[p]=newpos%256;
+    }
+    return {count:countpositions,positions:newpositions};
+  },
+  decompressPositions: function(compressed){
+    let realpositions = [];
+    let positions = compressed.positions;
+    let count = compressed.count;
+    let compx=0;
+    for(let x=0;x<positions.length;x++){
+        while(count[compx]==0 && compx<count.length)compx++;
+        realpositions[x]=(positions[x]+(256*compx))*3;
+        count[compx]--;
+    }
+    return realpositions;
+  },
+
+  allowedDiff:20,
+  comparePixels: function(r,g,b,rr,gg,bb){
+    // let rd=Math.abs(r-rr); let gd=Math.abs(g-gg); let bd=Math.abs(b-bb);
+    // return (rd<this.allowedDiff && gd<this.allowedDiff &&bd<this.allowedDiff)
+    let dif=Math.abs(r-rr+g-gg+b-bb)/3;
+    return dif<this.allowedDiff;
+  },
+  encodeCircle: function(context,grayscale){
+    let ctx=context || videocaster.ctx;
+    return this.encodeFrame(ctx.getImageData(0,0,200,200).data,grayscale);
+  },
+  encodeTest:function(maxframes, fps, allowedDiff,hidekeyframes,grayscale){
+    if(!this.circleArray)this.init();
+    this.framenr=-1;
+    if(fps)this.fps=fps;
+    if(allowedDiff)this.allowedDiff=allowedDiff;
+    var timeouttime = Math.floor(1000/fps);
+    var maxFrames=maxframes || 24*30;
+    //test circle-encoding for 1 second:
+    this.tests=[];
+    var tests = this.tests;
+    var can=document.getElementById('testcan') || document.createElement("canvas");
+    can.width=200
+    can.height=200
+    can.style.position='fixed';
+    can.style.top=0;
+    can.style.zIndex=99999;
+    can.style.border="5px solid red";
+    can.id="testcan";
+    var testctx=can.getContext('2d');
+    document.body.appendChild(can)
+    testfunction = function(){
+      if(encoder.maximized && can.width==200){
+        can.width=400;
+        can.height=400;
+      }
+      if(can.width=400 && !encoder.maximized){
+        can.width=200;
+        can.height=200;
+      }
+      let frame=encoder.encodeCircle(false,grayscale,false,false);
+      frame.compressedPositions = encoder.compressPositions(frame.changedPos);
+      tests.push(frame);
+
+      if(frame.keyframe && hidekeyframes){
+        console.log('hide keyframe');
+        testctx.beginPath();
+        testctx.arc(100, 100, 100, 0, 2 * Math.PI, false);
+        testctx.fillStyle = 'green';
+        testctx.fill();
+      }else{
+        encoder.decodeFrame(frame,testctx);
+      }
+      if(encoder.framenr<maxFrames)setTimeout(testfunction,timeouttime)
+      else {
+        let t=0;
+        let c=0;
+        let col=0;
+        let m=0;
+        let compressed=0;
+        for (let x=0;x<encoder.tests.length;x++){
+          t+=encoder.tests[x].data.length;
+          if(encoder.tests[x].keyframe)continue;
+          c+=encoder.tests[x].changedPos.length;
+          if(encoder.tests[x].colordata && encoder.tests[x].colordata.data) col+=encoder.tests[x].colordata.data.length;
+          if(encoder.tests[x].colordata && encoder.tests[x].colordata.newcolors)m+=encoder.tests[x].colordata.newcolors.length;
+          if(encoder.tests[x].compressedPositions)compressed+=encoder.tests[x].compressedPositions.positions.length+256;
+        }
+        // let colbiggerone = 0;
+        // let colbiggerfive=0;
+        // let colbiggertwen=0;
+        // let keys=Object.keys(encoder.lastColors.count);
+        // for (x=0;x<keys.length;x++){
+        //   let n = encoder.lastColors.count[keys[x]];
+        //   if(n>1)colbiggerone++;
+        //   if(n>5)colbiggerfive++;
+        //   if(n>20)colbiggertwen++;
+        // }
+        console.log("total lengthdata:",t, 'total changedPos-length:',c);
+        let kbs=Math.floor((t+c*2)/(maxframes/fps)/100)/10;
+        console.log('kb/s changedata+changepos combined:',kbs);
+        let kbscomp=Math.floor((t+compressed)/(maxframes/fps)/100)/10;
+        console.log('kb/s changedata+changepos compressed:',kbscomp);
+        // console.log('total colormaps data-length:',col,'maps:',m);
+        // console.log('colormap:',encoder.lastColors.map.length,'biggerone:',colbiggerone,'bigger5',colbiggerfive,'>20',colbiggertwen)
+        // console.log("total lengthdata/s:",t, 'total changedPos-length/s:',c);
+      }
+    }
+    testfunction();
+  },
+
+
+
 }

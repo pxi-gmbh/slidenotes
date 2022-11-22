@@ -628,7 +628,8 @@ from here on forward only declarations for online-version */
 /*top-button: back-to-editor/controlarea_multiuserdialog*/
 #controlarea #controlarea_back-to-editor,
 #controlarea #controlarea_open-config-dialog,
-#controlarea #controlarea_multiuserdialog{
+#controlarea #controlarea_multiuserdialog,
+#print-button{
   left: calc(6.2/var(--piw)*100%);
   bottom: calc(153.6/var(--piw)*100/5.84*33%);
   width: calc(55.7/var(--piw)*100%);
@@ -757,4 +758,200 @@ from here on forward only declarations for online-version */
     left: 35vw;
     width: 30vw;
     height: 80vh;
+}
+
+/*video-wrapper*/
+#video-wrapper{
+  position: fixed;
+  bottom: 0;
+  right:0;
+  z-index: 9999;
+  width:max-content;
+}
+
+#video-wrapper video{
+  display:none;
+}
+#video-wrapper .header{
+  display:flex;
+  align-self: end;
+  grid-area:header;
+  justify-content: end;
+  border-radius: 0 25% 0 0;
+  height: 2em;
+}
+#video-wrapper .header,
+#video-wrapper .config-menu{
+  background:#f7f7f7;
+}
+#video-wrapper.reciever .header,
+#video-wrapper.videocast-config-active .header button,
+#video-wrapper.maximized .header button{
+  display: none;
+}
+#video-wrapper.videocast-config-active .config-menu{
+  display:flex;
+  grid-area:config;
+  border-radius: 10px 0 0 0;
+  align-items: center;
+  padding-left: 2ch;
+}
+#video-wrapper.maximized .header button.maximize{
+  display:block;
+  width:100vw;
+  height:100vh;
+  position: absolute;
+  z-index: 2;
+  top:0;
+  left:0;
+  opacity:0;
+}
+#video-wrapper.videocast-config-active .header button.configbutton-close{
+
+  display:block;
+  /*width: max-content;*/
+  width:5ch;
+  background: transparent;
+  margin-right: -10px;
+  margin-top: -7px;
+  z-index: 1;
+  transform:unset;
+}
+#video-wrapper.maximized .header{
+  grid-columns:1/-1;
+}
+
+#video-wrapper .config-menu,
+#videocast-cropper,
+#video-wrapper .configbutton-close{
+  display:none;
+}
+.videocast-config-active #videocast-cropper{
+  position:absolute;
+  display:grid;
+  grid-template-areas:
+  "y ." "prev x";
+  z-index: 1;
+}
+
+#videocast-cropper-x{
+  /*grid-area:x;*/
+  grid-column: 2;
+  grid-row: 1/-1;
+  height:50%;
+  align-self:center;
+}
+#videocast-cropper-y{
+  /*grid-area:y;*/
+  grid-column: 1/-1;
+  grid-row: 1;
+  width:50%;
+  justify-self:center;
+}
+#videocast-cropper-x,
+#videocast-cropper-y{
+  display: none;
+}
+#videocast-cropper-preview{
+  background:rgba(0,0,255,0.5);
+  /*grid-area:prev;*/
+  grid-column: 1/-1;
+  grid-row: 1/-1;
+}
+#videocast-cropper-preview.standard{
+  border-radius: 0;
+}
+#videocast-cropper-preview.circle,
+#video-wrapper.circle #videoOutput{
+  border-radius:50%;
+}
+#videocast-cropper-preview.humanoid,
+#video-wrapper.humanoid #videoOutput{
+  border-radius: 20% 20% 0 0;
+}
+#video-wrapper.videocast-config-active canvas#videoOutput{
+  border-radius: 0;
+}
+
+#video-wrapper.maximized,
+#video-wrapper.full,
+#video-wrapper.videocast-config-active {
+    display: grid;
+    width: 100vw;
+    height: 100vh;
+    grid-template-areas:
+        ". ."
+        "config header"
+        "video video"
+        ". .";
+    grid-template-rows: 1fr auto auto auto 1fr;
+    justify-content: center;
+    background: rgba(0,0,0,0.5);
+}
+
+#videoOutput{
+  grid-area:video;
+  box-shadow: 0px 0px 65px 20px #aaaaff;
+}
+
+#video-wrapper.mirror #videoOutput{
+  transform: scaleX(-1);
+}
+
+#video-wrapper .configbutton img {
+  height: 3em;
+  transform: rotate(-11deg);
+  transform-origin: right;
+}
+#video-wrapper.videocast-config-active .configbutton-close{
+  display: block;
+  height:3em;
+}
+#video-wrapper.videocast-config-active .configbutton img{
+  transform:unset;
+}
+
+
+#video-wrapper .maximize img {
+    height: 2em;
+}
+#video-wrapper.circle .maximize img {
+    transform: rotate(-31deg);
+    transform-origin: right;
+    opacity:0.6;
+}
+#video-wrapper.circle .maximize img:hover{
+  opacity:1;
+}
+
+#video-wrapper.standard .configbutton{
+  text-align: right;
+}
+
+.videocast-wrapper {
+    display: grid;
+    grid-template-columns: 4ch auto auto;
+    align-items: center;
+    display: none;
+}
+
+input#config-videocast {
+    top: unset;
+}
+.minimize-off,
+#video-wrapper.video-off #videoOutput,
+#video-wrapper.video-off .header button{
+  display:none;
+}
+#video-wrapper.video-off .header button.minimize-off {
+    display: block;
+    margin-right: 5ch;
+    height:0;
+    border-radius: 50%;
+    box-shadow: 0px 0px 65px 20px #aaaaff;
+}
+
+.minimize-off img {
+    width: 5ch;
+    margin-top:-2.5ch;
 }

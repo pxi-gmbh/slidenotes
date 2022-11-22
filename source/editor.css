@@ -2142,7 +2142,8 @@ button#importbutton .importpng {
   margin-top: 0;
 }
 
-.dialogcontent button {
+.dialogcontent button,
+.dialogbox .buttonarea button {
   background-color: var(--dialogbox-button2-bg-color);
   color: var(--dialogbox-button2-font-color);
   padding-top: calc(13*var(--pscale));
@@ -2152,7 +2153,10 @@ button#importbutton .importpng {
   padding-right: calc(10*var(--pscale));
 }
 
-.dialogcontent button:hover, .dialogcontent button:focus {
+.dialogcontent button:hover,
+.dialogcontent button:focus,
+.dialogbox .buttonarea button:hover,
+.dialogbox .buttonarea button:focus {
   background-color: var(--dialogbox-button2-focus-bg-color);
 }
 

@@ -291,8 +291,13 @@ slidenoteSpeaker.buildConfigMenu = function(){
   return configMenu;
 }
 
-slidenoteSpeaker.say = function(m, gui, wait) {
+slidenoteSpeaker.say = function(m, gui, wait,html) {
   console.log("speaker says:"+m);
+  if(!this.useSpeechSynthesis){
+    if(html) this.liveregion.innerHTML=m;
+    else this.liveregion.innerText=m;
+    return;
+  }
   var msg = new SpeechSynthesisUtterance();
   var voices = window.speechSynthesis.getVoices();
   // msg.voice = voices[10];
@@ -478,7 +483,17 @@ slidenoteSpeaker.initShortcuts = function(dontsave){
       function(e){
           slidenoteSpeaker.keyPressed(e);
       });
+      this.auishortcut = new slidenote.keyboardshortcuts.shortcut(
+        "open audio user interface","global",
+        {key:this.metakey,
+        // multipleChoiceKeys:buttons,
+        metakey:true},
+        function(e){
+            // slidenoteSpeaker.keyPressed(e);
+            if(aui)aui.openAuiFromEditor();
+        });
       slidenote.keyboardshortcuts.addShortcut(this.shortcut);
+      slidenote.keyboardshortcuts.addShortcut(this.auishortcut);
       this.stopOnMetakey = function(e){
         if(slidenoteSpeaker.isActive()===false)return;
         let key=e.key;
@@ -503,6 +518,7 @@ slidenoteSpeaker.init = function(){
   //});
   this.hoverManager.init();
   document.body.addEventListener("focus",this.onFocusFunction,true);
+  this.liveregion = document.getElementById('aui-output-polite');
 }
 
 

@@ -1,0 +1,64 @@
+.aui-wrapper{
+  position:absolute;
+  left:0;
+  top:0;
+  z-index: 10001;
+  overflow-y:hidden;
+  display: none;
+}
+.aui-wrapper.active{
+  background-color: white;
+  height:100vh;
+  padding: 0 1em;
+  border-left: 0.3em solid black;
+  width: 30vw;
+}
+
+.aui-wrapper .aui-activate-button~*{
+  display:none;
+}
+.aui-activate-button{
+  width: 2em;
+  height: 2em;
+  color: white;
+  background-color: #030303;
+  border-radius: 0 0 0.3em 0.3em;
+}
+
+.aui-wrapper.active .aui-activate-button~*{
+  display:block;
+}
+
+#aui-output-polite{
+  border: 0.2em solid #030303;
+  padding: 0 0.2em;
+}
+.content.aui--in-path {
+  border: 0.2em solid var(--active-icon-color);
+}
+
+.aui-tree-wrapper.aui--in-path > .content {
+  background: #030303;
+  color: white;
+  padding: 0 0.2em;
+}
+
+.aui-tree-wrapper{
+  display:none;
+}
+
+.aui--in-path > .aui-tree-wrapper,
+#aui-tree > .aui-tree-wrapper {
+  display: block;
+}
+
+.aui-tree-wrapper {
+  margin-left: 2ch;
+}
+
+/*editor*/
+.aui-editor-focus {
+    background: white;
+    border: 0.2em solid var(--text-color);
+    padding: 0.1em;
+}

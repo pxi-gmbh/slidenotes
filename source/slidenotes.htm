@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="themes/keyboardshortcuts.css">
   <link rel="stylesheet" href="themes/pointer.css">
   <link rel="stylesheet" href="slidenoteplayer.css">
+  <link rel="stylesheet" href="themes/aui.css">
+  <link rel="stylesheet" media="print" href="print.css">
   <script language="javascript" src="slidenotes.js"></script>
   <script language="javascript" src="themes/dialoger.js"></script>
   <script language="javascript" src="themes/pointer.js"></script>
@@ -268,6 +270,7 @@
       var list = document.createElement("ul");//document.getElementById("basicthemelist");
       list.innerHTML = "";
       for(var x=0;x<cssthemes.length;x++){
+        if(cssthemes[x].classname=='printer')continue;
         var li = document.createElement("li");
         var title = document.createElement("div");
         title.innerText = cssthemes[x].classname;
@@ -935,7 +938,7 @@
 
       			<li><button name="footnote" class="menuitem" onclick="insertbutton('%footnote')" title="footnote"><img src="images/buttons/footnote.svg" alt="footnote"><span class="buttonmdcode">[^*]</span><span class="toolbarbuttontitle"> footnote</span></button></li>
 
-      			<li><button name="comment" class="menuitem" onclick="insertbutton('%comment')" title="comment"><img src="images/buttons/comment.svg" alt="comment"><span class="buttonmdcode">//</span> <span class="toolbarbuttontitle">comment</span></button></li>
+      			<li><button name="comment" class="menuitem" onclick="insertbutton('%comment')" title="presentation note"><img src="images/buttons/comment.svg" alt="comment"><span class="buttonmdcode">//</span> <span class="toolbarbuttontitle">presentation note</span></button></li>
 
       			<li><button name="inlinecode" class="menuitem" onclick="insertbutton('%inlinecode')" title="inline-code"><img src="images/buttons/code.svg" alt="code"><span class="buttonmdcode">`</span><span class="toolbarbuttontitle inlinecode">inline code</span><span class="buttonmdcode">`</span></button></li>
             <li><button name="code" class="menuitem" onclick="insertbutton('%codeblock')" title="code-block"><img src="images/buttons/codeblock.svg" alt="code"><span class="buttonmdcode">+++code+++</span><span class="toolbarbuttontitle code"></span><span class="buttonmdcode"></span></button></li>
@@ -1107,7 +1110,7 @@
           <span class="screenreader-only">download code as</span>
           <span>unencrypted .md file</span>
         </button>
-        <div class="separator">download presentation as</div>
+        <div class="separator">export presentation to</div>
         <button id="exportasenchtmlbutton" onclick="slidenoteguardian.exportPresentationLocal(true);" title="download presentation as encrypted .html file">
           <img src="images/buttons/bigmode_download-presentation-unencrypted.svg">
           <span class="screenreader-only">download presentation as</span>
@@ -1118,6 +1121,12 @@
           <span class="screenreader-only">download presentation as</span>
           <span>unencrypted .html file</span>
         </button>
+        <button id="openprintpreview" onclick="printer.showPrintPreview()" title="open slidenote as print-preview">
+          <img src="images/buttons/bigmode_print.svg">
+          <!--<span class="screenreader-only">open print preview</span>-->
+          <span>print or PDF</span>
+        </button>
+
       </div></div></div>
       <div id="menuoptionseditor"><div class="arrow_box"><div class="arrow_box_content">
         <a href="/user/account.html" class="menuitem"><img src="images/buttons/bigmode_account.svg"><span>Account</span></a>
@@ -1528,6 +1537,11 @@
             <span class="screenreader-only">open presentation options</span>
             <img src="images/buttons/presentation_presentation-options.svg">
           </button>
+          <button id="print-button" class="controlbutton controlbuttonleft" onclick="printer.print();" title="print presentation">
+            <span class="screenreader-only">print</span>
+            <img src="images/buttons/print.svg">
+          </button>
+
           <!-- back-to-editor -->
           <button id="controlarea_back-to-editor" class="controlbutton controlbuttonleft" onclick="presentation.showpresentation()" title="hide presentation">
             <span class="screenreader-only">hide presentation</span>
@@ -1599,6 +1613,8 @@
       		<input type="password" id="pwcheckfield">
           <label for="slidenoteGuardianPasswordPromptCommentEnable" id="slidenoteGuardianPasswordPromptCommentEnableLabel">enable comments</label>
           <input type="checkbox" id="slidenoteGuardianPasswordPromptCommentEnable" checked="checked" onchange="slidenoteguardian.uploadRestObject.enableComments = this.checked">
+          <label for="slidenoteGuardianPasswordPromptInternalCommentEnable" id="slidenoteGuardianPasswordPromptInternalCommentEnableLabel">make presentation notes readable in controlwindow</label>
+          <input type="checkbox" id="slidenoteGuardianPasswordPromptInternalCommentEnable" checked="checked" onchange="slidenoteguardian.uploadRestObject.enableInternalComments = this.checked">
           <div class="buttonarea">
         		<button type="submit" id="slidenoteGuardianPasswordPromptEncrypt">encrypt</button>
             <button id="skippassword" onclick="slidenoteguardian.skipPassword()">skip</button>
@@ -1889,7 +1905,7 @@
   <div id="template-presentation-config-dialog">
     <ul>
       <li>
-        <input id="config-fullscreen" class="config-fullscreen menuitem" type="checkbox" onchange="slidenote.goFullScreen('slidenotepresentation');">
+        <input id="config-fullscreen" class="config-fullscreen menuitem" type="checkbox" onchange="slidenote.goFullScreen('slidenotepresentation',true);">
         <label for="config-fullscreen">
           <span>enable fullscreen</span>
           <span class="keyboardshortcut">f</span> / <span class="keyboardshortcut">esc</span>
@@ -1910,6 +1926,13 @@
           <span class='image-wrapper'><img src="images/buttons/presentation_textmarker.svg"></span>
         </label>
       </li>-->
+      <li>
+        <input id="config-multiscreen" class="config-multiscreen menuitem" type="checkbox" onchange="if(this.checked)controlWindow.openWindow(); else controlWindow.closeWindow();">
+        <label for="config-multiscreen">
+          <span>external control window (multi screen)</span>
+          <span class='image-wrapper'><img src="images/buttons/presentation_textmarker.svg"></span>
+        </label>
+      </li>
       <li class="disabled">
         <input id="config-multiusersession" disabled="true" type="checkbox" onchange="">
         <label for="config-multiusersession">
@@ -1933,7 +1956,27 @@
     </ul>
   </div>
 </div> <!--end of templates -->
+<div class="aui-wrapper">
+  <button class="aui-activate-button" onclick="aui.activateAui()" title="activate audio user interface">aui<span class="screenreader-only">activate audio user interface</span></button>
+  <h2>audio user interface</h2>
+  <p>use the arrow keys to navigate</p>
+  <hr>
+  <h3>last read text:</h3>
+  <div tabindex="1" class="" id="aui-output-polite" role="application" aria-live="polite">
+    Welcome to the Audio User Interface. No Content loaded yet
+  </div>
+  <hr>
+  <h3>tree</h3>
+  <div id="aui-tree">
 
-
+  </div>
+</div>
+<div id='consolelog' style='position:fixed;z-index:10000;top:0;left:10px;background:#fff;'></div>
 </body>
+<script type="text/javascript">
+  var aui={};
+</script>
+<script language="javascript" src="themes/aui.js"></script>
+<script language="javascript" src="themes/auiplugins.js"></script>
+<script type="text/javascript" src="controlwindow.js"></script>
 </html>

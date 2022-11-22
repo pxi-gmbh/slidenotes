@@ -1,0 +1,649 @@
+printerprinter/*
+210 * 297 mm
+x:297mm y:210mm (1,4143)
+x:1024px y:724px (20mm=48,7542)
+x:1200px y:848px
+x:14143px y:1000px
+durch 8 teilbar passt es:
+y: 728, x:1029,6
+
+measured ratio of available space of same pdf and same screen-size:
+chromium: 635x470 - ratio 1,35
+firefox: 641x427 - ratio 1,5
+webkit: 693x467 - ratio 1,48
+
+measured ratio of page:
+chromium: 753x582 - ratio: 1,29
+firefox: 753x533 - ratio: 1,41
+webkit: 753x532 ratio 1,415
+
+*/
+
+.printer{
+    background: #030303;
+}
+.printer .ppage{
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu", "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.printer.blocks .ppage{
+    width:1029px;
+    height:728px;
+    height:686px; /*firefox likes 748px, chromium 728*/
+    position: relative;
+    top: unset;
+    left: unset;
+    margin-bottom: 48px;
+    background:white;
+    visibility: visible;
+    padding:0;
+    overflow: hidden;
+}
+.printer.blocks .ppage.print-2-pages{
+  border:1ch solid rgba(255,0,0,0.3);
+}
+.printer.blocks .ppage.print-2-pages:hover{
+    height:auto;
+    min-height:748px;
+    min-height:728px;
+    overflow-y:hidden;
+    border: 1ch solid rgba(255,0,0,0.3);
+}
+
+.printer.blocks .ppage.print-2-pages:hover:after{
+    content:'';
+    width:100%;
+    height:100%;
+    position:absolute;
+    top:748px;
+    top:728px;
+    top:662px; /*firefox max height - border?*/
+    background: rgba(255,0,0,0.3);
+}
+/*
+*/
+.printer .presentation{
+    padding-left:10ch;
+    padding-top: 3ch;
+}
+
+.printer.blocks img.bgimg.griditem{
+    position:absolute;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.printer h2 img{
+   height:2em;
+}
+.printer.progressbar .progressbar{
+    display:none;
+}
+
+.printer .slide-title{
+  width: fit-content;
+  width: -moz-fit-content;
+  border-radius: 0 1ch 0 0;
+  border-bottom: 0.2em solid #030303;
+  background: white;
+  padding: 0.5ch 1ch;
+}
+
+/*controlarea and such in print-preview*/
+#print-button,
+.print-preview #controlarea_open-config-dialog{
+  display: none;
+}
+
+.print-preview #print-button{
+  display:block;
+}
+
+.blocks .navigationPlaceholder{
+  display: none;
+}
+
+/* _________________________________ */
+/* SLIDE STYLING */
+
+:root{
+  --printerBckgColor: #ffffff;
+  --printerTextColor: #030303;
+  --printerTextMarkerColor: #b7c8d0;
+
+  --printerDataColor0: #96a0a4;
+  --printerDataColor1: #5f7782;
+  --printerDataColor2: #d8b26e;
+  --printerDataColor3: #a8660f;
+  --printerDataColor4: #736367;
+  --printerDataColor5: #267e82;
+  --printerDataColor6: #a1b9aa;
+
+  --printerNodeBorderColor: #a6a6a6;
+  --printerNodeBckgColor: #eaeef3;
+}
+
+
+
+.printer,
+.printer .ppage {
+	background: #030303;
+  font-size: calc(0.3em + 1vw);
+}
+
+.printer .ppage .progressbar{
+  border-radius: 0 0 99px;
+}
+
+.status-textmarker-active .printer ::selection{
+  background: var(--printerTextMarkerColor);
+  text-shadow: none;
+}
+
+/*code affects both: inlinecode and codeblock*/
+.printer code {
+  font-family: Monospace;
+  font-size: 0.7em;
+}
+/*inline*/
+.printer p code, .printer h1 code, .printer h2 code, .printer h3 code{
+  padding: 0.12em 0.2em 0.12em 0.2em;
+  color: white;
+  background-color: var(--code-backg);
+  text-shadow: none;
+}
+
+/*codeblock affects only codeblocks*/
+.printer code.codeblock{
+
+}
+
+
+
+
+.printer h1,
+.printer h2,
+.printer h3{
+  font-weight: bold;
+
+  text-shadow: 0.05em 0.03em var(--printerBckgColor);
+}
+.printer section h1,
+.printer section h2,
+.printer section h3{
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.printer h1{
+  font-size: 3em;
+  margin-top: 15vh;
+}
+
+
+.printer h2,
+.printer h3{
+	margin-bottom: 0.1em;
+  margin-top: 1em;
+}
+.printer h2{
+  font-size: 1.5em;
+}
+.printer h2 img{
+  height: 1.8em;
+}
+
+.printer h3{
+  margin-bottom: 0.2em;
+  font-size: 1.2em;
+}
+.printer h3 img{
+  height: 1.2em;
+}
+
+.printer .pblock h1+p{
+  font-size: 1.3em;
+}
+
+.printer .pblock h1+p,
+.printer .pblock h2+p,
+.printer .pblock h3+p {
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+.printer .inline .pblock h1+p,
+.printer .inline .pblock h2+p,
+.printer .inline .pblock h3+p,
+.printer .section .pblock h1+p,
+.printer .section .pblock h2+p,
+.printer .section .pblock h3+p{
+  text-align: left;
+  margin-top: 1em;
+}
+
+.printer .pblock h2+p,
+.printer .pblock h3+p {
+
+}
+
+.printer p{
+  line-height: 1.32em;
+}
+.printer p>span{
+  background-color: var(--printerBckgColor);
+  padding: 0 0.1em;
+}
+.printer p br{
+  margin-bottom: 0.5em;
+}
+
+.printer .pblock h1+p img,
+.printer .pblock h2+p img,
+.printer .pblock h3+p img{
+
+}
+/*
+should be declared in blocks.css as general rule,
+only overwrite whats really necesary
+standard declaration is: max-height: 1em;
+*/
+.printer p img,
+.printer ul img,
+.printer ol img{
+}
+/*the floating ones inside a p-blocks
+standard is:
+max-height: 6em;
+float:left/right;
+margin:1ch;
+*/
+.printer p img.floatingleftimage{
+}
+.printer p img.floatingrightimage{
+}
+
+.printer a{
+  text-decoration: underline;
+  color: var(--printerTextColor);
+}
+
+.printer .imageblock{
+  font-size: 0.8em;
+}
+
+.printer b{
+
+}
+
+.printer i{
+
+}
+
+.printer b i{
+
+}
+
+.printer strike{
+
+}
+
+.printer ul,
+.printer ol{
+  padding: 0 0.9em;
+  line-height: 1em;
+}
+
+.printer ul{
+
+}
+
+.printer ol{
+
+}
+
+.printer li+li{
+  margin: 0.3em 0;
+}
+
+.printer li{
+  background-color: var(--printerBckgColor);
+  padding: 0 0.1em;
+}
+
+.printer code.codeblock li{
+  overflow:hidden;
+  background-color: transparent;
+}
+
+
+
+/*sub-lists (unterpunkte/verschachtelung der listen)*/
+
+.printer ul ul,
+.printer ol ul{
+  line-height: 1.3em;
+  background-color: var(--printerBckgColor)
+  padding-left: 1.1em;
+  padding-right: 0.5em;
+}
+
+
+.printer mark{
+  background-color: #e3dada;
+  text-shadow: none;
+}
+
+
+.printer quote{
+  text-align: center;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-thickness: 0.02em;
+  text-underline-offset: 0.3em;
+  line-height: 1.5em;
+
+}
+
+.printer p code{
+
+}
+.printer code.codeblock{
+
+}
+.printer .codeblock.none{
+  background-color: #eaeef3;
+}
+.printer code.codeblock ul,
+.printer code.codeblock ol{
+  background-color: transparent;
+}
+
+/* charts:*/
+
+/* alle charts sind in einer section mit klasse chart*/
+.printer section.chart{
+  font-size: 0.7em;
+  /*Portrait to 4:3*/
+  /*max-height: calc(85.2vw/1.618); /*100vw - (padding-left + padding-right) = 85.2vw; golden ratio = 1.618*/
+}
+
+/*pie-charts:*/
+.printer section.chart-pie{
+
+}
+
+/*bar-charts*/
+.printer section.chart-bar{
+
+}
+
+/*line-charts*/
+.printer section.chart-line{
+  padding: 0 0 0 0.7em;
+
+}
+
+/*alle labels einer chart - wenn nur für bestimmte charts gewollt, muster von oben erweitern, also bspw. .printer .chart-bar .ct-label. hier die größen der schrift und farben für die labels generell anpassen */
+.printer .ct-label{
+  color: rgba(0, 0, 0, 0.7);
+}
+.printer .ct-label.ct-vertical.ct-start{
+  border-bottom: 0.15em solid rgba(0, 0, 0, 0.2);
+}
+.printer .ct-label.ct-horizontal.ct-end{
+  border-right: 0.1em solid rgba(0, 0, 0, 0.1);
+}
+.printer .ct-chart-pie .ct-label,
+.printer .ct-chart-donut .ct-label{
+  fill: rgba(0, 0, 0, 1);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 1);
+}
+
+.printer .ct-grid{
+	stroke: var(--printerBckgColor);
+  stroke-width:0.05em;
+  stroke-dasharray: 0;
+}
+
+/*x-achsen-label*/
+.printer .chart-x-axis-label{
+
+}
+
+/*y-achsen-label*/
+.printer .chart-y-axis-label{
+
+}
+
+/*dataset-label, was oben drüber steht und bspw. jahreszahl beinhaltet:*/
+.printer .chart-datasetlabel{
+  border: none;
+  padding: 0;
+  margin-left: 1em;
+}
+
+/*die box davon:*/
+.printer .chart-datasetlabel-box{
+
+}
+
+.printer .chart-datasetlabel-box.chart-datasetlabel-box-0{
+	background: var(--printerDataColor0);
+}
+.printer .chart-datasetlabel-box.chart-datasetlabel-box-1{
+	background: var(--printerDataColor1);
+}
+.printer .chart-datasetlabel-box.chart-datasetlabel-box-2{
+	background: var(--printerDataColor2);
+}
+.printer .chart-datasetlabel-box.chart-datasetlabel-box-3{
+	background: var(--printerDataColor3);
+}
+.printer .chart-datasetlabel-box.chart-datasetlabel-box-4{
+	background: var(--printerDataColor4);
+}
+.printer .chart-datasetlabel-box.chart-datasetlabel-box-5{
+	background: var(--printerDataColor5);
+}
+.printer .chart-datasetlabel-box.chart-datasetlabel-box-6{
+	background: var(--printerDataColor6);
+}
+
+
+.printer .ct-series-a .ct-point, .printer .ct-series-a .ct-line, .printer .ct-series-a .ct-bar, .printer .ct-series-a .ct-slice-donut {
+  stroke: var(--printerDataColor0);
+}
+
+.printer .ct-series-a .ct-slice-pie, .printer .ct-series-a .ct-slice-donut-solid, .printer .ct-series-a .ct-area {
+  fill: var(--printerDataColor0);
+}
+
+.printer .ct-series-b .ct-point, .printer .ct-series-b .ct-line, .printer .ct-series-b .ct-bar, .printer .ct-series-b .ct-slice-donut {
+  stroke: var(--printerDataColor1);
+}
+
+.printer .ct-series-b .ct-slice-pie, .printer .ct-series-b .ct-slice-donut-solid, .printer .ct-series-b .ct-area {
+  fill: var(--printerDataColor1);
+}
+
+.printer .ct-series-c .ct-point, .printer .ct-series-c .ct-line, .printer .ct-series-c .ct-bar, .printer .ct-series-c .ct-slice-donut {
+  stroke: var(--printerDataColor2);
+}
+
+.printer .ct-series-c .ct-slice-pie, .printer .ct-series-c .ct-slice-donut-solid, .printer .ct-series-c .ct-area {
+  fill: var(--printerDataColor2);
+}
+
+.printer .ct-series-d .ct-point, .printer .ct-series-d .ct-line, .printer .ct-series-d .ct-bar, .printer .ct-series-d .ct-slice-donut {
+  stroke: var(--printerDataColor3);
+}
+
+.printer .ct-series-d .ct-slice-pie, .printer .ct-series-d .ct-slice-donut-solid, .printer .ct-series-d .ct-area {
+  fill: var(--printerDataColor3);
+}
+
+.printer .ct-series-e .ct-point, .printer .ct-series-e .ct-line, .printer .ct-series-e .ct-bar, .printer .ct-series-e .ct-slice-donut {
+  stroke: var(--printerDataColor4);
+}
+
+.printer .ct-series-e .ct-slice-pie, .printer .ct-series-e .ct-slice-donut-solid, .printer .ct-series-e .ct-area {
+  fill: var(--printerDataColor4);
+}
+
+.printer .ct-series-f .ct-point, .printer .ct-series-f .ct-line, .printer .ct-series-f .ct-bar, .printer .ct-series-f .ct-slice-donut {
+  stroke: var(--printerDataColor5);
+}
+
+.printer .ct-series-f .ct-slice-pie, .printer .ct-series-f .ct-slice-donut-solid, .printer .ct-series-f .ct-area {
+  fill: var(--printerDataColor5);
+}
+
+.printer .ct-series-g .ct-point, .printer .ct-series-g .ct-line, .printer .ct-series-g .ct-bar, .printer .ct-series-g .ct-slice-donut {
+  stroke: var(--printerDataColor6);
+}
+
+.printer .ct-series-g .ct-slice-pie, .printer .ct-series-g .ct-slice-donut-solid, .printer .ct-series-g .ct-area {
+  fill: var(--printerDataColor6);
+}
+
+
+/*ende von charts*/
+
+/*tables stehen in einer klassenlosen section. wenn du also .printer section bearbeitest hat das auch effekt auf deren container. ansonsten steuer tabellen direkt an über*/
+
+.printer table{
+
+}
+
+.printer th,
+.printer td{
+
+}
+
+.printer thead{
+
+}
+
+.printer table,
+.printer th,
+.printer td{
+  border: 0.02em solid #030303;
+  padding: 0 0.5em;
+  background-color: var(--printerBckgColor);
+}
+
+.printer thead{
+
+}
+
+.printer tbody{
+
+}
+
+.printer tr{
+
+}
+
+.printer td{
+
+}
+
+/* latex - elemente sind in einer section mit klasse klatex*/
+.printer section.klatex{
+
+}
+
+/* layout-elemente sind sections mit section-klasse. sie beinhalten weitere elemente*/
+
+.printer section.section{
+
+}
+
+/*layout-element auf linker seite, nimmt ca. ein drittel der linken seite ein*/
+.printer section.section.left{
+
+}
+
+/*layout-element auf rechter seite, nimmt die hälfte des platzes ein, wenn nicht zwei weitere layout-sections "in reihe" stehen, dann nimmt er ein drittel*/
+.printer section.section.right{
+
+}
+
+/* node */
+.printer .node .msg{
+  background-color: #dfdfdf;
+}
+.printer .node .arrow.dashed .arrowimg::before, .node .arrow.noarrowdashed .arrowimg::before {
+  border-top: 0.1em dashed var(--printerTextColor);
+}
+.printer .node .simpleflow .node,
+.printer .node .flow .node{
+  background: var(--printerBckgColor);
+  border: 0.07em solid var(--printerNodeBorderColor);
+}
+.printer .ppage .node .tree .content{
+  border: 0.07em solid var(--printerNodeBorderColor);
+  border-radius: 0.1em;
+}
+.printer .ppage .node .arrowspace .arrowimg+div{
+  background-color: var(--printerNodeBckgColor);
+}
+.printer .node .tree .arrowimg::after{
+  background: linear-gradient(to top right, transparent 50%, #d3e2f4 50%);
+  border-top: 0.07em solid var(--printerTextColor);
+  border-right: 0.07em solid var(--printerTextColor);
+}
+.printer .node .arrow .arrowimg::after{
+  background: linear-gradient(to top right, transparent 50%, var(--printerTextColor) 50%);
+}
+.printer .simpleflow .arrow.broad .msg{
+  color: var(--printerBckgColor);
+}
+.printer .node .simpleflow .arrowspace .broad .triangle::before{
+  background-color: #515050;
+}
+.printer .node .simpleflow .arrowspace .broad .triangle{
+  background: linear-gradient(to top right, transparent 50%, #515050 50%);
+}
+.printer .node .node.cloud{
+  background-color: var(--printerBckgColor);
+  border: 0.07em solid var(--printerNodeBorderColor);
+}
+.printer .node .node.cloud::before{
+  background-color: var(--printerBckgColor);
+  border-top: 0.08em solid var(--printerNodeBorderColor);
+}
+.printer .node .node.cloud::after{
+  background-color: var(--printerBckgColor);
+  border-top: 0.08em solid var(--printerNodeBorderColor);
+}
+.printer .node .sequence .actor{
+  border: 0.07em solid var(--printerNodeBorderColor);
+  background: var(--printerBckgColor);
+}
+.printer .node .sequence .stroke{
+  width: 0.05em;
+  background: var(--printerTextColor);
+}
+.printer .node .sequence .arrow .arrowimg::after{
+  top: -0.25em;
+}
+.printer .node .broad .arrowimg::before{
+  border-bottom: 0.1em solid var(--printerTextColor);
+}
+.printer .node .sequence .node.cloud{
+  height: 3.2em;
+}
+.printer .node .sequence .cloud.actor{
+  background: none;
+  border: none;
+}
+.printer .node .sequence .note{
+  border: 0.06em solid var(--printerNodeBorderColor);
+  background: var(--printerBckgColor);
+}
+.minimalist .node .sequence .diamond.actor{
+  width: 3em;
+  height: 3em;
+  padding: 0.5em;

@@ -1,0 +1,144 @@
+@page {
+  margin: 2cm; /*does not work in every browser, but 2cm seems a standard*/
+  size: landscape; /*does not work in every browser, but at least try it*/
+  /*Din A4: 210mm x 297mm*/
+ }
+ /*
+@page :first {
+margin: 1cm 2cm;
+}
+*/
+
+/* Defining all page breaks
+i fear nothing of the following works, as its inside a grid
+and page-breaks are ignored inside grids
+a {
+page-break-inside:avoid
+}
+blockquote {
+page-break-inside: avoid;
+}
+h1, h2, h3, h4, h5, h6 { page-break-after:avoid;
+page-break-inside:avoid }
+img { page-break-inside:avoid;
+page-break-after:avoid; }
+table, pre { page-break-inside:avoid }
+ul, ol, dl  {
+page-break-before:avoid;
+page-break-inside:avoid;
+}
+*/
+
+:focus{
+  outline-style: none !important;
+}
+
+.printer .presentation{
+  margin:0 !important;
+  padding:0 !important;
+}
+
+.print-firefox .printer.blocks .ppage{
+  height:170mm !important;
+}
+.print-chrome .printer.blocks .ppage{
+  height:100vh !important;
+}
+
+
+.ppage,
+.printer.blocks .ppage{
+  /*page-break-inside: avoid;*/
+/*
+page-break-before: always;
+page-break-after: always;
+break-inside:avoid;
+  */
+  break-before: page;
+  padding: 0px !important;
+  margin: 0px !important;
+  border: none !important;
+  visibility: visible !important;
+  position: relative !important;
+  /*height: auto !important;*/
+  height: 98vh !important;
+  height: 170mm !important;
+  /*height:100% !important;*/
+  /*overflow-y:visible !important;*/
+  width: 100% !important;
+  background-color: #ffffff !important;
+    /* background-color: yellow !important; */
+  overflow: hidden;
+}
+.ppage.print-2-pages,
+.printer.blocks .ppage.print-2-pages{
+/*
+  height: auto !important;
+  height: 98vh !important;
+  height:198vh !important;*/
+  max-height: 17cm !important;
+  min-height:unset;
+}
+.printer.blocks .ppage.print-2-pages:after{
+  display: none;
+}
+
+.ppage:first-child,
+.printer.blocks .ppage:first-child,
+#slide1.ppage{
+  page-break-before:unset;
+}
+
+body{
+  height:auto !important;
+  overflow:auto !important;
+}
+#praesentation, #slidenotepresentation{
+  position: relative !important;
+  height:auto !important;
+  overflow:auto !important;
+  display: block !important;
+  background: #ffffff !important;
+    /* background: blue !important; */
+}
+
+.presentation{
+  height:auto;
+  display: block !important;
+}
+
+#slidenoteeditor,
+#controlarea,
+.aui-wrapper,
+.progressbar,
+.slide-title{
+  display: none;
+}
+.printer .navigationPlaceholder{
+  background: #ffffff !important;
+    /* background: magenta; */
+  height:1mm !important;
+  margin:0;
+  padding:0;
+}
+
+.blocks img.bgimg{
+  top: 0 !important;
+  left: 0 !important;
+  grid-row: unset;
+  grid-column: unset;
+}
+
+.imageblock > img{
+  max-height:10cm;
+}
+
+h1{
+  max-width:80vw !important;
+    /* background: green; */
+}
+
+h1 img{
+  height: 2em !important;
+  width: unset;
+}

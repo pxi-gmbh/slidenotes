@@ -201,7 +201,11 @@ var mongoguardian = {
       console.log(resp);
       //as we deleted this slidenote we could leave the page
       //location.href = '/login/login.html';
-      if(location.hostname!='localhost')location.href='/user/';
+      // if(location.hostname!='localhost')location.href='/user/';
+      slidenote.slideDeleted = true;
+      dialoger.alert('slidenote deleted', 'all done', function(){
+        location.href='/user';
+      });
       //but we do nothing as we want to see the result for now
     }catch(err){
       console.warn(err);

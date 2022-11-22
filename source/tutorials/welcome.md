@@ -27,7 +27,7 @@ with markdown
 ![](markdown-in-the-editor.png)
 you can give meaning to simple text by using slidenotes' interpretation of *markdown code*. our *markdown* aims to be as simple as possible while being as powerful as it can be.
 
-if you already know how to use *markdown code* you can put it in yourself. 
+if you already know how to use *markdown code* you can put it in yourself.
 and if you don't: don't worry. you won't have to learn it. the slidenote editor is built to help you with anything, writing the code for you while you only click on the given options in the **toolbar** ![toolbar](toolbar.svg) on the right.
 
 no matter if you are a code writer or selector—check out the following slides of this tutorial to get a general overview over the syntax you'll use.
@@ -38,7 +38,7 @@ first of all let's talk about slides ➡︎
 ##slides
 
 when you open a new slidenote, you automatically start typing on *slide 1*.
-in order to start *slide 2*, simply start the next line by typing this: ~---~ 
+in order to start *slide 2*, simply start the next line by typing this: ~---~
 
 in the editor, it looks like this:
 
@@ -74,13 +74,13 @@ to ~mark~ ~~all~~ parts of your code as *italic* or **bold** you have to include
 to ~mark~ ~~all~~ parts of your code as *italic* or **bold** you have to include them in symbols.
 +++
 
-those simple elements are allowed to go over more than one line, so that you can set **a whole angry paragraph in bold.** 
+those simple elements are allowed to go over more than one line, so that you can set **a whole angry paragraph in bold.**
 however, they have to be closed before you start a *new slide* or complex elements like *lists* or *blocks*, otherwise they are not rendered at all. here is an overview of some simple elements and how to write them:
 
 +++table
 italic, bold, marked, deleted
 *text, **text**, ~text~, ~~text~~
-_text_, __text__, 
+_text_, __text__,
 +++
 
 you can always just mark the text you want to edit with your cursor and then press the symbols on your keyboard or choose them from the **toolbar** ![toolbar](toolbar.svg) on the right.
@@ -89,15 +89,15 @@ you can always just mark the text you want to edit with your cursor and then pre
 ##hello world
 
 that's all you really need to start your first presentation.
-so why don't you hit `escape` and try it out yourself? 
-play a bit with the text on *this slide*. 
+so why don't you hit `escape` and try it out yourself?
+play a bit with the text on *this slide*.
 when you are finished, continue on the next slide ➡︎
 
 ---
 ##complex elements: lists
 
 now that you have mastered the simple elements, it's time to go forward to the next level and look at some more complex elements you probably will use often: lists.
-lists can be divided into two families: *unordered* and *ordered* lists. 
+lists can be divided into two families: *unordered* and *ordered* lists.
 *ordered* lists have a numeral or alphabetical counter while unordered lists are just bullet points.
 
 +++layout:left
@@ -123,7 +123,7 @@ linenumbering=off
 3. ordered list
 +++
 
-1. ordered list 
+1. ordered list
 2. ordered list
 3. ordered list
 +++
@@ -131,9 +131,9 @@ linenumbering=off
 ---
 ##getting crazy with lists
 
-as we said, lists are one of the complex elements. as such it has a context menu. 
+as we said, lists are one of the complex elements. as such it has a context menu.
 whenever your cursor is in such an element you are offered the **context menu** ![context menu](context-menu_list.svg) at the left side of the editor.
-it tells you the type of the element you are in and gives you a helping hand in handling the element. in case of the list element it offers you to change the list type. 
+it tells you the type of the element you are in and gives you a helping hand in handling the element. in case of the list element it offers you to change the list type.
 this is especially useful because you can mix different list types to get sublists and still keep an overview while in code:
 
 1. my first point
@@ -144,7 +144,7 @@ b) second subpoint of first point
 + a subpoint of second point
 + a subpoint of second point
 
-why not hit `escape` now, click inside the list, change the *list type* and see what happens? 
+why not hit `escape` now, click inside the list, change the *list type* and see what happens?
 if you are unhappy with a change you can alundo it by clicking on the **undo button** ![undo button](undo.svg) on the top right.
 
 ---
@@ -153,35 +153,35 @@ if you are unhappy with a change you can alundo it by clicking on the **undo but
 the toolbar on the right side of the editor holds all elements you can insert into a slidenote. it opens when you click on the **toolbar button** ![toolbar](toolbar.svg)
 
 *(optional)*
-you can also open the toolbar by pressing `ctrl` `space` (mac: `cmd` `space`). 
-inside the toolbar you can move to your desired element with the arrow keys or by pressing the first letter of its name. of course you can also use your mouse or touchpad if you prefer. 
-just like the context menu, the toolbar gives you a broad set of help whenever you need it. even without knowing our markdown syntax you should be able to design complex presentations. 
+you can also open the toolbar by pressing `ctrl` `space` (mac: `cmd` `space`).
+inside the toolbar you can move to your desired element with the arrow keys or by pressing the first letter of its name. of course you can also use your mouse or touchpad if you prefer.
+just like the context menu, the toolbar gives you a broad set of help whenever you need it. even without knowing our markdown syntax you should be able to design complex presentations.
 and who knows: maybe by using and watching the code you'll get the hang of it and soon become independent from the buttons.
 
 ---
 ##keyboard navigation
 *(optional)*
 
-if using your mouse isn't quick enough for you, you can speed up your workflow with the keyboard navigation. we designed the shortcuts so that they adapt to the needs of a slidenote. for exmaple:
+if using your mouse isn't quick enough for you, you can speed up your workflow with the keyboard navigation. we designed the shortcuts so that they adapt to the needs of a slidenote. for example:
 jump between slides in the editor by pressing `fn` `arrow up` or `fn` `arrow down`.
 you can also use `shift` to mark all text while jumping slides.
 
 the menus can be opened with a shortcut and you can use the `arrow keys` to control them. once you are in a menu and want to go back to your text just press `escape`.
 
-if you want to learn about the other shortcuts, just visit the advanced options: 
+if you want to learn about the other shortcuts, just visit the advanced options:
 
-**options** → **advanced options** → **keyboard configuration**. 
+**options** → **advanced options** → **keyboard configuration**.
 
 there you can also customize the keyboard navigation.
 
 ---
-##faster writing with automagic closure 
+##faster writing with automagic closure
 *(optional)*
 
-you are used to the automagic closure modern editors like *atom* offer? 
+you are used to the automagic closure modern editors like *atom* offer?
 well, we invented our own version and adapted it to the markdown code of slidenotes. it automatically closes the markdown tags for you instead of just showing that you should do that yourself.
- 
-it might feel odd at first but once you get used to it you'll wonder how you managed before. just try it out yourself! 
+
+it might feel odd at first but once you get used to it you'll wonder how you managed before. just try it out yourself!
 
 if you don't like it, you can disable it under:
 **options** → **advanced options** → **advanced editor options** then uncheck **automagic closure**.
@@ -189,7 +189,7 @@ if you don't like it, you can disable it under:
 ---
 ## that's it
 
-congratulations! 
+congratulations!
 you've mastered your very first steps in slidenotes.io!
 feel free to hit `escape` and experiment on your own right inside this tutorial.
 

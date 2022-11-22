@@ -1,0 +1,119 @@
+body{
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu", "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  background-color: #F4F4F4;
+  font-size: 1.5rem;
+  margin: 0;
+  padding: 2vh;
+}
+.controlwindowwrapper {
+    display: grid;
+    width:100%;
+    height:96vh;
+    grid-template-areas:
+        "title close"
+        "clock ."
+        "notes notes"
+        "control control";
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-columns: 1fr auto;
+}
+
+#title {
+    grid-area: title;
+    text-align: left;
+    padding-left: 2ch;
+    font-size: 1.5rem;
+}
+
+#controlarea_back-to-editor {
+    grid-area: close;
+    width: 8ch;
+    height: 8ch;
+    border: none;
+    background-color: transparent;
+    justify-self: center;
+}
+#controlarea_back-to-editor img {
+  height:100%;
+}
+
+span.screenreader-only {position: absolute;color: transparent;}
+
+
+button {
+    padding: 0;
+    cursor: pointer;
+}
+
+#notes {
+    grid-area: notes;
+    overflow: auto;
+    border-top: .1em solid #2f2f2f;
+    border-bottom: .1em solid #2f2f2f;
+}
+ul{
+  margin: 0.5em 0;
+}
+
+#clock {
+    grid-area: clock;
+    border: 5px solid;
+    padding: 0.3ch;
+    width: 5ch;
+    text-align: center;
+    border-radius: 999rem;
+    border-color: #23b2c1;
+    margin-left: 2.5ch;
+    margin-bottom: 0.5em;
+}
+
+#controlarea {
+    grid-area: control;
+    text-align:center;
+    height:20vh;
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    position: relative;
+    overflow: hidden;
+    align-items: center;
+
+}
+#controlarea button{
+  background:none;
+  border:none;
+  height: 100%;
+  justify-self: center;
+}
+
+#controlarea button img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+#controlarea svg{
+  position:absolute;
+  width:100%;
+  z-index: -1;
+}
+
+.nightmode .nightmode-on,
+.nightmode-off{
+display: none;
+}
+.nightmode-on,
+.nightmode .nightmode-off{
+display: block;
+}
+.nightmode{
+color:white;
+background:black;
+}
+#nightmodetoggle{
+  position: absolute;
+  top:10px;
+  left:0;
+  width:4ch;
+  border:none;
+  background:none;
+}

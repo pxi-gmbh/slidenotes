@@ -1,8 +1,23 @@
+# version 1.5
+- controlwindow
+- feedback after deleting slidenote
+- minor errors
+- enable/disable sidenotes (in code comments) on presentation
+- unification password-dialog
+- print to pdf
+- feedback on error
+- updating node-plugin
+- table: guess divider on first line
+
+(+ experimental: aui & videocast)
+
+
+
 # version 1.4
 - fixed bug on older android-firefox
 - fixed some accessibility
 - added old-state to cache on diff local to cloud state
-- added current-slide-focus in editor 
+- added current-slide-focus in editor
 - fixed footnote-bugs
 - fixed minor bugs
 

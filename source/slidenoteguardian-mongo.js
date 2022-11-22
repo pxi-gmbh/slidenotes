@@ -581,7 +581,7 @@ slidenoteGuardian.prototype.init = function(){
 
   window.onbeforeunload = function(){
     var acthash = slidenoteguardian.localstorage.getItem("slidenotehash");
-    if(acthash!=slidenoteguardian.restObject.notehash){
+    if(acthash!=slidenoteguardian.restObject.notehash && !slidenote.slideDeleted){
       //console.log(acthash+"\n localstoragehash vs cmshash\n"+slidenoteguardian.cmsSlidenoteHash.value);
       return "do you really want to leave?";
     }
@@ -1043,6 +1043,9 @@ prepares the presentation to be exported to destination
 */
 slidenoteGuardian.prototype.exportPresentation = async function(destination, presentationdiv){
   this.uploadRestObject.enableComments=true;
+  this.uploadRestObject.enableInternalComments=true;
+  let internalcomcheckbox = document.getElementById('slidenoteGuardianPasswordPromptInternalCommentEnable');
+  if(internalcomcheckbox)this.uploadRestObject.enableInternalComments=internalcomcheckbox.checked;
   try{
     var password;
     if(destination==='filesystem') password = await this.passwordPrompt("choose a password for the presentation", "export", true);
@@ -1056,6 +1059,10 @@ slidenoteGuardian.prototype.exportPresentation = async function(destination, pre
                             presentationdiv.innerHTML + "</div>";
   if(destination==="cms"){
     presentationstring = slidenote.textarea.value;
+    if(!this.uploadRestObject.enableInternalComments){
+      //delete all comments from presentationstring
+      presentationstring = slidenote.parser.removeComments(presentationstring);
+    }
     //presentationstring += "§§§€€€€€IMAGEBLOCK€€€€€§§§";
     //presentationstring += slidenote.base64images.allImagesAsString();
   }
@@ -2251,15 +2258,22 @@ slidenoteGuardian.prototype.passwordPrompt = function (text, method, newpassword
   var pwchecklabel = document.getElementById("slidenoteGuardianPasswordPromptRetypeLabel");
   var pwtext = document.getElementById("slidenoteGuardianPasswordPromptTemplatePreText");
   var pwokbutton = document.getElementById("slidenoteGuardianPasswordPromptEncrypt");
+  var pwclosebutton = document.getElementById("dialogclosebutton");
   var pwnotetitle = document.getElementById("slidenoteGuardianPasswordPromptNotetitle");
   var pwskipbutton = document.getElementById("skippassword");
   var pwgenbutton = document.getElementById("passwordgen");
   var pwaftertext = document.getElementById("slidenoteGuardianPasswortPromptAfterText");
   var commentsenablelable = document.getElementById("slidenoteGuardianPasswordPromptCommentEnableLabel");
   var commentsenable = document.getElementById("slidenoteGuardianPasswordPromptCommentEnable");
+  var internalcommentsenablelable = document.getElementById("slidenoteGuardianPasswordPromptInternalCommentEnableLabel");
+  var internalcommentsenable = document.getElementById("slidenoteGuardianPasswordPromptInternalCommentEnable");
   if(commentsenablelable&&commentsenable){
     commentsenablelable.style.display="none";
     commentsenable.style.display="none";
+  }
+  if(internalcommentsenablelable&&internalcommentsenable){
+    internalcommentsenablelable.style.display="none";
+    internalcommentsenable.style.display="none";
   }
   pwtext.innerText = text;
   //if(this.notetitle==="undefined")this.notetitle=this.localstorage.getItem("title");
@@ -2320,6 +2334,10 @@ slidenoteGuardian.prototype.passwordPrompt = function (text, method, newpassword
       commentsenablelable.style.display=null;
       commentsenable.style.display=null;
     }
+    if(internalcommentsenablelable&&internalcommentsenable){
+      internalcommentsenablelable.style.display=null;
+      internalcommentsenable.style.display=null;
+    }
   }else if(method==="rename"){
     pwokbutton.innerText = "save";
     usernamefield.value = this.notetitle;
@@ -2361,22 +2379,80 @@ slidenoteGuardian.prototype.passwordPrompt = function (text, method, newpassword
     pwcheck.style.display="block";
     pwnotetitle.innerText="set password for slidenote";
   }
-
-  pwprompt.appendChild(pwpromptbox);
+  //new stuff: unification of dialog-process by using dialoger
+  /*
+  pwokbutton.style.display="none";
   var dialogoptions = {
-    type:"passwordprompt",
+    type:"alert",
     title:pwnotetitle.innerText,
-    confirmbutton:"encrypt",
-    cancelbutton:"skip",
-    content:pwprompt,
+    confirmbutton:pwokbutton.innerText,
+    closebutton: true,
+    // cancelbutton:"skip",
+    content:document.querySelector('#slidenoteGuardianPasswordPromptTemplate .dialogcontent'),
+    afterButtonArea: document.getElementById('slidenoteGuardianPasswortPromptAfterText'),
     closefunction: function(e){
-      var store = document.getElementById("slidenoteGuardianPasswordPromptStore");
-      var dialog = document.getElementById("slidenoteGuardianPasswordPromptTemplate");
-      store.appendChild(dialog);
+      var store = document.getElementById("slidenoteGuardianPasswordPromptTemplate");
+      // var dialog = document.querySelector('.dialogbox .dialogcontent');
+      store.appendChild(dialogoptions.content);
+      if(dialogoptions.afterButtonArea)store.appendChild(dialogoptions.afterButtonArea);
+      if(dialogoptions.extrabuttons){
+        for (let x=dialogoptions.extrabuttons.length-1;x>=0;x--){
+          store.appendChild(dialogoptions.extrabuttons[x]);
+        }
+      }
     },
   }
-
-  //old stuff:
+  if(method.indexOf('export')>-1 || method=="changepassword" || method=="encrypt"){
+    dialogoptions.extrabuttons=[pwgenbutton];
+  }
+  if(method=="encrypt"){
+    dialogoptions.type="confirm";
+    dialogoptions.cancelbutton=pwskipbutton.innerText;
+  }
+  if(pwcheck.classList.contains("hidden")==false){
+    //disable button on wrong retype and put colors
+    var handleKeys = function(e){
+      let okbutton=document.getElementById('dialogconfirmbutton');
+      if(pwinput.value===pwcheck.value){
+        pwcheck.style.backgroundColor="green";
+        okbutton.disabled=false;
+      }else{
+        if(pwcheck.value.length>0 || pwcheck.style.display!="none"){
+          okbutton.disabled=true;
+          pwcheck.style.backgroundColor="red";
+        }else{
+          okbutton.disabled=false;
+          pwcheck.style.backgroundColor="white";
+        }
+      }
+    }
+    pwcheck.onkeyup=handleKeys;
+    pwinput.onkeyup=handleKeys;
+  }
+  let prom = new Promise(function(resolve,reject){
+    dialogoptions.cancelfunction = function(){
+      slidenoteguardian.savingtoDestination=undefined;
+      reject(new Error('user canceled'));
+    }
+    dialoger.buildDialog(dialogoptions, function okbuttonpressed(){
+      //check for password-retype
+      if(pwinput.value===pwcheck.value||(pwcheck.classList.contains("hidden") && pwcheck.value.length===0)){
+        let newname = document.getElementById("username").value;
+        if(pwpromptbox.encmethod.indexOf("export")==-1 && newname!=slidenoteguardian.notetitle){
+          slidenoteguardian.notetitle=newname;
+          menumanager.buildSlidenoteList();
+          slidenoteguardian.localstorage.setItem("title",newname);
+          document.getElementById("slidenotetitle").innerText = newname;
+          //slidenoteguardian.saveNote("cms");
+        }
+        resolve(pwinput.value); //return password
+      }
+      // resolve(pwinput.value);
+    });
+  });
+  return prom;
+  *///old stuff:
+  pwprompt.appendChild(pwpromptbox);
 	document.body.appendChild(pwprompt); //make promptbox visible
 	pwinput.focus(); //focus on pwbox to get direct input
   setTimeout("document.getElementById('password').focus()",500); //not the most elegant, but direct focus does not work sometimes - dont know why

@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="themes/dialoger.css">
   <link rel="stylesheet" href="themes/pointer.css">
   <link rel="stylesheet" href="themes/slidenoteguardian.css">
+  <link rel="stylesheet" href="themes/aui.css">
+
   <!-- css-block -->
   <!-- should i insert all standard-css here? like blocks.css etc.-->
 
@@ -18,6 +20,7 @@
   <script src="themes/pointer.js"></script>
   <script language="javascript" src="slidenoteplayer.js"></script>
   <script language="javascript" src="slidenotes.js"></script>
+  <script type="text/javascript" src="controlwindow.js"></script>
   <!--added css and js-bibs from script:-->
 
 </head>
@@ -475,6 +478,13 @@
           </label>
         </li>-->
         <li>
+          <input id="config-multiscreen" class="config-multiscreen menuitem" type="checkbox" onchange="if(this.checked)controlWindow.openWindow(); else controlWindow.closeWindow();">
+          <label for="config-multiscreen">
+            <span>external control window (multi screen)</span>
+            <span class='image-wrapper'><img src="images/buttons/ctrlwindow.svg"></span>
+          </label>
+        </li>
+        <li>
           <input id="config-multiusersession" type="checkbox" onchange="ws.toggleMultiUserPresentation(this.checked)">
           <label for="config-multiusersession">
             <span>multi user session</span>
@@ -491,560 +501,616 @@
             <button id="invitelink" class="invitelink" type="button" name="button">
               <span>copy link</span>
             </button>
+            <hr>
+            <div class="videocast-wrapper">
+              <input id="config-videocast" class="config-videocast menuitem" type="checkbox" onchange="videocaster.toggleSender()">
+              <label for="config-videocast">
+                <span>videocast</span>
+                <span class='image-wrapper'><img src="images/buttons/feather-video.svg"></span>
+              </label>
+            </div>
+
           </div>
         </li>
       </ul>
   </template>
-  <!-- additional starting-scripts-->
-  <script language="javascript">
-    var slidenoteguardian = {
-      actthemesstring: "extraoptions;hiddenobjects;blocks;progressbar;stickytitles;azul;redalert;tufte;prototyp;highlight;transition;chartist;table;imgtourl;klatex;switchparseelements;sections;node;",
-      ivlength: 12,
-      decText: null,
-      crypto: window.crypto,
-        //options:'<?php print($field_optionstring[0]["value"]);?>',
-      iv:null,
-      //encBufferString : "<?php print($field_encryptednote[0]['value']);?>",
-      //notetitle: "<?php print($title);?>"
-    }
+  <template id="videocast-wrapper-template">
+    <div class="header">
+      <button class="maximize" onclick="videocaster.maximizeVideo();"><span class="screenreader-only">maximize video</span><img src="images/buttons/presentation_fullscreen.svg"></button>
+      <button class="minimize" onclick="videocaster.minimizeVideo();"><span class="screenreader-only">close video</span><img src="images/buttons/feather-video-off.svg"></button>
+      <button class="minimize-off" onclick="videocaster.minimizeVideo();"><span class="screenreader-only">open video</span><img src="images/buttons/feather-video.svg"></button>
+      <button class="configbutton" onclick="videocaster.openConfig()"><span class="screenreader-only">config videocast</span><img src="images/buttons/advanced-options.svg"></button>
+      <button class="configbutton-close" onclick="videocaster.openConfig()"><span class="screenreader-only">start videocast</span><img src="images/buttons/redo.svg"></button>
+    </div>
+    <div class="config-menu">
+      <input type="checkbox" name="" value="" id="videocast-mirror" onchange="videocaster.activateMirror();">
+      <label for="videocast-mirror">flip video</label>
+      <input type="radio" name="videocast-projector" value="standard" id="videocast-projector-standard" onchange="videocaster.setProjector(this.value, true)" checked="true">
+      <label for="videocast-projector-standard">standard</label>
+      <input type="radio" name="videocast-projector" value="circle" id="videocast-projector-circle" onchange="videocaster.setProjector(this.value, true)">
+      <label for="videocast-projector-circle">circle</label>
+      <input type="radio" name="videocast-projector" value="humanoid" id="videocast-projector-humanoid" onchange="videocaster.setProjector(this.value, true)">
+      <label for="videocast-projector-humanoid">humanoid</label>
+    </div>
+    <div id="videocast-cropper">
+      <div id="videocast-cropper-y">«</div>
+      <div id="videocast-cropper-x">»</div>
+      <div id="videocast-cropper-preview"></div>
+    </div>
+  </template>
+  <div class="aui-wrapper">
+    <button class="aui-activate-button" onclick="aui.activateAui()" title="activate audio user interface">🕪<span class="screenreader-only">activate audio user interface</span></button>
+    <h2>graphical representation of aui</h2>
+    <div class="aui-last-read-wrapper">
+      <h3>last read text:</h3>
+      <div tabindex="1" class="" id="aui-output-polite" role="application" aria-live="polite">
+        Welcome to the Audio User Interface. No Content loaded yet
+      </div>
+    </div>
+    <div class="aui-tree-wrapper">
+      <h3>tree</h3>
+      <div id="aui-tree">
+    </div>
+    </div>
+  </div>
 
-    slidenoteguardian.initLoad = async function(){
-      //should we join session?
-      this.joinsession = (location.href.indexOf('join')>-1);
-      //we dont start session here cause password is not set yet
-      //we could cut the url here to be more standard-like if join is on
-      if(this.joinsession){
-         let roomId = location.search.substring(location.search.indexOf('join')+'join'.length);
-         ws.joinSession(roomId);
-         return;
-      }
-        //get actual slidenote from id
-        let url = location.search.substring(1);
-        console.log(url);
-        try{
-          this.mongopresentation = await getJson('/api/presentation/url/'+url);
-        }catch(err){
-          console.warn('could not load presentation',err);
-          // return {err:err};
-          this.mongopresentation={error:true}
-        }
-        if(this.mongopresentation.error){
-          //404-dialog:
-          dialogoptions = {
-            title:"404 - file not found",
-            content:"we could not find a presentation with this url. please check your url for mistyping",
-            confirmbutton:"go back to slidenotes.io",
-            type:'alert',
-            closebutton:false
-          };
-          dialoger.buildDialog(dialogoptions,function(){
-            location.href='https://www.slidenotes.io';
-          });
-          return;
-        }
-
-      this.encBufferString = this.mongopresentation.encnote;
-      try{
-        this.options = JSON.parse(this.mongopresentation.options);
-      }catch(e){
-        console.warn('could not load options, no valid json');
-      }
-      //if options are not encrypted we could start loading basic-themes here?
-      //no we cant - slidenote must be defined with extensionmanager ready
-      this.notetitle = this.mongopresentation.title;
-      this.init();
-    }
-    slidenoteguardian.initConfig = async function(){
-      return new Promise(function(resolve,reject){
-
-      //lets load the config here:
-      /*this.options hold config-object with:
-      * editorchoice: we dont need that
-      * keyboardmap: we dont need that
-      * nightmode: we dont need that
-      * array activethemes - contains strings with names of active themes to be loaded
-      * themeConfigs: array of strings - holding themes config inside     *
-      */
-      var options = slidenoteguardian.options;
-      var themenames = options.activethemes;
-      var themeconfigs = options.themeConfigs;
-
-      for(var x=0;x<themenames.length;x++){
-        //load the actual css/js libraries:
-
-      }
-
-    });
-    }
-
-    slidenoteguardian.extensionoptions = {
-      basicThemes: [
-        //maybe we should leave it empty and load them in a better way?
-        {name:"hiddenobjects"},
-        {name:"blocks"},
-        {name:"progressbar"},
-        {name:"stickytitles", css:true},
-        {name:"highlight"},
-        {name:"transition"},
-        {name:"chartist"},
-        {name:"table", css:true},
-        {name:"imgtourl"},
-        {name:"klatex", css:true},
-        {name:"switchparseelements", css:true},
-        {name:"sections"},
-        {name:"node"},
-        //css-themes:
-		    {name:"minimalist"},
-		    {name:"dark"},
-		    {name:"colorful"},
-        //*/
-      ]
-    }
-
-    var slidenote;
-
-    slidenoteguardian.init = async function(){
-      this.maximumCommentLength = 255; //will be overwritten by slidenoteplayer.js, just to have a default here
-      var texted = {value:"", selectionEnd:0, selectionStart:0, focus:function(){}}; //emulate textarea
-      var textedlayer = document.createElement("div");
-      //textedlayer.id="texteditorbuttons"; //avoid failure of loading themes by simply adding buttons there
-      textedlayer.style.display = "none";
-      document.body.appendChild(textedlayer);
-      var slideshow = document.getElementById("slidenotepresentation");
-      slidenote = new slidenotes(texted,textedlayer,textedlayer,slideshow,"");
-      var loadscreen = document.getElementById("slidenoteloadingscreenwrapper");
-      loadscreen.classList.add("midstate");
-        //await slidenoteguardian.initConfig();
-      this.decryptPresentation();
-      document.getElementById('comment-form').addEventListener('submit',function(e){
-        e.preventDefault();
-        slidenoteguardian.saveComment();
-        return false;
-      });
-    };
-    slidenoteguardian.autoSaveToLocal = function(){};
-
-    slidenoteguardian.loadConfigString = function(){
-      //disable texteditor:
-      slidenote.texteditorerroractivated=false;
-      //load Themes-Config:
-        var saveobject;
-      try {
-        if(typeof this.options=="object"){
-          saveobject=this.options;
-        }else{
-          saveobject = JSON.parse(this.options);
-        }
-      }catch{
-      //load old config style? naa, just delete it...
-        console.log("old config found");
-
-      //   this.loadConfigOld(destination);
-        return;
-      }
-
-      //activate and disable Themes depending on config:
-      for(var x=0;x<slidenote.extensions.themes.length;x++){
-          var act=slidenote.extensions.themes[x];
-          if(saveobject.activethemes.indexOf(act.classname)>-1){
-              act.changeThemeStatus(true);
-          }else{
-              act.changeThemeStatus(false);
-          }
-      }
-
-      //load themes-config:
-      for(var x=0;x<saveobject.themeConfigs.length;x++){
-          var theme = slidenote.extensions.getThemeByName(saveobject.activethemes[x]);
-          if(theme)theme.loadConfigString(saveobject.themeConfigs[x]);
-      }
-    }
-
-
-    slidenoteguardian.decryptPresentation = async function(){
-      //getting iv of string:
-
-      let iv = new Uint8Array(this.ivlength); //create empty ivarray
-      for(let i=0;i<this.ivlength;i++)iv[i]=this.encBufferString.charCodeAt(i)-255;
-      this.iv = iv;
-      this.encBufferString = this.encBufferString.substring(this.ivlength);//delete iv-chars from string
-      let buffer = new Uint8Array(this.encBufferString.length);
-      for(let i=0;i<this.encBufferString.length;i++)buffer[i]=this.encBufferString.charCodeAt(i)-255;
-      //this.encTextBuffer = buffer.buffer; //changing to ArrayBuffer -- TODO:kann weg oder?
-      this.password = ""; //try it once with empty password
-      this.decText = await this.decrypt(buffer.buffer, this.iv); //decrypt ArrayBuffer
-      if(this.decText==="decryption has failed"){
-        this.password=null;
-        this.decText = await this.decrypt(buffer.buffer, this.iv); //decrypt ArrayBuffer
-      }
-      while(this.decText==="decryption has failed" && confirm("decryption failed. wrong password. Retry?")){
-        this.password=null;
-        this.decText = await this.decrypt(buffer.buffer, this.iv); //decrypt ArrayBuffer
-      }
-      if(this.decText==="decryption has failed")return;
-      //decryption was successfull
-
-      //if we have to join a session we should do it now as
-      //password is set:
-      // if(this.joinsession && ws)ws.joinSession();
-      // as for new logic its not called here anymore  
-      //var imgblockpos = this.decText.indexOf("§§§€€€€€IMAGEBLOCK€€€€€§§§");
-      //this.imageblockstring = this.decText.substring(imgblockpos+26);
-      //this.decText = this.decText.substring(0,imgblockpos);
-      slidenote.textarea.value = this.decText;
-      slidenote.extensions.addAfterLoadingThemesHook(async function(){
-        //slidenote.base64images.loadImageString(slidenoteguardian.imageblockstring);
-        await slidenoteguardian.loadImages();
-        slidenoteguardian.loadConfigString();
-        slidenote.parseneu();
-        slidenote.presentation.showpresentation();
-        slidenoteplayer.init();
-        //loadingscreen:
-        let loadingscreen = document.getElementById("slidenoteloadingscreenwrapper");
-        loadingscreen.classList.remove("midstate");
-        loadingscreen.classList.add("endstate");
-      });
-    }
-    slidenoteguardian.loadImages = async function(){
-      let encimages = this.mongopresentation.encimages;
-      for(var x=0;x<encimages.length;x++){
-        let actimg = encimages[x];
-        let actm = await this.decryptText(actimg.encmeta);
-        var actmeta;
-        try{
-          actmeta = JSON.parse(actm);
-        }catch(err){
-          console.warn('could not load imagemeta:',actm)
-        }
-        let actbase64url = await this.decryptText(actimg.encb64);
-        let newb64img = new base64Image(actmeta.names, actbase64url, actmeta.filename);
-        newb64img.hash = actimg.hash; //adding hash here directly
-        newb64img.encmetahash = actimg.encmetahash;
-        newb64img.meta = actmeta;
-        slidenote.base64images.base64images.push(newb64img); //adds image to Database
-      }
-    }
-    slidenoteguardian.decryptText = async function(text){
-      var encBufferString = text;
-        //getting iv of string:
-      let iv = new Uint8Array(this.ivlength); //create empty ivarray
-      for(let i=0;i<this.ivlength;i++)iv[i]=encBufferString.charCodeAt(i)-255;
-      this.iv = iv;
-      encBufferString = encBufferString.substring(this.ivlength);//delete iv-chars from string
-      let buffer = new Uint8Array(encBufferString.length);
-      for(let i=0;i<encBufferString.length;i++)buffer[i]=encBufferString.charCodeAt(i)-255;
-      //this.encTextBuffer = buffer.buffer; //changing to ArrayBuffer -- TODO:kann weg oder?
-      var decText = await this.decrypt(buffer.buffer, this.iv); //decrypt ArrayBuffer
-      //while(decText==="decryption has failed" && confirm("decryption failed. wrong password. Retry?")){
-        //decText = await this.decrypt(buffer.buffer, this.iv); //decrypt ArrayBuffer
-      //}
-      //document.getElementById("slidenotepresentation").innerHTML = this.decText;
-      return decText;
-    }
-
-    slidenoteguardian.decrypt = async function(buffer, iv){
-      let pwtext = "please type in password of presentation";
-      if(this.password===undefined||this.password===null)this.password = await this.passwordPrompt(pwtext, "decrypt");
-      let keyguardian = await this.createKey(iv);
-      console.log("decoding starts");
-      try{
-        this.plainTextBuffer = await this.crypto.subtle.decrypt(keyguardian.alg, keyguardian.key, buffer);
-      } catch(e){
-        console.log(e);
-        console.log("decryption has failed!");
-        //this.password = null; //reset password as it has no meaning
-        return "decryption has failed";
-      }
-      console.log("decoding has ended");
-      return new TextDecoder().decode(this.plainTextBuffer); //TODO: error-handling
-    }
-
-    slidenoteguardian.encryptComment = async function(){
-       var bodyfield = document.getElementById("comment-body");
-       var name = document.getElementById("comment-name");
-       let newcomment = {
-         name:name.value,
-         text:bodyfield.value,
-         date:Date.now(),
-         slidenr:slidenoteplayer.actpage+1
-       }
-       if(newcomment.text.length<1)return "empty body";
-       if(newcomment.text.length>this.maximumCommentLength)return "body too long";
-       if(newcomment.name.length<1)return "empty name";
-       let plaintext = JSON.stringify(newcomment);
-       var encresult = await this.encrypt(plaintext);
-       if(encresult.iv===null||encresult.encbuffer===null)return false;
-       var enctext = this.encBufferToString(encresult);
-       bodyfield.value = enctext;
-       return {enccomment:enctext, cleancomment:newcomment};
-    };
-    slidenoteguardian.saveComment = async function(){
-      let comment = await this.encryptComment();
-      if(comment==false){
-        console.warn('could not encrypt comment');
-        return;
-      }
-      if(comment=="empty body"){
-        console.warn('comment: empty bodyfield');
-        dialoger.buildDialog({type:'alert', title:'could not send comment', content:'you must enter some text to send a comment'});
-        return;
-      }
-      if(comment=="empty name"){
-        console.warn('comment: empty namefield');
-        dialoger.buildDialog({type:'alert', title:'could not send comment', content:'you must enter a name to send a comment'});
-        return;
-      }
-      if(comment=="body too long"){
-        console.warn('comment: bodyfield too long');
-        dialoger.buildDialog({type:'alert', title:'could not send comment', content:'your comment should not exceed '+this.maximumCommentLength+' characters'});
-        return;
-      }
-
-      let enccomment = comment.enccomment;
-      let url = '/api/presentation/comment/'+location.search.substring(1);
-      try{
-        let response = await postJsonComment(url, {enccomment:enccomment});
-        if(!response.err){
-          //comment saved succesfully:
-          //maybe signal it back to user somehow?
-          console.log('comment saved successfully');
-          //load comment into comments:
-          slidenoteplayer.comments.list.push(comment.cleancomment);
-          slidenoteplayer.writeMongoCommentsHTML(); //rewrite all comments
-          document.getElementById('comment-body').value='';
-        }else{
-          console.warn('could not post comment',response.err);
-        }
-      }catch(err){
-        console.warn('could not save comment',err);
-      }
-    }
-
-    slidenoteguardian.encBufferToString = function(encResult){
-      let encTextBuffer = encResult.encbuffer;
-      let iv = encResult.iv;
-      //getting only displayable chars without control-chars:
-      let utf8array = new Uint8Array(encTextBuffer); //changing into utf8-Array
-      //console.log(utf8array);
-      let utf8string = ""; //starting new string for utf8
-      for(let i =0; i<utf8array.length;i++){
-        utf8string+=String.fromCharCode(utf8array[i]+255); //fill string with save values
-      }
-      //converting iv to string with same method:
-      let ivstring="";
-      for(let i=0; i<iv.length;i++)ivstring+=String.fromCharCode(iv[i]+255);
-      return ivstring+utf8string;//save iv in front of code
-    }
-
-
-    slidenoteguardian.encrypt = async function(plaintext){
-      console.log("encrypt plaintext:"+plaintext.substring(0,20));
-      let plainTextUtf8 = new TextEncoder().encode(plaintext); //changing into UTF-8-Array
-      let keyguardian = await this.createKey();
-      if(keyguardian==null)return {encbuffer:null, iv:null};
-      //this.iv = keyguardian.iv;
-      let encbuffer = await crypto.subtle.encrypt(keyguardian.alg, keyguardian.key, plainTextUtf8);
-      return {encbuffer: encbuffer, iv:keyguardian.iv};
-      /*the job of encrypt is done - rest of code should be in save*/
-    }
-
-    slidenoteguardian.createKey = async function(iv, passw){
-      console.log("creating Key with iv"+iv);
-      let password = passw;
-      if(this.password ==null && passw==null)return;
-      if(passw==null)password = this.password;
-      let pwUtf8 = new TextEncoder().encode(password);
-      let passwordHash = await this.crypto.subtle.digest('SHA-256', pwUtf8);
-      if(passw==null) this.passwordHash = passwordHash;
-      let keyguardian = {};
-      if(iv==null){
-        keyguardian.iv = crypto.getRandomValues(new Uint8Array(this.ivlength));
-      }else{
-        keyguardian.iv = iv;
-      }
-      keyguardian.alg = { name: 'AES-GCM', iv: keyguardian.iv };
-      keyguardian.key = await crypto.subtle.importKey('raw', passwordHash, keyguardian.alg, false, ['encrypt', 'decrypt']);
-      console.log("key created");
-      return keyguardian;
-    }
-
-    slidenoteguardian.passwordPrompt = function (text, method, newpassword){
-      /*creates a password-prompt*/
-      if(document.getElementById("slidenoteGuardianPasswortPrompt")!=null){
-        console.log("second password-prompt");
-        return null;
-      }
-      if(this.password!=null && method==="decrypt" && !newpassword){
-        console.log("password allready set");
-        return this.password;
-      }
-
-      var pwprompt = document.createElement("div"); //the prompt-container
-      pwprompt.id= "slidenoteGuardianPasswortPrompt"; //id for css
-      var pwpromptbox = document.getElementById("slidenoteGuardianPasswordPromptTemplate");
-      if(pwpromptbox===null){
-        console.log("no password template found"+pwpromptbox);
-        pwpromptbox = document.createElement("div"); //inner promptbox
-        var pwtext = document.createElement("div"); //text to be displayed inside box
-        pwtext.innerHTML = text;
-        pwpromptbox.appendChild(pwtext);
-        //password-box and retype-password-box
-        var pwform = document.createElement("form");
-        var emailfield = document.createElement("input");
-        emailfield.id="email";
-        emailfield.type="email";
-        emailfield.value= this.slidenotetitle+"@slidenotes.io";
-        //emailfield.style.display="none";
-        //emailfield.style.height="1px";
-        emailfield.autocomplete="username";
-        pwform.appendChild(emailfield);
-        var pwlabel = document.createElement("label");
-        pwlabel.innerText="PASSWORD";
-        pwform.appendChild(pwlabel);
-        var pwinput = document.createElement("input"); //password-box
-        pwinput.type="password";
-        pwinput.id="password";
-        pwinput.autocomplete="current-password";
-        pwform.appendChild(pwinput);
-        pwpromptbox.appendChild(pwform);
-        var pwchecklabel = document.createElement("label");
-        pwchecklabel.innerText="RE-TYPE PASSWORD";
-        pwpromptbox.appendChild(pwchecklabel);
-        pwcheck = document.createElement("input");
-        pwcheck.type="password";
-        pwcheck.id="pwcheckfield";
-        pwpromptbox.appendChild(pwcheck);
-
-        //buttons
-        var pwokbutton = document.createElement("button");
-        pwokbutton.innerHTML = "ENCRYPT";
-        var pwcancelb = document.createElement("button");
-        pwcancelb.innerHTML = "cancel";
-        pwpromptbox.appendChild(pwcancelb);
-        pwpromptbox.appendChild(pwokbutton);
-
-        var pwpromptaftertext = document.createElement("div");
-        pwpromptaftertext.innerText = "we recommend using a password manager to keep up with the task of choosing and remembering safe passwords on the web.";
-        pwpromptbox.appendChild(pwpromptaftertext);
-      }else{
-        console.log("template found: using template to comply with password-manager");
-        var usernamefield = document.getElementById("username");
-        var usernamelabel = document.getElementById("slidenoteGuardianPasswordPromptUsernameLabel");
-        var pwinput = document.getElementById("password");
-        var pwcheck = document.getElementById("pwcheckfield");
-        var pwchecklabel = document.getElementById("slidenoteGuardianPasswordPromptRetypeLabel");
-        var pwtext = document.getElementById("slidenoteGuardianPasswordPromptTemplatePreText");
-        var pwokbutton = document.getElementById("slidenoteGuardianPasswordPromptEncrypt");
-        var pwnotetitle = document.getElementById("slidenoteGuardianPasswordPromptNotetitle");
-        pwtext.innerText = text;
-        if(this.notetitle==="undefined")this.notetitle=this.localstorage.getItem("title");
-        pwinput.value="";
-        usernamefield.value = this.notetitle; //+"@slidenotes.io";
-        if(pwnotetitle!=null)pwnotetitle.innerText = "decrypting presentation \""+this.notetitle+"\"";
-      }
-      if(method==="decrypt"){
-        pwokbutton.innerText="DECRYPT";
-        pwchecklabel.style.display="none";
-        pwcheck.style.display="none";
-        pwcheck.value="";
-        usernamefield.classList.add("hidden");
-        usernamelabel.classList.add("hidden");
-      }else if(method==="export") {
-        pwokbutton.innerText="ENCRYPT";
-        usernamefield.value=this.notetitle+".slidenote";
-        usernamefield.classList.remove("hidden");
-        usernamelabel.classList.remove("hidden");
-        pwchecklabel.style.display="block";
-        pwcheck.style.display="block";
-      }else if(method==="exportCMS"){
-        pwokbutton.innerText="ENCRYPT";
-        usernamefield.value=this.notetitle;
-        usernamefield.classList.remove("hidden");
-        usernamelabel.classList.remove("hidden");
-        pwchecklabel.style.display="block";
-        pwcheck.style.display="block";
-      }else {
-        usernamefield.classList.add("hidden");
-        usernamelabel.classList.add("hidden");
-        pwokbutton.innerText="ENCRYPT";
-        pwchecklabel.style.display="block";
-        pwcheck.style.display="block";
-        pwnotetitle.innerText="Set Password for Slidenote";
-      }
-      pwprompt.appendChild(pwpromptbox);
-      document.body.appendChild(pwprompt); //make promptbox visible
-      pwinput.focus(); //focus on pwbox to get direct input
-      setTimeout("document.getElementById('password').focus()",500); //not the most elegant, but direct focus does not work sometimes - dont know why
-
-      return new Promise(function(resolve, reject) {
-          pwprompt.addEventListener('click', function handleButtonClicks(e) {
-            if (e.target.tagName !== 'BUTTON') { return; }
-            pwprompt.removeEventListener('click', handleButtonClicks); //removes eventhandler on cancel or ok
-            if (e.target === pwokbutton) {
-              if(pwinput.value===pwcheck.value||(pwcheck.style.display==="none" && pwcheck.value.length===0))resolve(pwinput.value); //return password
-              else {
-                return;
-                //reject(new Error('Wrong retype'));
-              }
-            } else {
-              reject(new Error('User canceled')); //return error
-            }
-            document.getElementById("slidenoteGuardianPasswordPromptStore").appendChild(pwpromptbox);
-            document.body.removeChild(pwprompt); //let prompt disapear
-          });
-        var handleenter= function handleEnter(e){
-          if(pwinput.value===pwcheck.value){
-            pwcheck.style.backgroundColor="green";
-          }else{
-            if(pwcheck.value.length>0 || pwcheck.style.display!="none")pwcheck.style.backgroundColor="red";else pwcheck.style.backgroundColor="white";
-          }
-            if(e.keyCode == 13){
-              if(pwinput.value===pwcheck.value||(pwcheck.value.length===0 && pwcheck.style.display==="none"))resolve(pwinput.value);
-                else {
-                  return;
-                //  alert("password and retype of password differs - please try again");
-                //reject(new Error("Wrong retype"));
-                }
-              document.getElementById("slidenoteGuardianPasswordPromptStore").appendChild(pwpromptbox);
-              if(pwprompt.parentElement === document.body)document.body.removeChild(pwprompt);
-            }else if(e.keyCode==27){
-              document.getElementById("slidenoteGuardianPasswordPromptStore").appendChild(pwpromptbox);
-              document.body.removeChild(pwprompt);
-              reject(new Error("User cancelled"));
-            }
-          }
-        pwinput.addEventListener('keyup',handleenter);
-        pwcheck.addEventListener('keyup',handleenter);
-      });
-    }
-
-    async function getJson(url){
-    	const resp = await fetch(url,{
-    		method:'GET',
-
-    	});
-      console.warn(resp.status);
-    	return resp.json();
-    };
-    async function postJsonComment(url,payload){
-      console.log('post '+url,payload);
-      try{
-        const resp = await fetch(url,{
-          method:'POST',
-          headers:{
-            'Content-Type' : 'application/json',
-          },
-          body:JSON.stringify(payload)
-        });
-        console.log(resp.status, resp.responseXML);
-        return resp.json();
-      }catch(err){
-        return {err:err};
-      }
-    };
-
-
-  </script>
 
 </body>
+<!-- additional starting-scripts-->
+<script type="text/javascript">
+  var aui={};
+</script>
+<script language="javascript" src="themes/aui.js"></script>
+<script language="javascript" src="themes/auiplugins.js"></script>
+<script language="javascript">
+  var slidenoteguardian = {
+    actthemesstring: "extraoptions;hiddenobjects;blocks;progressbar;stickytitles;azul;redalert;tufte;prototyp;highlight;transition;chartist;table;imgtourl;klatex;switchparseelements;sections;node;",
+    ivlength: 12,
+    decText: null,
+    crypto: window.crypto,
+      //options:'<?php print($field_optionstring[0]["value"]);?>',
+    iv:null,
+    //encBufferString : "<?php print($field_encryptednote[0]['value']);?>",
+    //notetitle: "<?php print($title);?>"
+  }
+
+  slidenoteguardian.initLoad = async function(){
+    //should we join session?
+    this.joinsession = (location.href.indexOf('join')>-1);
+    //we dont start session here cause password is not set yet
+    //we could cut the url here to be more standard-like if join is on
+    if(this.joinsession){
+       let roomId = location.search.substring(location.search.indexOf('join')+'join'.length);
+       ws.joinSession(roomId);
+       return;
+    }
+      //get actual slidenote from id
+      let url = location.search.substring(1);
+      console.log(url);
+      try{
+        this.mongopresentation = await getJson('/api/presentation/url/'+url);
+      }catch(err){
+        console.warn('could not load presentation',err);
+        // return {err:err};
+        this.mongopresentation={error:true}
+      }
+      if(this.mongopresentation.error){
+        //404-dialog:
+        dialogoptions = {
+          title:"404 - file not found",
+          content:"we could not find a presentation with this url. please check your url for mistyping",
+          confirmbutton:"go back to slidenotes.io",
+          type:'alert',
+          closebutton:false
+        };
+        dialoger.buildDialog(dialogoptions,function(){
+          location.href='https://www.slidenotes.io';
+        });
+        return;
+      }
+
+    this.encBufferString = this.mongopresentation.encnote;
+    try{
+      this.options = JSON.parse(this.mongopresentation.options);
+    }catch(e){
+      console.warn('could not load options, no valid json');
+    }
+    //if options are not encrypted we could start loading basic-themes here?
+    //no we cant - slidenote must be defined with extensionmanager ready
+    this.notetitle = this.mongopresentation.title;
+    this.init();
+  }
+  slidenoteguardian.initConfig = async function(){
+    return new Promise(function(resolve,reject){
+
+    //lets load the config here:
+    /*this.options hold config-object with:
+    * editorchoice: we dont need that
+    * keyboardmap: we dont need that
+    * nightmode: we dont need that
+    * array activethemes - contains strings with names of active themes to be loaded
+    * themeConfigs: array of strings - holding themes config inside     *
+    */
+    var options = slidenoteguardian.options;
+    var themenames = options.activethemes;
+    var themeconfigs = options.themeConfigs;
+
+    for(var x=0;x<themenames.length;x++){
+      //load the actual css/js libraries:
+
+    }
+
+  });
+  }
+
+  slidenoteguardian.extensionoptions = {
+    basicThemes: [
+      //maybe we should leave it empty and load them in a better way?
+      {name:"hiddenobjects"},
+      {name:"blocks"},
+      {name:"progressbar"},
+      {name:"stickytitles", css:true},
+      {name:"highlight"},
+      {name:"transition"},
+      {name:"chartist"},
+      {name:"table", css:true},
+      {name:"imgtourl"},
+      {name:"klatex", css:true},
+      {name:"switchparseelements", css:true},
+      {name:"sections"},
+      {name:"speaker"},
+      {name:"node"},
+      //css-themes:
+      {name:"minimalist"},
+      {name:"dark"},
+      {name:"colorful"},
+      //*/
+    ]
+  }
+
+  var slidenote;
+
+  slidenoteguardian.init = async function(){
+    this.maximumCommentLength = 255; //will be overwritten by slidenoteplayer.js, just to have a default here
+    var texted = {value:"", selectionEnd:0, selectionStart:0, focus:function(){}}; //emulate textarea
+    var textedlayer = document.createElement("div");
+    //textedlayer.id="texteditorbuttons"; //avoid failure of loading themes by simply adding buttons there
+    textedlayer.style.display = "none";
+    document.body.appendChild(textedlayer);
+    var slideshow = document.getElementById("slidenotepresentation");
+    slidenote = new slidenotes(texted,textedlayer,textedlayer,slideshow,"");
+    var loadscreen = document.getElementById("slidenoteloadingscreenwrapper");
+    loadscreen.classList.add("midstate");
+      //await slidenoteguardian.initConfig();
+    this.decryptPresentation();
+    document.getElementById('comment-form').addEventListener('submit',function(e){
+      e.preventDefault();
+      slidenoteguardian.saveComment();
+      return false;
+    });
+  };
+  slidenoteguardian.autoSaveToLocal = function(){};
+
+  slidenoteguardian.loadConfigString = function(){
+    //disable texteditor:
+    slidenote.texteditorerroractivated=false;
+    //load Themes-Config:
+      var saveobject;
+    try {
+      if(typeof this.options=="object"){
+        saveobject=this.options;
+      }else{
+        saveobject = JSON.parse(this.options);
+      }
+    }catch{
+    //load old config style? naa, just delete it...
+      console.log("old config found");
+
+    //   this.loadConfigOld(destination);
+      return;
+    }
+
+    //activate and disable Themes depending on config:
+    for(var x=0;x<slidenote.extensions.themes.length;x++){
+        var act=slidenote.extensions.themes[x];
+        if(saveobject.activethemes.indexOf(act.classname)>-1){
+            act.changeThemeStatus(true);
+        }else{
+            act.changeThemeStatus(false);
+        }
+    }
+
+    //load themes-config:
+    for(var x=0;x<saveobject.themeConfigs.length;x++){
+        var theme = slidenote.extensions.getThemeByName(saveobject.activethemes[x]);
+        if(theme)theme.loadConfigString(saveobject.themeConfigs[x]);
+    }
+  }
+
+
+  slidenoteguardian.decryptPresentation = async function(){
+    //getting iv of string:
+
+    let iv = new Uint8Array(this.ivlength); //create empty ivarray
+    for(let i=0;i<this.ivlength;i++)iv[i]=this.encBufferString.charCodeAt(i)-255;
+    this.iv = iv;
+    this.encBufferString = this.encBufferString.substring(this.ivlength);//delete iv-chars from string
+    let buffer = new Uint8Array(this.encBufferString.length);
+    for(let i=0;i<this.encBufferString.length;i++)buffer[i]=this.encBufferString.charCodeAt(i)-255;
+    //this.encTextBuffer = buffer.buffer; //changing to ArrayBuffer -- TODO:kann weg oder?
+    this.password = ""; //try it once with empty password
+    this.decText = await this.decrypt(buffer.buffer, this.iv); //decrypt ArrayBuffer
+    if(this.decText==="decryption has failed"){
+      this.password=null;
+      this.decText = await this.decrypt(buffer.buffer, this.iv); //decrypt ArrayBuffer
+    }
+    while(this.decText==="decryption has failed" && confirm("decryption failed. wrong password. Retry?")){
+      this.password=null;
+      this.decText = await this.decrypt(buffer.buffer, this.iv); //decrypt ArrayBuffer
+    }
+    if(this.decText==="decryption has failed")return;
+    //decryption was successfull
+
+    //if we have to join a session we should do it now as
+    //password is set:
+    // if(this.joinsession && ws)ws.joinSession();
+    // as for new logic its not called here anymore
+    //var imgblockpos = this.decText.indexOf("§§§€€€€€IMAGEBLOCK€€€€€§§§");
+    //this.imageblockstring = this.decText.substring(imgblockpos+26);
+    //this.decText = this.decText.substring(0,imgblockpos);
+    slidenote.textarea.value = this.decText;
+    slidenote.extensions.addAfterLoadingThemesHook(async function(){
+      //slidenote.base64images.loadImageString(slidenoteguardian.imageblockstring);
+      await slidenoteguardian.loadImages();
+      slidenoteguardian.loadConfigString();
+      slidenote.parseneu();
+      slidenote.presentation.showpresentation();
+      slidenoteplayer.init();
+      //loadingscreen:
+      let loadingscreen = document.getElementById("slidenoteloadingscreenwrapper");
+      loadingscreen.classList.remove("midstate");
+      loadingscreen.classList.add("endstate");
+    });
+  }
+  slidenoteguardian.loadImages = async function(){
+    let encimages = this.mongopresentation.encimages;
+    for(var x=0;x<encimages.length;x++){
+      let actimg = encimages[x];
+      let actm = await this.decryptText(actimg.encmeta);
+      var actmeta;
+      try{
+        actmeta = JSON.parse(actm);
+      }catch(err){
+        console.warn('could not load imagemeta:',actm)
+      }
+      let actbase64url = await this.decryptText(actimg.encb64);
+      let newb64img = new base64Image(actmeta.names, actbase64url, actmeta.filename);
+      newb64img.hash = actimg.hash; //adding hash here directly
+      newb64img.encmetahash = actimg.encmetahash;
+      newb64img.meta = actmeta;
+      slidenote.base64images.base64images.push(newb64img); //adds image to Database
+    }
+  }
+  slidenoteguardian.decryptText = async function(text){
+    var encBufferString = text;
+      //getting iv of string:
+    let iv = new Uint8Array(this.ivlength); //create empty ivarray
+    for(let i=0;i<this.ivlength;i++)iv[i]=encBufferString.charCodeAt(i)-255;
+    this.iv = iv;
+    encBufferString = encBufferString.substring(this.ivlength);//delete iv-chars from string
+    let buffer = new Uint8Array(encBufferString.length);
+    for(let i=0;i<encBufferString.length;i++)buffer[i]=encBufferString.charCodeAt(i)-255;
+    //this.encTextBuffer = buffer.buffer; //changing to ArrayBuffer -- TODO:kann weg oder?
+    var decText = await this.decrypt(buffer.buffer, this.iv); //decrypt ArrayBuffer
+    //while(decText==="decryption has failed" && confirm("decryption failed. wrong password. Retry?")){
+      //decText = await this.decrypt(buffer.buffer, this.iv); //decrypt ArrayBuffer
+    //}
+    //document.getElementById("slidenotepresentation").innerHTML = this.decText;
+    return decText;
+  }
+
+  slidenoteguardian.decrypt = async function(buffer, iv){
+    let pwtext = "please type in password of presentation";
+    if(this.password===undefined||this.password===null)this.password = await this.passwordPrompt(pwtext, "decrypt");
+    let keyguardian = await this.createKey(iv);
+    console.log("decoding starts");
+    try{
+      this.plainTextBuffer = await this.crypto.subtle.decrypt(keyguardian.alg, keyguardian.key, buffer);
+    } catch(e){
+      console.log(e);
+      console.log("decryption has failed!");
+      //this.password = null; //reset password as it has no meaning
+      return "decryption has failed";
+    }
+    console.log("decoding has ended");
+    return new TextDecoder().decode(this.plainTextBuffer); //TODO: error-handling
+  }
+
+  slidenoteguardian.encryptComment = async function(){
+     var bodyfield = document.getElementById("comment-body");
+     var name = document.getElementById("comment-name");
+     let newcomment = {
+       name:name.value,
+       text:bodyfield.value,
+       date:Date.now(),
+       slidenr:slidenoteplayer.actpage+1
+     }
+     if(newcomment.text.length<1)return "empty body";
+     if(newcomment.text.length>this.maximumCommentLength)return "body too long";
+     if(newcomment.name.length<1)return "empty name";
+     let plaintext = JSON.stringify(newcomment);
+     var encresult = await this.encrypt(plaintext);
+     if(encresult.iv===null||encresult.encbuffer===null)return false;
+     var enctext = this.encBufferToString(encresult);
+     bodyfield.value = enctext;
+     return {enccomment:enctext, cleancomment:newcomment};
+  };
+  slidenoteguardian.saveComment = async function(){
+    let comment = await this.encryptComment();
+    if(comment==false){
+      console.warn('could not encrypt comment');
+      return;
+    }
+    if(comment=="empty body"){
+      console.warn('comment: empty bodyfield');
+      dialoger.buildDialog({type:'alert', title:'could not send comment', content:'you must enter some text to send a comment'});
+      return;
+    }
+    if(comment=="empty name"){
+      console.warn('comment: empty namefield');
+      dialoger.buildDialog({type:'alert', title:'could not send comment', content:'you must enter a name to send a comment'});
+      return;
+    }
+    if(comment=="body too long"){
+      console.warn('comment: bodyfield too long');
+      dialoger.buildDialog({type:'alert', title:'could not send comment', content:'your comment should not exceed '+this.maximumCommentLength+' characters'});
+      return;
+    }
+
+    let enccomment = comment.enccomment;
+    let url = '/api/presentation/comment/'+location.search.substring(1);
+    try{
+      let response = await postJsonComment(url, {enccomment:enccomment});
+      if(!response.err){
+        //comment saved succesfully:
+        //maybe signal it back to user somehow?
+        console.log('comment saved successfully');
+        //load comment into comments:
+        slidenoteplayer.comments.list.push(comment.cleancomment);
+        slidenoteplayer.writeMongoCommentsHTML(); //rewrite all comments
+        document.getElementById('comment-body').value='';
+      }else{
+        console.warn('could not post comment',response.err);
+      }
+    }catch(err){
+      console.warn('could not save comment',err);
+    }
+  }
+
+  slidenoteguardian.encBufferToString = function(encResult){
+    let encTextBuffer = encResult.encbuffer;
+    let iv = encResult.iv;
+    //getting only displayable chars without control-chars:
+    let utf8array = new Uint8Array(encTextBuffer); //changing into utf8-Array
+    //console.log(utf8array);
+    let utf8string = ""; //starting new string for utf8
+    for(let i =0; i<utf8array.length;i++){
+      utf8string+=String.fromCharCode(utf8array[i]+255); //fill string with save values
+    }
+    //converting iv to string with same method:
+    let ivstring="";
+    for(let i=0; i<iv.length;i++)ivstring+=String.fromCharCode(iv[i]+255);
+    return ivstring+utf8string;//save iv in front of code
+  }
+
+
+  slidenoteguardian.encrypt = async function(plaintext){
+    console.log("encrypt plaintext:"+plaintext.substring(0,20));
+    let plainTextUtf8 = new TextEncoder().encode(plaintext); //changing into UTF-8-Array
+    let keyguardian = await this.createKey();
+    if(keyguardian==null)return {encbuffer:null, iv:null};
+    //this.iv = keyguardian.iv;
+    let encbuffer = await crypto.subtle.encrypt(keyguardian.alg, keyguardian.key, plainTextUtf8);
+    return {encbuffer: encbuffer, iv:keyguardian.iv};
+    /*the job of encrypt is done - rest of code should be in save*/
+  }
+
+  slidenoteguardian.createKey = async function(iv, passw){
+    console.log("creating Key with iv"+iv);
+    let password = passw;
+    if(this.password ==null && passw==null)return;
+    if(passw==null)password = this.password;
+    let pwUtf8 = new TextEncoder().encode(password);
+    let passwordHash = await this.crypto.subtle.digest('SHA-256', pwUtf8);
+    if(passw==null) this.passwordHash = passwordHash;
+    let keyguardian = {};
+    if(iv==null){
+      keyguardian.iv = crypto.getRandomValues(new Uint8Array(this.ivlength));
+    }else{
+      keyguardian.iv = iv;
+    }
+    keyguardian.alg = { name: 'AES-GCM', iv: keyguardian.iv };
+    keyguardian.key = await crypto.subtle.importKey('raw', passwordHash, keyguardian.alg, false, ['encrypt', 'decrypt']);
+    console.log("key created");
+    return keyguardian;
+  }
+
+  slidenoteguardian.passwordPrompt = function (text, method, newpassword){
+    /*creates a password-prompt*/
+    if(document.getElementById("slidenoteGuardianPasswortPrompt")!=null){
+      console.log("second password-prompt");
+      return null;
+    }
+    if(this.password!=null && method==="decrypt" && !newpassword){
+      console.log("password allready set");
+      return this.password;
+    }
+
+    var pwprompt = document.createElement("div"); //the prompt-container
+    pwprompt.id= "slidenoteGuardianPasswortPrompt"; //id for css
+    var pwpromptbox = document.getElementById("slidenoteGuardianPasswordPromptTemplate");
+    if(pwpromptbox===null){
+      console.log("no password template found"+pwpromptbox);
+      pwpromptbox = document.createElement("div"); //inner promptbox
+      var pwtext = document.createElement("div"); //text to be displayed inside box
+      pwtext.innerHTML = text;
+      pwpromptbox.appendChild(pwtext);
+      //password-box and retype-password-box
+      var pwform = document.createElement("form");
+      var emailfield = document.createElement("input");
+      emailfield.id="email";
+      emailfield.type="email";
+      emailfield.value= this.slidenotetitle+"@slidenotes.io";
+      //emailfield.style.display="none";
+      //emailfield.style.height="1px";
+      emailfield.autocomplete="username";
+      pwform.appendChild(emailfield);
+      var pwlabel = document.createElement("label");
+      pwlabel.innerText="PASSWORD";
+      pwform.appendChild(pwlabel);
+      var pwinput = document.createElement("input"); //password-box
+      pwinput.type="password";
+      pwinput.id="password";
+      pwinput.autocomplete="current-password";
+      pwform.appendChild(pwinput);
+      pwpromptbox.appendChild(pwform);
+      var pwchecklabel = document.createElement("label");
+      pwchecklabel.innerText="RE-TYPE PASSWORD";
+      pwpromptbox.appendChild(pwchecklabel);
+      pwcheck = document.createElement("input");
+      pwcheck.type="password";
+      pwcheck.id="pwcheckfield";
+      pwpromptbox.appendChild(pwcheck);
+
+      //buttons
+      var pwokbutton = document.createElement("button");
+      pwokbutton.innerHTML = "ENCRYPT";
+      var pwcancelb = document.createElement("button");
+      pwcancelb.innerHTML = "cancel";
+      pwpromptbox.appendChild(pwcancelb);
+      pwpromptbox.appendChild(pwokbutton);
+
+      var pwpromptaftertext = document.createElement("div");
+      pwpromptaftertext.innerText = "we recommend using a password manager to keep up with the task of choosing and remembering safe passwords on the web.";
+      pwpromptbox.appendChild(pwpromptaftertext);
+    }else{
+      console.log("template found: using template to comply with password-manager");
+      var usernamefield = document.getElementById("username");
+      var usernamelabel = document.getElementById("slidenoteGuardianPasswordPromptUsernameLabel");
+      var pwinput = document.getElementById("password");
+      var pwcheck = document.getElementById("pwcheckfield");
+      var pwchecklabel = document.getElementById("slidenoteGuardianPasswordPromptRetypeLabel");
+      var pwtext = document.getElementById("slidenoteGuardianPasswordPromptTemplatePreText");
+      var pwokbutton = document.getElementById("slidenoteGuardianPasswordPromptEncrypt");
+      var pwnotetitle = document.getElementById("slidenoteGuardianPasswordPromptNotetitle");
+      pwtext.innerText = text;
+      if(this.notetitle==="undefined")this.notetitle=this.localstorage.getItem("title");
+      pwinput.value="";
+      usernamefield.value = this.notetitle; //+"@slidenotes.io";
+      if(pwnotetitle!=null)pwnotetitle.innerText = "decrypting presentation \""+this.notetitle+"\"";
+    }
+    if(method==="decrypt"){
+      pwokbutton.innerText="DECRYPT";
+      pwchecklabel.style.display="none";
+      pwcheck.style.display="none";
+      pwcheck.value="";
+      usernamefield.classList.add("hidden");
+      usernamelabel.classList.add("hidden");
+    }else if(method==="export") {
+      pwokbutton.innerText="ENCRYPT";
+      usernamefield.value=this.notetitle+".slidenote";
+      usernamefield.classList.remove("hidden");
+      usernamelabel.classList.remove("hidden");
+      pwchecklabel.style.display="block";
+      pwcheck.style.display="block";
+    }else if(method==="exportCMS"){
+      pwokbutton.innerText="ENCRYPT";
+      usernamefield.value=this.notetitle;
+      usernamefield.classList.remove("hidden");
+      usernamelabel.classList.remove("hidden");
+      pwchecklabel.style.display="block";
+      pwcheck.style.display="block";
+    }else {
+      usernamefield.classList.add("hidden");
+      usernamelabel.classList.add("hidden");
+      pwokbutton.innerText="ENCRYPT";
+      pwchecklabel.style.display="block";
+      pwcheck.style.display="block";
+      pwnotetitle.innerText="Set Password for Slidenote";
+    }
+    pwprompt.appendChild(pwpromptbox);
+    document.body.appendChild(pwprompt); //make promptbox visible
+    pwinput.focus(); //focus on pwbox to get direct input
+    setTimeout("document.getElementById('password').focus()",500); //not the most elegant, but direct focus does not work sometimes - dont know why
+
+    return new Promise(function(resolve, reject) {
+        pwprompt.addEventListener('click', function handleButtonClicks(e) {
+          if (e.target.tagName !== 'BUTTON') { return; }
+          pwprompt.removeEventListener('click', handleButtonClicks); //removes eventhandler on cancel or ok
+          if (e.target === pwokbutton) {
+            if(pwinput.value===pwcheck.value||(pwcheck.style.display==="none" && pwcheck.value.length===0))resolve(pwinput.value); //return password
+            else {
+              return;
+              //reject(new Error('Wrong retype'));
+            }
+          } else {
+            reject(new Error('User canceled')); //return error
+          }
+          document.getElementById("slidenoteGuardianPasswordPromptStore").appendChild(pwpromptbox);
+          document.body.removeChild(pwprompt); //let prompt disapear
+        });
+      var handleenter= function handleEnter(e){
+        if(pwinput.value===pwcheck.value){
+          pwcheck.style.backgroundColor="green";
+        }else{
+          if(pwcheck.value.length>0 || pwcheck.style.display!="none")pwcheck.style.backgroundColor="red";else pwcheck.style.backgroundColor="white";
+        }
+          if(e.keyCode == 13){
+            if(pwinput.value===pwcheck.value||(pwcheck.value.length===0 && pwcheck.style.display==="none"))resolve(pwinput.value);
+              else {
+                return;
+              //  alert("password and retype of password differs - please try again");
+              //reject(new Error("Wrong retype"));
+              }
+            document.getElementById("slidenoteGuardianPasswordPromptStore").appendChild(pwpromptbox);
+            if(pwprompt.parentElement === document.body)document.body.removeChild(pwprompt);
+          }else if(e.keyCode==27){
+            document.getElementById("slidenoteGuardianPasswordPromptStore").appendChild(pwpromptbox);
+            document.body.removeChild(pwprompt);
+            reject(new Error("User cancelled"));
+          }
+        }
+      pwinput.addEventListener('keyup',handleenter);
+      pwcheck.addEventListener('keyup',handleenter);
+    });
+  }
+
+  async function getJson(url){
+    const resp = await fetch(url,{
+      method:'GET',
+
+    });
+    console.warn(resp.status);
+    return resp.json();
+  };
+  async function postJsonComment(url,payload){
+    console.log('post '+url,payload);
+    try{
+      const resp = await fetch(url,{
+        method:'POST',
+        headers:{
+          'Content-Type' : 'application/json',
+        },
+        body:JSON.stringify(payload)
+      });
+      console.log(resp.status, resp.responseXML);
+      return resp.json();
+    }catch(err){
+      return {err:err};
+    }
+  };
+
+
+</script>
+
 </html>

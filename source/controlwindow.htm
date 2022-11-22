@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, shrink-to-fit=no, viewport-fit=cover">
+    <title>slidenote presentation control window</title>
+    <link rel="stylesheet" href="controlwindow.css">
+  </head>
+  <body>
+    <div class="controlwindowwrapper">
+      <h1 id="title">Slide X/X</h1>
+      <!-- back-to-editor -->
+      <button id="controlarea_back-to-editor" class="controlbutton controlbuttonleft" onclick="window.opener.controlWindow.closeWindow()" title="hide presentation">
+        <span class="screenreader-only">hide presentation</span>
+        <img src="images/buttons/ctrlbuttonclose.png">
+      </button>
+      <!-- night mode -->
+      <button id="nightmodetoggle" onclick="document.body.classList.toggle('nightmode')">
+        <div class="nightmode-on"><img src="images/buttons/darkmode.svg"><span class="screenreader-only">on</span></div>
+        <div class="nightmode-off"><img src="images/buttons/dark_lightmode.svg"><span class="screenreader-only">off</span></div>
+      </button>
+      <div id="notes">
+        <ul>
+          <li>notiz/kommentar auf aktueller slide</li>
+        </ul>
+      </div>
+      <div id="clock">
+        0:00
+      </div>
+      <div id="controlarea">
+        <!-- interface interaction -->
+        <!-- --------------------- -->
+
+          <!-- first-slide -->
+          <button id="controlarea_first-slide" class="controlbutton controlbuttonbottomfirst" onclick="window.opener.controlWindow.onControlButtonClick(this)" title="first page">
+            <span class="screenreader-only">first page</span>
+            <img src="images/buttons/ctrlbuttonfirst_dark.png">
+          </button>
+          <!-- previous-slide -->
+          <button id="controlarea_previous-slide" class="controlbutton" onclick="window.opener.controlWindow.onControlButtonClick(this)" title="page before">
+            <span class="screenreader-only">page before</span>
+            <img src="images/buttons/ctrlbuttonbefore_dark.png">
+          </button>
+          <!-- next-slide -->
+          <button id="controlarea_next-slide" class="controlbutton controlbuttonbottomnext" onclick="window.opener.controlWindow.onControlButtonClick(this)" title="next page">
+            <span class="screenreader-only">next page</span>
+            <img src="images/buttons/ctrlbuttonnext_dark.png">
+          </button>
+          <!-- last slide -->
+          <button id="controlarea_last-slide" class="controlbutton" onclick="window.opener.controlWindow.onControlButtonClick(this)" title="last page">
+            <span class="screenreader-only">last page</span>
+            <img src="images/buttons/ctrlbuttonlast_dark.png">
+          </button>
+
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript">
+    window.opener.controlWindow.windowOpened();
+  </script>
+</html>

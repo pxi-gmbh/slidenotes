@@ -58,6 +58,18 @@ newtheme.insertMenuArea = function(dataobject){
   return result;
 }
 
+
+newtheme.allowedDividers = ["," , ", " , ";" , "|" , "\t"];
+
+newtheme.guessDivider = function(line){
+  let divider;
+  //trennzeichen bestimmen/herausfinden:
+  for(var etz=0;etz<this.allowedDividers.length;etz++){
+    if(line.indexOf(this.allowedDividers[etz])>=0)divider=this.allowedDividers[etz];
+  }
+  return divider;
+}
+
 newtheme.styleThemeSpecials = function(){
   var datadivs = slidenote.presentationdiv.getElementsByTagName("section");
   for(var datax=0;datax<slidenote.parser.dataobjects.length;datax++){
@@ -67,12 +79,12 @@ newtheme.styleThemeSpecials = function(){
     var actdiv = datadivs[datax];
     var headdata = new Array();
     var zeilen = new Array();
-    var trennzeichen;
+    var trennzeichen = this.guessDivider(dataobject.raw[0]);
     //trennzeichen bestimmen/herausfinden:
-    var erlaubtetrennzeichen = ["," , ", " , ";" , "|" , "\t"];
-    for(var etz=0;etz<erlaubtetrennzeichen.length;etz++){
-      if(dataobject.raw[0].indexOf(erlaubtetrennzeichen[etz])>=0)trennzeichen=erlaubtetrennzeichen[etz];
-    }
+    // var erlaubtetrennzeichen = ["," , ", " , ";" , "|" , "\t"];
+    // for(var etz=0;etz<erlaubtetrennzeichen.length;etz++){
+    //   if(dataobject.raw[0].indexOf(erlaubtetrennzeichen[etz])>=0)trennzeichen=erlaubtetrennzeichen[etz];
+    // }
    //console.log("Trennzeichen:"+trennzeichen);
     //daten einlesen:
     for(var x=0;x<dataobject.raw.length;x++){

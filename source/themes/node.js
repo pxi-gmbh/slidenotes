@@ -158,7 +158,7 @@ nodetheme.styleThemeSpecials = function(){
 nodetheme.builder = {
   parsedlines:[],
   //general parsing:
-  parseLine: function(line){
+  parseLine: function(line, onlyraw){
       if(line==undefined || line.length<1)return false; //nothing to do on empty line
       let posofpoint = line.indexOf(":");
       let posofdoublepoint = line.indexOf("::");
@@ -209,7 +209,7 @@ nodetheme.builder = {
       }else{
           result.type='arrow';
           let actions = nodetheme.syntax.arrows;
-          if(nodetheme.mdcode)actions = nodetheme.syntax.mdarrows;
+          if(nodetheme.mdcode && !onlyraw)actions = nodetheme.syntax.mdarrows;
           var action; var arrowtype;
           for(var x=0;x<actions.length;x++){
             if(meta.indexOf(actions[x])!=-1){
@@ -225,6 +225,8 @@ nodetheme.builder = {
             let actorpos = this.actors.indexOf(meta);
             //if not put it to end of actors:
             if(actorpos==-1)actorpos=this.actors.length;
+            //get rid of empty space in beginning if any:
+            if(content[0]==' ')content=content.substring(1);
             this.actors[actorpos]=content;
             if(content==""){
               this.actors[actorpos]=meta;
@@ -248,14 +250,23 @@ nodetheme.builder = {
           return result;
       }
   },
-  parse: function(nodeobj){
+  parse: function(nodeobj, onlyraw){
     let lines = [];
     let metalines = [];
     this.actors = [];
     this.aliases = [];
+    let nodetype;
+    for(var x=0;x<nodetheme.nodetypes.length;x++){
+      if(nodeobj.head.indexOf(nodetheme.nodetypes[x])>-1){
+        nodetype=nodetheme.nodetypes[x];
+        break;
+      }
+    }
+    if(!nodetype)nodetype=nodetheme.nodetypes[0];
+
     let metadata=false;
     let source = nodeobj.raw;
-    if(nodetheme.mdcode){
+    if(nodetheme.mdcode && !onlyraw){
       source=nodeobj.renderedLines;
       //get rid of empty span
       for (var x=0;x<source.length;x++){
@@ -272,7 +283,7 @@ nodetheme.builder = {
       else lines.unshift(source[x]);
     }
     //parse metadata:
-    this.options = this.parseMetadata(metalines);
+    this.options = this.parseMetadata(metalines, onlyraw);
     //parse lines:
     let parsedlines = [];
     let skiplines = [];
@@ -281,7 +292,7 @@ nodetheme.builder = {
         parsedlines[x]=false;
         continue;
       }
-      parsedlines[x]=this.parseLine(lines[x]);
+      parsedlines[x]=this.parseLine(lines[x], onlyraw);
       if(parsedlines[x]==false)continue;
       if(parsedlines[x].multilinedeclaration){
         let alias = parsedlines[x].alias;
@@ -313,7 +324,10 @@ nodetheme.builder = {
     }
     var actorhtml = [];
     for(var x=0;x<this.actors.length;x++){
-      actorhtml[x]=this.formHTML(this.actors[x]);
+      let actortext = this.actors[x];
+      //getting rid of space in front:
+      // if(actortext[0]==' ')actortext.substring(1);
+      actorhtml[x]=this.formHTML(actortext);
     }
 
     let parseobj = {
@@ -322,7 +336,8 @@ nodetheme.builder = {
       actorhtml:actorhtml,
       options:this.options,
       parsedlines:parsedlines,
-      mdcode:nodetheme.mdcode
+      mdcode:nodetheme.mdcode,
+      nodetype:nodetype,
     }
     console.log('parsed nodeobject:',parseobj, nodeobj);
     return parseobj;
@@ -359,13 +374,15 @@ nodetheme.builder = {
     if(typeof actor == "string")actors=[actor];
     for(var x=0;x<actors.length;x++){
       let act=actors[x];
+      //getting rid of empty-space in front if any:
+      if(act[0]==' ')act=act.substring(1);
       if(this.actors.indexOf(act)==-1 &&
         this.aliases.indexOf(act)==-1){
         this.actors.push(act);
       };
     }
   },
-  parseMetadata:function(metalines){
+  parseMetadata:function(metalines, onlyraw){
     /*metadata can be
     alias:nodecontent
     alias=nodecontent
@@ -375,7 +392,7 @@ nodetheme.builder = {
     ::alias
     */
     var separators = ['->','=','::',':'];
-    if(nodetheme.mdcode)separators=['-&gt;','=','::',':'];
+    if(nodetheme.mdcode && onlyraw!=true)separators=['-&gt;','=','::',':'];
     for(var x=0;x<metalines.length;x++){
       var line = metalines[x];
       let separator;
@@ -390,6 +407,8 @@ nodetheme.builder = {
       if(separator=='='||separator==':'){
         let alias=line.substring(0,seppos);
         let actor = line.substring(seppos+separator.length);
+        //getting rid of empty space if any:
+        if(actor[0]==' ')actor=actor.substring(1);
         let actorIndex = this.actors.indexOf(actor);
         if(actorIndex==-1){
           actorIndex=this.actors.length;
@@ -414,6 +433,23 @@ nodetheme.builder = {
     }
     return {hasMetadata:true};
   },//end of parseMetadata
+  parseActorType: function(text, onlyraw){
+    let wrapperlist = nodetheme.syntax.wrapperlist;
+    if(nodetheme.mdcode && !onlyraw)wrapperlist=nodetheme.syntax.mdwrapperlist;
+    let wtitle = nodetheme.syntax.wrappertitle;
+    for(var x=0;x<wrapperlist.length;x++){
+    let wrapper=wrapperlist[x];
+    if(text.substring(0,wrapper[0].length)==wrapper[0] &&
+      text.substring(text.length-wrapper[1].length)==wrapper[1]){
+        return {
+          text: text.substring(wrapper[0].length,text.length-wrapper[1].length),
+          type:wtitle[x],
+        }
+        break;
+      }
+    }
+    return false;
+  },
   //sequence-diagram:
   sequence:{
     build: function(parseobj){
