@@ -110,6 +110,9 @@ var mongoguardian = {
   },
   initTutorial: async function(){
 
+    //set theme to first theme
+    slidenote.extensions.changeThemeStatusByClassname('minimalist',true);
+
     //tutorials are loaded with location ?tutorial=tutorialname
     let tutoriallist = await this.get_json('/tutorials/tutoriallist.json');
     let tutorialurl = location.search.substring(location.search.lastIndexOf("=")+1);

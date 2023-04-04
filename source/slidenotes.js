@@ -4041,6 +4041,7 @@ ExtensionManager.prototype.changeThemeStatus = function(themenr, status){
 		}
 		if(vorschau!=null)vorschau.classList.add(this.themes[themenr].classname);
 		for(var x=0;x<designchoice.length;x++)if(designchoice[x].number ===themenr)designchoice[x].checked = true;
+		setTimeout(()=>{slidenote.extensions.CssThemes()},100)
 	}
 	//this.themes[themenr].active = status;
 	this.themes[themenr].changeThemeStatus(status);

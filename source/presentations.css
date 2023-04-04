@@ -366,7 +366,9 @@ textarea#comment-body.char-limit-reached {
   #slidenoteloadingscreenwrapper.endstate~#hidepresentation{
     display: none;
   }
-
+  #slidenoteLoadingScreen{
+    display:none;
+  }
   #invitelink {
       text-transform: none;
   }

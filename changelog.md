@@ -1,3 +1,7 @@
+# version 1.5.1
+  - bugfix tutorial standard theme
+  - minor fixes 
+
 # version 1.5
 - controlwindow
 - feedback after deleting slidenote
